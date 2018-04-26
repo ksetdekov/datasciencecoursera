@@ -1,6 +1,6 @@
 Attribute VB_Name = "preparation"
 Function Translit(ByVal txt As String) As String
-    iRussian$ = "ΰαβγδεΈζηθικλμνξοπρςστυφχψωϊϋόύώÿ"
+    iRussian$ = "Π°Π±Π²Π³Π΄ΠµΡ‘Π¶Π·ΠΈΠΉΠΊΠ»ΠΌΠ½ΠΎΠΏΡ€ΡΡ‚ΡƒΡ„Ρ…Ρ†Ρ‡ΡΡ‰ΡΡ‹ΡΡΡΡ"
     iTranslit = Array("", "a", "b", "v", "g", "d", "e", "jo", "zh", "z", "i", "jj", "k", _
                       "l", "m", "n", "o", "p", "r", "s", "t", "u", "f", "h", "c", "ch", _
                       "sh", "zch", "''", "'y", "'", "eh", "ju", "ja")
@@ -49,7 +49,7 @@ ncol = ActiveSheet.UsedRange.Columns.Count
          Application.StatusBar = "Progress: " & x & " of " & ncol & " columns: " & Format(x / ncol, "0%")
     Loop
     Application.StatusBar = False
-    'ρξυπΰνενθε
+    'Γ±Γ®ΓµΓ°Γ Γ­Γ¥Γ­Γ¨Γ¥
 Application.DisplayAlerts = False
 
     ActiveWorkbook.SaveAs Filename:=Application.ActiveWorkbook.Path & "\" & Filename & "_converted.xlsm", _
