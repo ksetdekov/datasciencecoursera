@@ -28,6 +28,7 @@ Dim MyTimer         As Double
 sourcesheet = ActiveSheet.Name
 nrow = ActiveSheet.UsedRange.Rows.Count
 'nrow = 100
+'this nrow is used for testing
 ncol = ActiveSheet.UsedRange.Columns.Count
 
     Sheets.Add After:=ActiveSheet
@@ -49,7 +50,7 @@ ncol = ActiveSheet.UsedRange.Columns.Count
          Application.StatusBar = "Progress: " & x & " of " & ncol & " columns: " & Format(x / ncol, "0%")
     Loop
     Application.StatusBar = False
-    'ñîõðàíåíèå
+    'saving
 Application.DisplayAlerts = False
 
     ActiveWorkbook.SaveAs Filename:=Application.ActiveWorkbook.Path & "\" & Filename & "_converted.xlsm", _
