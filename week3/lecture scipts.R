@@ -114,3 +114,41 @@ lm(y~q)
 #recover
 options(error=recover)
 read.csv("noshucl")
+
+#quiz3
+library(datasets)
+data(iris)
+?iris
+tapply(iris$Sepal.Length, iris$Species, mean)
+apply(iris[, 1:4], 2, mean)
+
+?mtcars
+hpave<-tapply(mtcars$hp, mtcars$cyl, mean)
+hpave[3]-hpave[1]
+
+#for programming assignment
+makeVector <- function(x = numeric()) {
+        m <- NULL
+        set <- function(y) {
+                x <<- y
+                m <<- NULL
+        }
+        get <- function() x
+        setmean <- function(mean) m <<- mean
+        getmean <- function() m
+        list(set = set, get = get,
+             setmean = setmean,
+             getmean = getmean)
+}
+
+cachemean <- function(x, ...) {
+        m <- x$getmean()
+        if(!is.null(m)) {
+                message("getting cached data")
+                return(m)
+        }
+        data <- x$get()
+        m <- mean(data, ...)
+        x$setmean(m)
+        m
+}
