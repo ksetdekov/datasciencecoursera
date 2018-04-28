@@ -37,3 +37,80 @@ noise<-function(n,mean,sd){
         rnorm(n,mean,sd)
 }
 mapply(noise,1:5,1:5,2)
+#tapply
+x<-c(rnorm(10),runif(10),rnorm(10,1))
+f<-gl(3,10)
+f
+tapply(x, f, mean)
+#no simplification
+tapply(x, f, mean, simplify = FALSE)
+ #split
+str(split)
+split(x,f) #splits the object into factor -> returns a list
+#instead of tapply can use lapply+split
+lapply(split(x,f),mean)
+#usefull for more complecated stuff
+library(datasets)
+head(airquality)
+s<-split(airquality,airquality$Month)
+lapply(s,function(x) colMeans(x[,c("Ozone","Solar.R","Wind")]))
+#but there are missing
+sapply(s,function(x) colMeans(x[,c("Ozone","Solar.R","Wind")]))
+# delete nas
+lapply(s,function(x) colMeans(x[,c("Ozone","Solar.R","Wind")], na.rm = TRUE))
+
+#splitting in multiple levels
+x<-rnorm(10)
+f1<-gl(2,5)
+f2<-gl(5,2)
+f1
+f2
+interaction(f1,f2)
+str(split(x,list(f1,f2)))
+#drop empty
+str(split(x,list(f1,f2)),drop=TRUE)
+
+##debugging
+#warning
+log(-1)
+
+printmessage<-function(x){
+        if(x>0)
+                print("x is greater than 0")
+        else
+                print("x is less than or equal to zero")
+        invisible(x)
+}
+printmessage(1)
+#getting error
+printmessage(NA)
+
+printmessage2<-function(x){
+        if(is.na(x))
+                print("x is a missing value!")
+        else if(x>0)
+                print("x is greater than 0")
+        else
+                print("x is less than or equal to zero")
+        invisible(x)
+}
+printmessage2(NA)
+
+x<-log(-1)
+#generating a NaN
+printmessage2(x)
+# expecting something different, there is no error
+mean(y)
+traceback() # first level error
+
+#more complicated error
+lm(y~q)
+traceback()
+
+#debugging
+debug(lm)
+lm(y~q)
+
+#recover
+options(error=recover)
+read.csv("noshucl")
