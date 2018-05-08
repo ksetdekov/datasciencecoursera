@@ -23,3 +23,6 @@ source("best.R")
 best("SC", "heart attack")
 best("NY", "pneumonia")
 best("AK", "pneumonia")
+source("rankhospital.R")
+source("rankall.R")
+
