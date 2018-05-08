@@ -20,3 +20,6 @@ hist(outcome[, 11])
 
 ## finding the best hospital
 source("best.R")
+best("SC", "heart attack")
+best("NY", "pneumonia")
+best("AK", "pneumonia")
