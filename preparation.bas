@@ -1,6 +1,6 @@
 Attribute VB_Name = "preparation"
 Function Translit(ByVal txt As String) As String
-    iRussian$ = "àáâãäå¸æçèéêëìíîïğñòóôõö÷øùúûüışÿ"
+    iRussian$ = "Ğ°Ğ±Ğ²Ğ³Ğ´ĞµÑ‘Ğ¶Ğ·Ğ¸Ğ¹ĞºĞ»Ğ¼Ğ½Ğ¾Ğ¿Ñ€ÑÑ‚ÑƒÑ„Ñ…Ñ†Ñ‡ÑˆÑ‰ÑŠÑ‹ÑŒÑÑÑ"
     iTranslit = Array("", "a", "b", "v", "g", "d", "e", "jo", "zh", "z", "i", "jj", "k", _
                       "l", "m", "n", "o", "p", "r", "s", "t", "u", "f", "h", "c", "ch", _
                       "sh", "zch", "''", "'y", "'", "eh", "ju", "ja")
@@ -11,7 +11,7 @@ Function Translit(ByVal txt As String) As String
 End Function
 
 Function translitback(ByVal txt As String) As String
-    iRussian$ = "ÀÁÂÃÄÅ¨ÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞß"
+    iRussian$ = "ĞĞ‘Ğ’Ğ“Ğ”Ğ•ĞĞ–Ğ—Ğ˜Ğ™ĞšĞ›ĞœĞĞĞŸĞ Ğ¡Ğ¢Ğ£Ğ¤Ğ¥Ğ¦Ğ§Ğ¨Ğ©ĞªĞ«Ğ¬Ğ­Ğ®Ğ¯"
     iTranslit = Array("", "a", "b", "v", "g", "d", "e", "jo", "zh", "z", "i", "jj", "k", _
                       "l", "m", "n", "o", "p", "r", "s", "t", "u", "f", "h", "c", "ch", _
                       "sh", "zch", "''", "'y", "'", "eh", "ju", "ja")
@@ -99,7 +99,7 @@ ncol = ActiveSheet.UsedRange.Columns.Count
 Application.Wait (Now + TimeValue("00:00:02"))
     
     Application.StatusBar = False
-    'ñîõğàíåíèå
+    'Ã±Ã®ÃµÃ°Ã Ã­Ã¥Ã­Ã¨Ã¥
 Application.DisplayAlerts = False
 
     ActiveWorkbook.SaveAs Filename:=Application.ActiveWorkbook.Path & "\" & Filename & "_converted.xlsm", _
