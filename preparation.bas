@@ -99,7 +99,7 @@ ncol = ActiveSheet.UsedRange.Columns.Count
 Application.Wait (Now + TimeValue("00:00:02"))
     
     Application.StatusBar = False
-    'ñîõðàíåíèå
+    'saving
 Application.DisplayAlerts = False
 
     ActiveWorkbook.SaveAs Filename:=Application.ActiveWorkbook.Path & "\" & Filename & "_converted.xlsm", _
