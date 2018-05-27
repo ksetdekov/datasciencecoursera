@@ -20,4 +20,28 @@ library(xlsx)
 cameraData<-read.xlsx("./data/cameras.xlsx",sheetIndex = 1, header = TRUE)
 head(cameraData)
 
-## 
+## reading xml
+library(XML)
+fileUrl<-"./data/simple.xml"
+doc<-xmlTreeParse(fileUrl,useInternal = TRUE)
+rootNode<-xmlRoot(doc)
+xmlName(rootNode)
+
+#names
+names(rootNode)
+
+#access xml directly
+rootNode[[1]]
+#deeper
+rootNode[[1]][[1]]
+
+#extract part of the file
+#for all
+xmlSApply(rootNode,xmlValue)
+
+##indepth into xml
+## names
+xpathSApply(rootNode,"//name",xmlValue)
+## value
+xpathSApply(rootNode,"//price",xmlValue)
+
