@@ -1,4 +1,4 @@
-setwd("D:/Dropbox/datascience/datasciencecoursera/get_clear_data")
+setwd("~/datasciencecoursera/get_clear_data")
 if(!file.exists("data")){
         dir.create("data")
 }
