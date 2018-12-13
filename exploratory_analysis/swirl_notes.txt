@@ -1,0 +1,16 @@
+abline - horizontal line on graph
+abline(v=median(ppm), col="magenta", lwd=4) - vertical
+rug(ppm) - одномерный график на Х
+names () - имена
+boxplot(pm25~region, data = pollution, col="red") - 2 box plots by category!
+
+2 histrograms 
+par(mfrow=c(2,1),mar=c(4,4,2,1))
+hist(east$pm25, col="green")
+hist(subset(pollution, region == "west")$pm25, col="green")
+
+scatter plot
+with(pollution, plot(latitude, pm25))
+
+2 side by side
+par(mfrow = c(1, 2), mar = c(5, 4, 2, 1))
