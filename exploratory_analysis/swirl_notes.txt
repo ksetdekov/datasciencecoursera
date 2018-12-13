@@ -14,3 +14,18 @@ with(pollution, plot(latitude, pm25))
 
 2 side by side
 par(mfrow = c(1, 2), mar = c(5, 4, 2, 1))
+
+?Devices - list graphic devices
+title(main="Old Faithful Geyser data") - title for a graph
+
+create pdf
+pdf(file="myplot.pdf")
+with(faithful, plot(eruptions, waiting))
+title(main="Old Faithful Geyser data")
+dev.off()
+
+ dev.copy2pdf specifically copies a plot to a PDF output device
+dev.off()
+
+dev.copy(png, file="geyserplot.png") copy to a PNG output
+dev.off()
