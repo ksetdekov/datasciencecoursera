@@ -1,3 +1,6 @@
+https://www.r-graph-gallery.com/ - ghraph library
+
+
 abline - horizontal line on graph
 abline(v=median(ppm), col="magenta", lwd=4) - vertical
 rug(ppm) - одномерный график на Х
@@ -24,6 +27,7 @@ with(faithful, plot(eruptions, waiting))
 title(main="Old Faithful Geyser data")
 dev.off()
 
+par() function - specify global graphic parameters
  dev.copy2pdf specifically copies a plot to a PDF output device
 dev.off()
 
