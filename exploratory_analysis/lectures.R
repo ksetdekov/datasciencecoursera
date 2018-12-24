@@ -149,3 +149,31 @@ plot(cfit2)
 plot(x,y, type="n")
 points(x[g=="male"],y[g=="male"], col="green")
 points(x[g=="female"],y[g=="female"], col="blue", pch=19)
+
+#devices
+library(datasets)
+with(faithful, plot(eruptions,waiting))
+title(main = "old faithful geyser data")
+library(party)
+cfit3<-ctree(eruptions~.,data=faithful)
+plot(cfit3)
+
+faithful$prederuptions <- predict(cfit3, faithful)
+library(InformationValue)
+library(MLmetrics)
+#plotROC(faithful$eruptions, faithful$prederuptions)
+Gini(faithful$prederuptions , faithful$eruptions)
+with(faithful, plot(eruptions,prederuptions))
+setwd("exploratory_analysis")
+#launch graphic dev
+pdf(file = "myplot.pdf")
+plot(cfit3)
+dev.cur()
+dev.set(dev.cur())
+dev.off()
+
+#dev.copy
+with(faithful, plot(eruptions,waiting))
+title(main = "old faithful geyser data")
+dev.copy(png,file="geyser.png")
+dev.off()
