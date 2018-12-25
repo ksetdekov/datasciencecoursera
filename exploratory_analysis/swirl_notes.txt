@@ -33,3 +33,36 @@ dev.off()
 
 dev.copy(png, file="geyserplot.png") copy to a PNG output
 dev.off()
+
+## ggplot plotting
+qplot(displ, hwy, data = mpg)
+
+range(airquality$Ozone, na.rm = TRUE)
+
+#fancy boxlot
+ boxplot(Ozone~Month, airquality, xlab="Month", ylab="Ozone (ppb)",col.axis="blue",col.lab="red")
+
+#base plotting parameters
+?par 
+
+#base plotting
+plot(airquality$Wind, type="n",airquality$Ozone)
+title(main = "Wind and Ozone in NYC")
+may <- subset(airquality, Month==5)
+points(may$Wind,may$Ozone,col="blue",pch=17)
+notmay <- subset(airquality, Month!=5)
+points(notmay$Wind,notmay$Ozone,col="red",pch=8)
+legend("topright", pch=c(17,8), col=c("blue","red"), legend = c("May","Other Months"))
+abline(v=median(airquality$Wind),lty=2,lwd=2)
+
+# 2 side by side
+par(mfrow=c(1,2))
+plot(airquality$Wind, airquality$Ozone, main="Ozone and Wind")
+plot(airquality$Ozone, airquality$Solar.R, main="Ozone and Solar Radiation"
+
+#margins
+par(mfrow = c(1, 3), mar = c(4, 4, 2, 1), oma = c(0, 0, 2, 0))
+plot(airquality$Wind, airquality$Ozone, main="Ozone and Wind")
+plot(airquality$Solar.R, airquality$Ozone, main = "Ozone and Solar Radiation")
+plot(airquality$Temp, airquality$Ozone, main = "Ozone and Temperature")
+mtext("Ozone and Weather in New York City", outer = TRUE) #outer name
