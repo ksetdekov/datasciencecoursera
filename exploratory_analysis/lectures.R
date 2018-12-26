@@ -1,4 +1,4 @@
-#week 1
+#week 1 ########################################################################
 library(datasets)
 data("cars")
 with(cars,plot(speed,dist))
@@ -177,3 +177,5 @@ with(faithful, plot(eruptions,waiting))
 title(main = "old faithful geyser data")
 dev.copy(png,file="geyser.png")
 dev.off()
+
+#week 2 ########################################################################

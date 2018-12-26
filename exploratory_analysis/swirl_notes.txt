@@ -66,3 +66,12 @@ plot(airquality$Wind, airquality$Ozone, main="Ozone and Wind")
 plot(airquality$Solar.R, airquality$Ozone, main = "Ozone and Solar Radiation")
 plot(airquality$Temp, airquality$Ozone, main = "Ozone and Temperature")
 mtext("Ozone and Weather in New York City", outer = TRUE) #outer name
+
+#sql read
+library(sqldf)
+DataPath <- "../household_power_consumption.txt"
+
+## Load only lines with date = 1/2/2007 or 2/2/2007
+Data <- read.csv.sql(DataPath,
+                     sql = "select * from file where Date in('1/2/2007','2/2/2007')",
+                     head=TRUE, sep = ";")
