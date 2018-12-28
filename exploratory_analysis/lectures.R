@@ -179,3 +179,47 @@ dev.copy(png,file="geyser.png")
 dev.off()
 
 #week 2 ########################################################################
+# lattice package
+# usefull
+# xyplot, xyplot (y~x| f*g, data), f and g - conditional variables
+# bwplot
+# stripplot
+# dotplot
+# splom
+# levelplot
+# contourplot
+
+library(lattice)
+library(datasets)
+## scatterplot
+xyplot(Ozone~Wind, data = airquality)
+
+## with factors
+airquality <- transform(airquality, Month=factor(Month))
+xyplot(Ozone~Wind|Month, data = airquality, layout=c(5,1))
+# they do not plot, return class trellis and this is printed
+
+p <- xyplot(Ozone~Wind, data = airquality)
+print(p)
+
+#have panel functions
+set.seed(100)
+x <- rnorm(100)
+f <- rep(0:1,each=50)
+y <- x+f-f*x+rnorm(100,sd=0.5)
+f <- factor(f,labels = c("gr 1","gr 2"))
+xyplot(y~x|f,layout=c(2,1))
+# custom panel function can be applied 
+xyplot(y~x|f,layout=c(2,1),panel = function(x,y,...){
+        panel.xyplot(x,y,...) ## with median
+        panel.abline(h=median(y), lty = 2)
+})
+
+xyplot(y~x|f,layout=c(2,1),panel = function(x,y,...){
+        panel.xyplot(x,y,...)
+        panel.lmline(x,y, col = "Green") # with green regression
+})
+
+#base annotation do not work here
+## great for conditional plotting 
+## great for many data in quick way
