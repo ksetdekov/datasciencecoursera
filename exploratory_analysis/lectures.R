@@ -223,3 +223,24 @@ xyplot(y~x|f,layout=c(2,1),panel = function(x,y,...){
 #base annotation do not work here
 ## great for conditional plotting 
 ## great for many data in quick way
+
+## ggplot2
+## implementation of grammar of graphics, can put together and make new graphs
+## third graphics system for R
+require(ggplot2)
+qplot(rnorm(100000)*3) #qplot
+## factors are important, but they should be named
+str(mpg)
+qplot(displ, hwy, data = mpg)
+qplot(displ, hwy, data = mpg, color=drv)
+qplot(displ, hwy, data = mpg, geom = c("point","smooth"))
+qplot(hwy, data = mpg, fill=drv)
+qplot(displ, hwy, data = mpg, facets = .~drv) # colums #facets - panels by drive
+qplot( hwy, data = mpg, facets = drv~.)  #row
+qplot( displ,hwy, data = mpg, facets = drv~cyl,geom = c("point","smooth"))  #both
+
+qplot(hwy, data = mpg, fill=drv, geom = c("density")) ## smooth
+
+qplot(hwy, displ, data=mpg, color=drv)+geom_smooth(method = "lm") ## great!
+qplot(hwy, displ, data=mpg, facets = .~drv)+geom_smooth(method = "lm") ## same byt split
+
