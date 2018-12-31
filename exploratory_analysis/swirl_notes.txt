@@ -3,8 +3,8 @@ https://www.r-graph-gallery.com/ - ghraph library
 
 abline - horizontal line on graph
 abline(v=median(ppm), col="magenta", lwd=4) - vertical
-rug(ppm) - одномерный график на Х
-names () - имена
+rug(ppm) -  vertical lines
+names () -  names
 boxplot(pm25~region, data = pollution, col="red") - 2 box plots by category!
 
 2 histrograms 

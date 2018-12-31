@@ -354,3 +354,27 @@ print(g)
 movies <- movies
 qplot(votes,rating, data = movies)+geom_smooth()
 
+
+#week 3 #####################
+#clustering
+## what is close, how we group,  how visualize, how do we interpret?
+# hierarchichal
+# find two closest
+# put them together
+# find nex closest
+
+#need 1) define distance 2) merge approach
+
+# distance - euclidean distance, similarity, binary = manhattan distance
+
+set.seed(1234)
+par(mar=c(0,0,0,0))
+x <- rnorm(12, mean = rep(1:3, each=4), sd=0.2)
+y <- rnorm(12, mean=rep(c(1,2,1), each=4), sd=0.2)
+plot(x,y, col="blue", pch=19, cex=2)
+text(x+0.05, y+0.05, labels=as.character(1:12))
+dataFrame <- data.frame(x=x,y=y)
+distxy <- dist(dataFrame)## dist matrix
+hclustering <- hclust(distxy)
+plot(hclustering)
+## need to choose where to cut
