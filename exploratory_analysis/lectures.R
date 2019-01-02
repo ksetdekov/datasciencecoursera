@@ -445,3 +445,115 @@ image(t(dataMatrixOrdered)[,nrow(dataMatrixOrdered):1])
 plot(rowMeans(dataMatrixOrdered) ,xlab = "rowmean", ylab = "row")
 plot(colMeans(dataMatrixOrdered),xlab = "column", ylab = "col mean")
 
+#related problem - create uncorrelated set of data with reduced set of variables
+#lower rank matrix with reasonable explaination
+## SVD - Singular value decomposition X=UDV^T
+## PCA - run SVD on normalized data
+
+svd1 <- svd(scale(dataMatrixOrdered))
+par(mfrow=c(1,3))
+image(t(dataMatrixOrdered)[,nrow(dataMatrixOrdered):1])
+plot(svd1$u[,1 ],xlab = "row", ylab = "first left singular vector")
+plot(svd1$v[,1 ],xlab = "column", ylab = "First right singular vector")
+
+#component of svd - variance explained (% of variance explained by this component)
+par(mfrow=c(1,2))
+plot(svd1$d, xlab = "column", ylab = "singular value")
+plot(svd1$d^2/sum(svd1$d^2), xlab = "column", ylab = "Proportion of variance explained", pch = 19)
+
+#1 pc in x, single vector
+svd1 <- svd(scale(dataMatrixOrdered))
+pca1 <- prcomp(dataMatrixOrdered, scale=TRUE)
+plot(pca1$rotation[,1], svd1$v[,1], pch=19, xlab = "principal component 1", ylab = "Right singular vector 1")
+abline(c(0,1))
+
+# components of svd - variance explained
+constantMatrix <- dataMatrixOrdered*0
+for(i in 1:dim(dataMatrixOrdered)[1]){
+        constantMatrix[i,] <- rep(c(0,1), each=5)
+}
+svd1 <- svd(constantMatrix)
+par(mfrow=c(1,3))
+image(t(constantMatrix)[,nrow(constantMatrix):1])
+plot(svd1$d, xlab = "column", ylab = "singular value") ## because there is only one pattern
+plot(svd1$d^2/sum(svd1$d^2), xlab = "column", ylab = "Proportion of variance explained", pch = 19)
+
+# add a second pattern
+set.seed(678910)
+for (i in 1:40){
+        coinFlip1 <- rbinom(1,size = 1, prob = 0.5)
+        coinFlip2 <- rbinom(1,size = 1, prob = 0.5)
+        if(coinFlip1){
+                dataMatrix[i,] <- dataMatrix[i,]+rep(c(0,5), each=5)
+        }
+        if(coinFlip2){
+                dataMatrix[i,] <- dataMatrix[i,]+rep(c(0,5),5)
+        }
+        
+}
+hh <- hclust(dist(dataMatrix))
+dataMatrixOrdered <- dataMatrix[hh$order,]
+
+svd2 <- svd(scale(dataMatrixOrdered))
+par(mfrow=c(1,3))
+image(t(dataMatrixOrdered)[,1:nrow(dataMatrixOrdered)])
+plot(rep(c(0,1),each=5), xlab = "col", ylab = "pattern 1")
+plot(rep(c(0,1),5), xlab = "col", ylab = "pattern 2")
+
+
+#v and patternss in variance in row
+par(mfrow=c(1,3))
+image(t(dataMatrixOrdered)[,1:nrow(dataMatrixOrdered)])
+plot(svd2$v[,1], xlab = "col", ylab = "first right singular vector")
+plot(svd2$v[,2], xlab = "col", ylab = "second right singular vector")
+## pattern similar, but hard to see the truth
+
+#d and variance explained
+svd1 <- svd(scale(dataMatrixOrdered))
+par(mfrow=c(1,2))
+plot(svd1$d, xlab = "column", ylab = "singular value")
+plot(svd1$d^2/sum(svd1$d^2), xlab = "column", ylab = "Proportion of variance explained", pch = 19)
+
+# issues with PCA and SVD
+#problem with missing values
+dataMatrix2 <- dataMatrixOrdered
+dataMatrix2[sample(1:100, size = 40, replace = FALSE)] <- NA
+svd1 <- svd(scale(dataMatrix2)) ##doesnt work with missing variables
+
+# battling missing variables
+library(impute)
+dataMatrix2 <- dataMatrixOrdered
+dataMatrix2[sample(1:100, size = 40, replace = FALSE)] <- NA
+dataMatrix2 <- impute.knn(dataMatrix2)$data
+svd1 <- svd(scale(dataMatrixOrdered))
+svd2 <- svd(scale(dataMatrix2))
+par(mfrow=c(1,2))
+plot(svd1$v[,1])
+plot(svd2$v[,1])
+
+
+## face exapmle
+library(imager)
+face <- load.image("face.jpg")
+bwface <- grayscale(face, method = "Luma", drop = TRUE)
+bwface <- resize(bwface,round(width(bwface)/10),round(height(bwface)/10))
+plot(bwface)
+faceData <- matrix(bwface, nrow = 346)
+faceData <- t(faceData)
+image(t(faceData)[,nrow(faceData):1]) # my face
+
+svd1 <- svd(scale(faceData))
+plot(svd1$d^2/sum(svd1$d^2), xlab = "singular vector", ylab = "Proportion of variance explained", pch = 19)
+
+#face create approximations
+approx1 <- svd1$u[,1]%*%t(svd1$v[,1])*svd1$d[1]
+# make diagonal matrix out of d and multiplicate many pc
+approx10 <- svd1$u[,1:10] %*% diag(svd1$d[1:10])%*%t(svd1$v[,1:10])
+approx20 <- svd1$u[,1:20]%*%diag(svd1$d[1:20])%*%t(svd1$v[,1:20])
+dev.off()
+par(mfrow=c(1,4))
+image(t(approx1)[,nrow(approx1):1], main="1") 
+image(t(approx10)[,nrow(approx10):1], main="10") 
+image(t(approx20)[,nrow(approx20):1], main="20") 
+
+image(t(faceData)[,nrow(faceData):1], main="d") 
