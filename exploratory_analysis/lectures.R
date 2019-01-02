@@ -339,20 +339,20 @@ dev.off
 # week 2 quiz
 library(nlme)
 library(lattice)
-xyplot(weight~Time|Diet, BodyWeight)
+xyplot(weight ~ Time | Diet, BodyWeight)
 
 library(lattice)
 library(datasets)
 data("airquality")
-p <- xyplot(Ozone~Wind|factor(Month), data = airquality)
+p <- xyplot(Ozone ~ Wind | factor(Month), data = airquality)
 p
-qplot(Wind,Ozone, data = airquality, facets = .~factor(Month))
+qplot(Wind, Ozone, data = airquality, facets = . ~ factor(Month))
 install.packages("ggplot2movies")
 library(ggplot2movies)
-g <- ggplot(movies, aes(votes,rating))
+g <- ggplot(movies, aes(votes, rating))
 print(g)
 movies <- movies
-qplot(votes,rating, data = movies)+geom_smooth()
+qplot(votes, rating, data = movies) + geom_smooth()
 
 
 #week 3 #####################
@@ -368,26 +368,28 @@ qplot(votes,rating, data = movies)+geom_smooth()
 # distance - euclidean distance, similarity, binary = manhattan distance
 
 set.seed(1234)
-par(mar=c(0,0,0,0))
-x <- rnorm(12, mean = rep(1:3, each=4), sd=0.2)
-y <- rnorm(12, mean=rep(c(1,2,1), each=4), sd=0.2)
-plot(x,y, col="blue", pch=19, cex=2)
-text(x+0.05, y+0.05, labels=as.character(1:12))
-dataFrame <- data.frame(x=x,y=y)
+par(mar = c(0, 0, 0, 0))
+x <- rnorm(12, mean = rep(1:3, each = 4), sd = 0.2)
+y <- rnorm(12, mean = rep(c(1, 2, 1), each = 4), sd = 0.2)
+plot(x, y, col = "blue", pch = 19, cex = 2)
+text(x + 0.05, y + 0.05, labels = as.character(1:12))
+dataFrame <- data.frame(x = x, y = y)
 distxy <- dist(dataFrame)## dist matrix
 hclustering <- hclust(distxy)
 plot(hclustering)
 ## need to choose where to cut
 # useing better plot
 source("prettyclust.R")
-myplclust(hclustering, lab = rep(1:3, each=4), lab.col = rep(1:3,each=4))
+myplclust(hclustering,
+          lab = rep(1:3, each = 4),
+          lab.col = rep(1:3, each = 4))
 # distance - average - average distance
 # there is a different - complete linkage, use maximum difference
 
 # heatpmap info
-dataFrame <- data.frame(x=x,y=y)
+dataFrame <- data.frame(x = x, y = y)
 set.seed(143)
-dataMatrix <- as.matrix(dataFrame)[sample(1:12),]
+dataMatrix <- as.matrix(dataFrame)[sample(1:12), ]
 heatmap(dataMatrix)
 
 #kmeans clustering
@@ -398,52 +400,66 @@ heatmap(dataMatrix)
 
 #need 1) distance 2)cluster N 3) initital guest
 set.seed(1234)
-par(mar=c(0,0,0,0))
-x <- rnorm(12, mean = rep(1:3, each=4), sd=0.2)
-y <- rnorm(12, mean=rep(c(1,2,1), each=4), sd=0.2)
-plot(x,y, col="blue", pch=19, cex=2)
-text(x+0.05, y+0.05, labels=as.character(1:12))
+par(mar = c(0, 0, 0, 0))
+x <- rnorm(12, mean = rep(1:3, each = 4), sd = 0.2)
+y <- rnorm(12, mean = rep(c(1, 2, 1), each = 4), sd = 0.2)
+plot(x, y, col = "blue", pch = 19, cex = 2)
+text(x + 0.05, y + 0.05, labels = as.character(1:12))
 
 #kmeans()
-dataFrame <- data.frame(x,y)
-kmeansObj <- kmeans(dataFrame,centers = 3)
+dataFrame <- data.frame(x, y)
+kmeansObj <- kmeans(dataFrame, centers = 3)
 names(kmeansObj)
 kmeansObj$cluster
-plot(x,y,col=kmeansObj$cluster, pch=19, cex=2)
-points(kmeansObj$centers, col=1:3, pch=3, cex=2, lwd=3)
+plot(x,
+     y,
+     col = kmeansObj$cluster,
+     pch = 19,
+     cex = 2)
+points(
+        kmeansObj$centers,
+        col = 1:3,
+        pch = 3,
+        cex = 2,
+        lwd = 3
+)
 
 #visualize tables
-dataMatrix <- as.matrix(dataFrame)[sample(1:12),]
-kmeansObj2 <- kmeans(dataMatrix,centers = 3)
-par(mfrow=c(1,2), mar=c(2,4,0.1,0.1))
-image(t(dataMatrix)[,nrow(dataMatrix):1],yaxt="n")
-image(t(dataMatrix)[,order(kmeansObj2$cluster)],yaxt="n")
+dataMatrix <- as.matrix(dataFrame)[sample(1:12), ]
+kmeansObj2 <- kmeans(dataMatrix, centers = 3)
+par(mfrow = c(1, 2), mar = c(2, 4, 0.1, 0.1))
+image(t(dataMatrix)[, nrow(dataMatrix):1], yaxt = "n")
+image(t(dataMatrix)[, order(kmeansObj2$cluster)], yaxt = "n")
 
 #dimension reduction
 set.seed(12345)
-par(mar=rep(0.2,4))
-dataMatrix <- matrix(rnorm(400),nrow = 40)
-image(1:10,1:40,t(dataMatrix)[,nrow(dataMatrix):1])
+par(mar = rep(0.2, 4))
+dataMatrix <- matrix(rnorm(400), nrow = 40)
+image(1:10, 1:40, t(dataMatrix)[, nrow(dataMatrix):1])
 heatmap(dataMatrix) # no pattern
 
 #add pattern
 set.seed(678910)
-for(i in 1:40){
+for (i in 1:40) {
         #flip a coin
         coinFlip <- rbinom(1, size = 1, prob = 0.5)
-        if(coinFlip){
-                dataMatrix[i,] <- dataMatrix[i,]+rep(c(0,3), each=5)
+        if (coinFlip) {
+                dataMatrix[i, ] <- dataMatrix[i, ] + rep(c(0, 3), each = 5)
         }
 }
 heatmap(dataMatrix) # with pattern
 
 #look at patterns in rows and colimns
 hh <- hclust(dist(dataMatrix))
-dataMatrixOrdered <- dataMatrix[hh$order,]
-par(mfrow=c(1,3))
-image(t(dataMatrixOrdered)[,nrow(dataMatrixOrdered):1])
-plot(rowMeans(dataMatrixOrdered) ,xlab = "rowmean", ylab = "row")
-plot(colMeans(dataMatrixOrdered),xlab = "column", ylab = "col mean")
+dataMatrixOrdered <- dataMatrix[hh$order, ]
+par(mfrow = c(1, 3))
+image(t(dataMatrixOrdered)[, nrow(dataMatrixOrdered):1])
+plot(rowMeans(dataMatrixOrdered) ,
+     xlab = "rowmean",
+     ylab = "row")
+plot(colMeans(dataMatrixOrdered),
+     xlab = "column",
+     ylab = "col mean")
 
 #related problem - create uncorrelated set of data with reduced set of variables
 #lower rank matrix with reasonable explaination
@@ -451,68 +467,89 @@ plot(colMeans(dataMatrixOrdered),xlab = "column", ylab = "col mean")
 ## PCA - run SVD on normalized data
 
 svd1 <- svd(scale(dataMatrixOrdered))
-par(mfrow=c(1,3))
-image(t(dataMatrixOrdered)[,nrow(dataMatrixOrdered):1])
-plot(svd1$u[,1 ],xlab = "row", ylab = "first left singular vector")
-plot(svd1$v[,1 ],xlab = "column", ylab = "First right singular vector")
+par(mfrow = c(1, 3))
+image(t(dataMatrixOrdered)[, nrow(dataMatrixOrdered):1])
+plot(svd1$u[, 1], xlab = "row", ylab = "first left singular vector")
+plot(svd1$v[, 1], xlab = "column", ylab = "First right singular vector")
 
 #component of svd - variance explained (% of variance explained by this component)
-par(mfrow=c(1,2))
+par(mfrow = c(1, 2))
 plot(svd1$d, xlab = "column", ylab = "singular value")
-plot(svd1$d^2/sum(svd1$d^2), xlab = "column", ylab = "Proportion of variance explained", pch = 19)
+plot(
+        svd1$d ^ 2 / sum(svd1$d ^ 2),
+        xlab = "column",
+        ylab = "Proportion of variance explained",
+        pch = 19
+)
 
 #1 pc in x, single vector
 svd1 <- svd(scale(dataMatrixOrdered))
-pca1 <- prcomp(dataMatrixOrdered, scale=TRUE)
-plot(pca1$rotation[,1], svd1$v[,1], pch=19, xlab = "principal component 1", ylab = "Right singular vector 1")
-abline(c(0,1))
+pca1 <- prcomp(dataMatrixOrdered, scale = TRUE)
+plot(
+        pca1$rotation[, 1],
+        svd1$v[, 1],
+        pch = 19,
+        xlab = "principal component 1",
+        ylab = "Right singular vector 1"
+)
+abline(c(0, 1))
 
 # components of svd - variance explained
-constantMatrix <- dataMatrixOrdered*0
-for(i in 1:dim(dataMatrixOrdered)[1]){
-        constantMatrix[i,] <- rep(c(0,1), each=5)
+constantMatrix <- dataMatrixOrdered * 0
+for (i in 1:dim(dataMatrixOrdered)[1]) {
+        constantMatrix[i, ] <- rep(c(0, 1), each = 5)
 }
 svd1 <- svd(constantMatrix)
-par(mfrow=c(1,3))
-image(t(constantMatrix)[,nrow(constantMatrix):1])
+par(mfrow = c(1, 3))
+image(t(constantMatrix)[, nrow(constantMatrix):1])
 plot(svd1$d, xlab = "column", ylab = "singular value") ## because there is only one pattern
-plot(svd1$d^2/sum(svd1$d^2), xlab = "column", ylab = "Proportion of variance explained", pch = 19)
+plot(
+        svd1$d ^ 2 / sum(svd1$d ^ 2),
+        xlab = "column",
+        ylab = "Proportion of variance explained",
+        pch = 19
+)
 
 # add a second pattern
 set.seed(678910)
-for (i in 1:40){
-        coinFlip1 <- rbinom(1,size = 1, prob = 0.5)
-        coinFlip2 <- rbinom(1,size = 1, prob = 0.5)
-        if(coinFlip1){
-                dataMatrix[i,] <- dataMatrix[i,]+rep(c(0,5), each=5)
+for (i in 1:40) {
+        coinFlip1 <- rbinom(1, size = 1, prob = 0.5)
+        coinFlip2 <- rbinom(1, size = 1, prob = 0.5)
+        if (coinFlip1) {
+                dataMatrix[i, ] <- dataMatrix[i, ] + rep(c(0, 5), each = 5)
         }
-        if(coinFlip2){
-                dataMatrix[i,] <- dataMatrix[i,]+rep(c(0,5),5)
+        if (coinFlip2) {
+                dataMatrix[i, ] <- dataMatrix[i, ] + rep(c(0, 5), 5)
         }
         
 }
 hh <- hclust(dist(dataMatrix))
-dataMatrixOrdered <- dataMatrix[hh$order,]
+dataMatrixOrdered <- dataMatrix[hh$order, ]
 
 svd2 <- svd(scale(dataMatrixOrdered))
-par(mfrow=c(1,3))
-image(t(dataMatrixOrdered)[,1:nrow(dataMatrixOrdered)])
-plot(rep(c(0,1),each=5), xlab = "col", ylab = "pattern 1")
-plot(rep(c(0,1),5), xlab = "col", ylab = "pattern 2")
+par(mfrow = c(1, 3))
+image(t(dataMatrixOrdered)[, 1:nrow(dataMatrixOrdered)])
+plot(rep(c(0, 1), each = 5), xlab = "col", ylab = "pattern 1")
+plot(rep(c(0, 1), 5), xlab = "col", ylab = "pattern 2")
 
 
 #v and patternss in variance in row
-par(mfrow=c(1,3))
-image(t(dataMatrixOrdered)[,1:nrow(dataMatrixOrdered)])
-plot(svd2$v[,1], xlab = "col", ylab = "first right singular vector")
-plot(svd2$v[,2], xlab = "col", ylab = "second right singular vector")
+par(mfrow = c(1, 3))
+image(t(dataMatrixOrdered)[, 1:nrow(dataMatrixOrdered)])
+plot(svd2$v[, 1], xlab = "col", ylab = "first right singular vector")
+plot(svd2$v[, 2], xlab = "col", ylab = "second right singular vector")
 ## pattern similar, but hard to see the truth
 
 #d and variance explained
 svd1 <- svd(scale(dataMatrixOrdered))
-par(mfrow=c(1,2))
+par(mfrow = c(1, 2))
 plot(svd1$d, xlab = "column", ylab = "singular value")
-plot(svd1$d^2/sum(svd1$d^2), xlab = "column", ylab = "Proportion of variance explained", pch = 19)
+plot(
+        svd1$d ^ 2 / sum(svd1$d ^ 2),
+        xlab = "column",
+        ylab = "Proportion of variance explained",
+        pch = 19
+)
 
 # issues with PCA and SVD
 #problem with missing values
@@ -527,38 +564,95 @@ dataMatrix2[sample(1:100, size = 40, replace = FALSE)] <- NA
 dataMatrix2 <- impute.knn(dataMatrix2)$data
 svd1 <- svd(scale(dataMatrixOrdered))
 svd2 <- svd(scale(dataMatrix2))
-par(mfrow=c(1,2))
-plot(svd1$v[,1])
-plot(svd2$v[,1])
+par(mfrow = c(1, 2))
+plot(svd1$v[, 1])
+plot(svd2$v[, 1])
 
 
 ## face exapmle
 library(imager)
 face <- load.image("face.jpg")
 bwface <- grayscale(face, method = "Luma", drop = TRUE)
-bwface <- resize(bwface,round(width(bwface)/10),round(height(bwface)/10))
+bwface <-
+        resize(bwface, round(width(bwface) / 10), round(height(bwface) / 10))
 plot(bwface)
 faceData <- matrix(bwface, nrow = 346)
 faceData <- t(faceData)
-image(t(faceData)[,nrow(faceData):1]) # my face
+image(t(faceData)[, nrow(faceData):1]) # my face
 
 svd1 <- svd(scale(faceData))
-plot(svd1$d^2/sum(svd1$d^2), xlab = "singular vector", ylab = "Proportion of variance explained", pch = 19)
+plot(
+        svd1$d ^ 2 / sum(svd1$d ^ 2),
+        xlab = "singular vector",
+        ylab = "Proportion of variance explained",
+        pch = 19
+)
 
 #face create approximations
-approx1 <- svd1$u[,1]%*%t(svd1$v[,1])*svd1$d[1]
+approx1 <- svd1$u[, 1] %*% t(svd1$v[, 1]) * svd1$d[1]
 # make diagonal matrix out of d and multiplicate many pc
-approx10 <- svd1$u[,1:10] %*% diag(svd1$d[1:10])%*%t(svd1$v[,1:10])
-approx20 <- svd1$u[,1:20]%*%diag(svd1$d[1:20])%*%t(svd1$v[,1:20])
+approx10 <- svd1$u[, 1:10] %*% diag(svd1$d[1:10]) %*% t(svd1$v[, 1:10])
+approx20 <- svd1$u[, 1:20] %*% diag(svd1$d[1:20]) %*% t(svd1$v[, 1:20])
 dev.off()
-par(mfrow=c(1,4))
-image(t(approx1)[,nrow(approx1):1], main="1") 
-image(t(approx10)[,nrow(approx10):1], main="10") 
-image(t(approx20)[,nrow(approx20):1], main="20") 
+par(mfrow = c(1, 4))
+image(t(approx1)[, nrow(approx1):1], main = "1")
+image(t(approx10)[, nrow(approx10):1], main = "10")
+image(t(approx20)[, nrow(approx20):1], main = "20")
 
-image(t(faceData)[,nrow(faceData):1], main="d") 
+image(t(faceData)[, nrow(faceData):1], main = "d")
 
 #alternatives
 #factor analysys
 # ingependent component analysis
 # latent semantic analysis
+
+## color ############
+## grDevices
+#colorRamp - take a palette of color - any set of colors and for 0 to 1 go to color palette
+#colorRampPalette
+
+#colorRamp
+pal <- colorRamp(c("red", "blue"))
+pal(0)
+pal(1)
+pal(0.5) #interpolate
+
+pal(seq(0, 1, len = 10))# 10 steps from red to blue
+pal <- colorRampPalette(c("red", "cyan"))
+pal(2) # get 2 colors
+pal(3) # get 3
+x <- rnorm(100)
+plot(x, col = pal(100))
+
+#interesting palets
+library(RColorBrewer)
+# 3 palettes
+#sequential palettes
+#diverging palettes
+#qualitative palettes
+
+## create a sequential palette for usage and show colors
+mypalette <- brewer.pal(7, "Greens")
+image(
+        1:7,
+        1,
+        as.matrix(1:7),
+        col = mypalette,
+        xlab = "Greens (sequential)",
+        +ylab = "",
+        xaxt = "n",
+        yaxt = "n",
+        bty = "n"
+)
+cols <- brewer.pal(3,"BuGn")
+pal <- colorRampPalette(cols)
+image(volcano,col=pal(1000))
+
+#smoothscatter
+x <- rnorm(100000)
+y <- rnorm(100000)
+smoothScatter(x,y) # 2d hist
+
+#using transparency
+plot(x,y,pch=19)
+plot(x,y,col=rgb(0,0,0,0.01), pch=19)
