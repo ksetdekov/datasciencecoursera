@@ -557,3 +557,8 @@ image(t(approx10)[,nrow(approx10):1], main="10")
 image(t(approx20)[,nrow(approx20):1], main="20") 
 
 image(t(faceData)[,nrow(faceData):1], main="d") 
+
+#alternatives
+#factor analysys
+# ingependent component analysis
+# latent semantic analysis
