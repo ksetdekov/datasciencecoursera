@@ -75,3 +75,5 @@ DataPath <- "../household_power_consumption.txt"
 Data <- read.csv.sql(DataPath,
                      sql = "select * from file where Date in('1/2/2007','2/2/2007')",
                      head=TRUE, sep = ";")
+
+#lattice plotting
