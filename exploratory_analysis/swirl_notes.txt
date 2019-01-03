@@ -88,3 +88,12 @@ print(p)
   panel.lmline(x, y, col = 2)  ## Overlay a simple linear regression line
 
 gglot2(diamonds)
+
+
+## colors
+#make palette
+> cols <- brewer.pal(3,"BuGn")
+# make adjustable palette
+> pal <- colorRampPalette(cols)
+# use palette with interpolation
+> image(volcano,col=pal(20))
