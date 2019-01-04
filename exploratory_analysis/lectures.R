@@ -728,3 +728,25 @@ table(kClust$cluster,samsungData$activity[samsungData$subject==1])
 
 plot(kClust$center[1,367:377],pch=19,ylab="ClusterCenter",xlab="")
 plot(kClust$center[6,367:377],pch=19,ylab="ClusterCenter",xlab="")
+
+library(readr)
+library(readr)
+pm0 <- read_delim("pm25_data/RD_501_88101_1999-0.txt", 
+                                  "|", escape_double = FALSE, col_names = FALSE, 
+                                  col_types = cols(X12 = col_time(format = "%H:%M"), 
+                                                   X3 = col_number(), X4 = col_number(), 
+                                                   X5 = col_number()), trim_ws = TRUE, 
+                                  skip = 2)
+View(pm0)
+cnames <- readLines("pm25_data/RD_501_88101_1999-0.txt",1)
+cnames <- strsplit(cnames,"|", fixed = T)
+names(pm0) <- make.names(cnames[[1]])
+x0 <- pm0$Sample.Value
+mean(is.na(x0)) #11% missing values
+pm1 <- read_delim("pm25_data/RD_501_88101_2012-0.txt", 
+                  "|", escape_double = FALSE, col_names = FALSE, 
+                  col_types = cols(X12 = col_time(format = "%H:%M"), 
+                                   X3 = col_number(), X4 = col_number(), 
+                                   X5 = col_number()), trim_ws = TRUE, 
+                  skip = 2)
+View(pm1)
