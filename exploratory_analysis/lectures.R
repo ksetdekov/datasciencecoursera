@@ -750,3 +750,26 @@ pm1 <- read_delim("pm25_data/RD_501_88101_2012-0.txt",
                                    X5 = col_number()), trim_ws = TRUE, 
                   skip = 2)
 View(pm1)
+names(pm1) <- make.names(cnames[[1]])
+x1 <- pm1$Sample.Value
+summary(x1)
+summary(x0)
+boxplot(x0,x1)
+boxplot(log10(x0),log10(x1))
+
+negative <- x1<0
+str(negative)
+sum(negative,na.rm = T)
+mean(negative,na.rm = T) #2 percent are negatives
+dates <- pm1$Date
+dates <- as.Date(as.character(dates),"%Y%m%d")
+str(dates)
+hist(dates,"month")
+hist(dates[negative],"month")
+site0 <- unique(subset(pm0,State.Code==36, c(County.Code, Site.ID)))
+site1 <- unique(subset(pm1,State.Code==36, c(County.Code, Site.ID)))
+site0 <- as.data.frame(site0)
+site1 <- as.data.frame(site1)
+site0 <- paste(site0[,1],site0[,2], sep = ".")
+site1 <- paste(site1[,1],site1[,2], sep = ".")
+#finish at min 22
