@@ -112,6 +112,34 @@ qplot( hwy, data = mpg, fill = drv)
 #how to add panesl (facets) 
 qplot( displ, hwy, data = mpg, facets = .~drv)
 
+#creating ggplot graphical objects 
+g <- ggplot(mpg,aes(displ,hwy))
+g+geom_point() # to actually draw plot
+
 #vertical column of facets with histograms
+g <- ggplot(mpg,aes(displ,hwy))
 qplot( displ, hwy, data = mpg, facets = .~drv)
 
+#using ggplot
+g <- ggplot(mpg,aes(displ,hwy))
+g+geom_point()+geom_smooth(method = "lm")+facet_grid(.~drv)+ggtitle("Swirl Rules!")
+
+#adding changes to aes
+g <- ggplot(mpg,aes(displ,hwy))
+g+geom_point(color="pink", size=4, alpha = 1/2)
+
+#labeling
+g <- ggplot(mpg,aes(displ,hwy))
+g + geom_point(aes(color = drv)) + labs(title="Swirl Rules!") + labs(x="Displacement", y="Hwy Mileage")
+
+#modding regression lines
+g <- ggplot(mpg,aes(displ,hwy))
+g+geom_point(aes(color = drv), size=2, alpha = 1/2)+geom_smooth(size=4, linetype=3, method ="lm", se=FALSE)
+
+#changing theme
+g <- ggplot(mpg,aes(displ,hwy))
+g+geom_point(aes(color = drv))+theme_bw(base_family = "Times")
+
+#more complecated grid without margins and with factors
+g <- ggplot(mpg,aes(displ,hwy))
+g + geom_point() + facet_grid(drv~cyl,margins=TRUE)+geom_smooth(method="lm",size=2,se=FALSE,color="black")+labs(x="Displacement",y="Highway Mileage",title="Swirl Rules!")
