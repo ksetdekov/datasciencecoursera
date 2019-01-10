@@ -258,7 +258,6 @@ xyplot(
 ## implementation of grammar of graphics, can put together and make new graphs
 ## third graphics system for R
 require(ggplot2)
-<<<<<<< HEAD
 qplot(rnorm(100000)*3) #qplot
 ## factors are important, but they should be named
 str(mpg)
@@ -275,7 +274,6 @@ qplot(hwy, data = mpg, fill=drv, geom = c("density")) ## smooth
 qplot(hwy, displ, data=mpg, color=drv)+geom_smooth(method = "lm") ## great!
 qplot(hwy, displ, data=mpg, facets = .~drv)+geom_smooth(method = "lm") ## same byt split
 
-=======
 qplot(rnorm(100000) * 3) #qplot
 ## factors are important, but they should be named
 str(mpg)
@@ -845,4 +843,7 @@ par(mfrow=c(1,1))
 with(mrg, plot(rep(1999,52), mrg[,2], xlim=c(1998, 2013)))
 with(mrg, points(rep(2012,52), mrg[,3]))
 segments(rep(1999,52),mrg[,2], rep(2012,52), mrg[,3])
+<<<<<<< HEAD
+>>>>>>> 4e17096d65713e9f5bb8427289813e06237270e5
+=======
 >>>>>>> 4e17096d65713e9f5bb8427289813e06237270e5
