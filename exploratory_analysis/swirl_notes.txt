@@ -97,3 +97,21 @@ gglot2(diamonds)
 > pal <- colorRampPalette(cols)
 # use palette with interpolation
 > image(volcano,col=pal(20))
+
+
+##ggplot
+qplot(displ, hwy, data = mpg)
+# smooth lines can be added with 1 function call
+qplot(displ, hwy, data = mpg, color = drv, geom=c("point", "smooth"))
+qplot(drv, hwy, data = mpg, geom = "boxplot") #adding boxplots
+#grouping by 2 variables 
+qplot(drv, hwy, data = mpg, geom = "boxplot", color = manufacturer)
+# colored histogram
+qplot( hwy, data = mpg, fill = drv)
+
+#how to add panesl (facets) 
+qplot( displ, hwy, data = mpg, facets = .~drv)
+
+#vertical column of facets with histograms
+qplot( displ, hwy, data = mpg, facets = .~drv)
+
