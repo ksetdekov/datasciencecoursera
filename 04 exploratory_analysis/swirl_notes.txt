@@ -166,3 +166,15 @@ g+geom_point(alpha=1/3)+facet_grid(cut~car2)+geom_smooth(method = "lm", size=3, 
 
 #boxplot
 ggplot(diamonds, aes(carat,price))+geom_boxplot()+facet_grid(.~cut)
+
+#distantce between all 
+dist(dataFrame)
+hc <- hclust(distxy) #cluster
+plot(as.dendrogram(hc))
+
+#metrics for distance - complete linkage, the biggest distance between all combination of distances of points in 2 clusters
+#heatmap tutorial 
+http://sebastianraschka.com/Articles/heatmaps_in_r.html#clustering
+
+#heatmap
+heatmap(dataMatrix, col=cm.colors(25)) # jutst matrix - gives heat map
