@@ -178,3 +178,16 @@ http://sebastianraschka.com/Articles/heatmaps_in_r.html#clustering
 
 #heatmap
 heatmap(dataMatrix, col=cm.colors(25)) # jutst matrix - gives heat map
+
+#find what row has minimal for each column
+apply(distTmp,2,which.min)
+
+#kmeans
+kmeans(dataFrame, centers = 3)
+#plot kmeans
+plot(x,y,col=kmObj$cluster, pch=19, cex=2)
+#plot centroids
+points(kmObj$centers, col=c("black", "red", "green"), pch=3, cex=3, lwd=3)
+
+#plot just kmeans result with 5 clusters
+plot(x,y, col=kmeans(dataFrame,6)$cluster, pch=19, cex=2)
