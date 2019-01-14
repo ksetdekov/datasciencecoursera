@@ -843,7 +843,4 @@ par(mfrow=c(1,1))
 with(mrg, plot(rep(1999,52), mrg[,2], xlim=c(1998, 2013)))
 with(mrg, points(rep(2012,52), mrg[,3]))
 segments(rep(1999,52),mrg[,2], rep(2012,52), mrg[,3])
-<<<<<<< HEAD
->>>>>>> 4e17096d65713e9f5bb8427289813e06237270e5
-=======
->>>>>>> 4e17096d65713e9f5bb8427289813e06237270e5
+

@@ -191,3 +191,13 @@ points(kmObj$centers, col=c("black", "red", "green"), pch=3, cex=3, lwd=3)
 
 #plot just kmeans result with 5 clusters
 plot(x,y, col=kmeans(dataFrame,6)$cluster, pch=19, cex=2)
+
+#PCA alysis
+nice concise paper on this subject which can be found at http://arxiv.org/pdf/1404.1100.pdf. The paper by Jonathon Shlens of Google Research is called, A Tutorial on Principal Component Analysis.
+
+prcomp(scale(mat)) # PCA
+svd(scale(mat)) #svd
+
+
+#estimation of the original matrix from partial first components of SVD
+a2 <- svd1$u[,1:2] %*% diag(svd1$d[1:2]) %*% t(svd1$v[,1:2])
