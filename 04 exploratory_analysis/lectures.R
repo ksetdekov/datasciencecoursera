@@ -844,3 +844,4 @@ with(mrg, plot(rep(1999,52), mrg[,2], xlim=c(1998, 2013)))
 with(mrg, points(rep(2012,52), mrg[,3]))
 segments(rep(1999,52),mrg[,2], rep(2012,52), mrg[,3])
 
+mrg[mrg$mean.x < mrg$mean.y, ] #states with worse pollution
