@@ -201,3 +201,16 @@ svd(scale(mat)) #svd
 
 #estimation of the original matrix from partial first components of SVD
 a2 <- svd1$u[,1:2] %*% diag(svd1$d[1:2]) %*% t(svd1$v[,1:2])
+
+#using svd to find variable that contribute to clustering most
+svd1 <- svd(scale(sub1[,-c(562,563)]))
+maxCon  <- which.max(svd1$v[,2]) #second right singular vector of the decomposition
+mdist <- dist(sub1[,c(10:12,maxCon)]) 
+hclustering <- hclust(mdist)
+myplclust(hclustering,lab.col =unclass(sub1$activity))
+names(sub1[maxCon]) #result
+
+
+#kmeans with many iterations
+kClust <- kmeans(sub1[,-c(562:563)],6, nstart = 100)
+table(kClust$cluster, sub1$activity)
