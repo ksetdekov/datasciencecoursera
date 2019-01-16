@@ -24,6 +24,7 @@ with(yearly, plot(
         year,
         Emissions,
         type = "l",
-        xaxp  = c(1999, 2008, 9)
+        xaxp  = c(1999, 2008, 9),
+        main = "Baltimore City, Maryland pm2.5"
 ))
 dev.off()
