@@ -214,3 +214,22 @@ names(sub1[maxCon]) #result
 #kmeans with many iterations
 kClust <- kmeans(sub1[,-c(562:563)],6, nstart = 100)
 table(kClust$cluster, sub1$activity)
+
+
+# use aggregate!
+annual_emissions <- aggregate(Emissions ~ year, data = NEI, FUN = sum)
+
+#use geom - bars!!
+rm(list = ls(all = TRUE))
+NEI <- readRDS("summarySCC_PM25.rds")
+SCC <- readRDS("Source_Classification_Code.rds")
+SCCdata <- SCC[grepl("Coal" , SCC$Short.Name), ]
+NEIdata <- NEI[NEI$SCC %in% SCCdata$SCC, ]
+
+plot4 <- ggplot(NEIdata, aes(x = factor(year), y = Emissions, fill =type)) +
+geom_bar(stat= "identity", width = .4) + xlab("year") + ylab("Total Tons of PM2.5 Emissions") +
+ggtitle("Total Tons of PM2.5 Emissionsin the United States")
+print(plot4)
+
+dev.copy(png, file = "plot.4.png", height = 480, width = 480)
+dev.off()
