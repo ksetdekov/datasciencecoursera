@@ -38,3 +38,10 @@ to read:
 - resources
 - effort
 - toolbox for RR are bad and fiew
+
+#### literate (statistical) programming
+* documentation language (human)
+* programming language (machine readable)
+Sweave (R + LaTeX) - combination
+better and newer - _knitr_
+LaTeX + markdown + html
