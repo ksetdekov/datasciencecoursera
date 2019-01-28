@@ -45,3 +45,5 @@ to read:
 Sweave (R + LaTeX) - combination
 better and newer - _knitr_
 LaTeX + markdown + html
+
+### Script your analysis
