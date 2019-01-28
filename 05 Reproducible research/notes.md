@@ -50,15 +50,15 @@ LaTeX + markdown + html
 Now we write down programs.
 
 ### Structure of Data Analysis
-Define qustions
-Define ideal data set
-determine what data can access
-obtain data
-clean data
-exploratory data analysis
-statistical preditction/modelling
-interpret results
-challenge results
-synthesize/write up results
-create reproducible code
+- Define qustions
+- Define ideal data set
+- determine what data can access
+- obtain data
+- clean data
+- exploratory data analysis
+- statistical preditction/modelling
+- interpret results
+- challenge results
+- synthesize/write up results
+- create reproducible code
 
