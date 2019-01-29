@@ -122,3 +122,26 @@ Interpret measures of uncertainty
 - Include "pretty" figures that contribute to the story
 
 ### Organize data analysis
+key files
+
+- data
+       
+        - raw (add to git )
+        - processed (need to be names. processing script - need be in readme, must be tidy)
+        
+- figures
+        
+        - explore
+        - final (better, possibly multiple panesl)
+        
+- Rcode
+        
+        - raw (not many comments) and unused
+        - final scripts (clearly commented, cmall comments "what, when, why,how", bigger commented blocks)
+        - R mardown files
+        
+- texts
+        
+        - readme files (not necessary if using marksown, need have step-by-step insructions)
+        - test of analysis/report
+        
