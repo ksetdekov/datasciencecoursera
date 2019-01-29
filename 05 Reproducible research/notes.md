@@ -34,6 +34,7 @@ to read:
 - readers
   - want to reproduce
   - want tools for RR to have simpler life
+  
 #### challenges
 - resources
 - effort
@@ -64,12 +65,16 @@ Now we write down programs.
 
 #### challenges
 Never good info, enough info.
+
 #### defining a question 
 the most dimension reducing thing. If can narrow down the question - less noise to deal with. Random application of statistics to dat as dangeous.
+
 #### example:
-##### ?
+
+#####  ?
 start with a general ?. can i detect emails that are spam -> what quanittative metrics to determine if spam ore not?
-##### ideal data set
+
+#####  ideal data set
 depends on goal.
 - descriptive - all people
 - exploratory - random selection
@@ -78,11 +83,42 @@ depends on goal.
 Ideal - all google data center contents.
 In real world there are limitations.
 Possible solution - some subset, uci machine learning repository.
+
 ##### obtain
 get raw, reference the source, be polite, record url and time
+
 ##### clean data
 - process raw
 - learn how pre-processed
 - understand the source
 - record all preprocessing
 - *determine if data are good enough - if not, quit or change data*
+
+##### explore
+do exploratory data analysis
+##### statistical preditction/modelling
+
+##### interpret results
+Use the appropriate language
+- describes
+- correlates with/associated with
+- leads to/causes
+- predicts
+Give an explanation
+Interpret coefficients
+Interpret measures of uncertainty
+
+##### challenge results
+- challenge steps
+- challenge measures of uncertainty
+- choice of terms to include
+- think alternative analyses
+
+##### synthesize/write-up results
+- Lead with the question
+- Summarize the analyses into the story
+- Don't include every analysis, include it (If it is needed for the story If it is needed to address a challenge)
+- Order analyses according to the story, rather than chronologically
+- Include "pretty" figures that contribute to the story
+
+### Organize data analysis
