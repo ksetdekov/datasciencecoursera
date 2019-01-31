@@ -158,3 +158,16 @@ project template http://projecttemplate.net/
 4) limit function length
 
 ## markdown
+advanced linking to [reddit][1]  
+add double space to next line  
+official markdown [doc][2]
+
+[1]: https://www.reddit.com/
+[2]: https://daringfireball.net/projects/markdown/syntax
+
+## r markdown
+R integrated with marksown
+a core tool of literate statistical programming
+use _knitr_  
+R markdown -> marksown -> htms work flow  
+using markdown for slides - _slidify_
