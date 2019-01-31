@@ -148,3 +148,13 @@ key files
 https://simplystatistics.org/2012/02/27/the-duke-saga-starter-set/
 statistics project guidelines https://www.r-statistics.com/2010/09/managing-a-statistical-analysis-project-guidelines-and-best-practices/
 project template http://projecttemplate.net/
+
+# week 2
+
+## code standards
+1) use text
+2) indent code
+3) limit width
+4) limit function length
+
+## markdown
