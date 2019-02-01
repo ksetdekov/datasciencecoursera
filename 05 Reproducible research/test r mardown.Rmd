@@ -1,0 +1,30 @@
+My firs R markdown file
+==============
+This is my firs R marksown file
+
+Here we're going to load some data
+```{r}
+library(datasets)
+data("airquality")
+summary(airquality)
+```
+
+Lets's firs make a plot pairwise
+
+```{r}
+pairs(airquality)
+```
+
+Here's a regression model of ozone on wind, solar raditaion and temp
+
+```{r}
+library(stats)
+fit <- lm(Ozone~Wind+Solar.R+Temp, data = airquality)
+summary(fit)
+```
+
+Here's an unordered list:
+
+* first
+
+* second

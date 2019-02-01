@@ -171,3 +171,7 @@ a core tool of literate statistical programming
 use _knitr_  
 R markdown -> marksown -> htms work flow  
 using markdown for slides - _slidify_
+
+## using knitr
+
+just format code and text in one r markdown file like in example, "test_r_markdown"
