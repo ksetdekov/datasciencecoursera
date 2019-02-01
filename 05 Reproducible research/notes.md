@@ -175,3 +175,100 @@ using markdown for slides - _slidify_
 ## using knitr
 
 just format code and text in one r markdown file like in example, "test_r_markdown"
+
+### literate statistical programming
+
+Help others reproduce - literate stat programming
+We can have 1 document with all descriptions
+
+weave - for human readable 
+tangle - for computer readable
+
+### how make my work repouducible
+
+- decide to do (better at start)
+- keep track of thisnds, with version control
+- use software whose operation can be coded
+- dont save output
+
+        - better have preprocessing code
+- save data in non-proprietary formats
+
+### literate programming: Pros
+
+- text and code all in one place, logical order
+- data, results automatically updated to reflect external changes
+- code is live - automatic "regression test" when building a documents
+
+### literate programming: cons
+
+- text and code in one place; can make documents difficult to read, especially if *a lot of* code
+- can be substantially slow down processing of document
+
+### what is knitr
+package in R, supports RMarkdown, LaTeX and HTML
+documentation in [daringfireball website][https://daringfireball.net/projects/markdown/basics]
+
+### good for?
+
+- manuals
+- short tech doc
+- tutorials
+- reports !!!
+- data preprocessing documents/summaries !!!
+
+### not good for
+
+- long research articles
+- complex time-consuming computations
+- documents that require precise formatting
+
+#### more complecated running of knitr
+
+library(knitr)
+setwd(<working directory>)
+knit2html("doc.Rmd")
+browseURL("doc.html")
+
+### what knitr does?
+
+takes RMarkdown Document and adds results of evaluation into the new document and then output it into output format
+
+### processing of knitr documents (whats inside)
+
+- RMD
+- knitr produces md
+- html produces
+- do not mess with output files!
+
+## can have inline text computations
+!!!! amazing
+
+```{r computetime, echo=FALSE}
+time <- format(Sys.time(), "%a %b %d %X %Y")
+rand <- rnorm(1)
+```
+The current time is `r time`. Random number of the day is `r rand`.
+
+### can add plots
+### can  have tables with xtable
+pretty crappy but have a table in the result
+
+### can have global options for markdown files
+- output 
+        - results: asis, hide
+        - echo: TRUE, FALSE     knitr::opts_chunk$set(echo=FALSE, results="hide")
+- figures
+        - fig.height: numeric
+        - fig.width: numeric
+
+### caching computations
+- what if one chunk takes a long time to run?
+- all chunts have to be re-computed
+- *cache=TRUE* option can set on chunk by chunk basis to store results of computations
+- after the firs run, results are loaded from cache
+
+### caching caveats
+- if data changes - rerun
+- dependencies are not checked explicitly
+- chunks with significant _side effects_ may not be cacheable

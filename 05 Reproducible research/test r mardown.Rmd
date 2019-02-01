@@ -1,6 +1,11 @@
 My firs R markdown file
 ==============
 This is my firs R marksown file
+```{r mean of random}
+set.seed(1)
+x <- rnorm(100)
+mean(x)
+```
 
 Here we're going to load some data
 ```{r}
@@ -11,7 +16,7 @@ summary(airquality)
 
 Lets's firs make a plot pairwise
 
-```{r}
+```{r pairs, echo=FALSE}
 pairs(airquality)
 ```
 
@@ -28,3 +33,37 @@ Here's an unordered list:
 * first
 
 * second
+
+## can have inline text computations
+
+```{r computetime, echo=FALSE}
+time <- format(Sys.time(), "%a %b %d %X %Y")
+rand <- rnorm(1)
+```
+The current time is `r time`. Random number of the day is `r rand`.
+
+## plots
+
+let's gen data
+```{r simdata, echo=T}
+x <- rnorm(100); y <- x+rnorm(100, sd=0.5)
+```
+Here's a scatterplot
+```{r scatterplot, fig.height=4}
+library(ggplot2)
+qplot(x,y, main="My Sim data")
+```
+
+## tables
+
+```{r fitmodel}
+library(datasets)
+data(airquality)
+fit <- lm(Ozone~Wind+Solar.R+Temp, data = airquality)
+```
+Here's a table of regression coefficients
+```{r showtable, results='asis'}
+library(xtable)
+xt <- xtable(summary(fit))
+print(xt, type="html")
+```

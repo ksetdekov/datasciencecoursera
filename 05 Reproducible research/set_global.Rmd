@@ -1,0 +1,19 @@
+---
+title: "set_global"
+author: "Kirill Setdekov"
+date: "February 1, 2019"
+---
+
+## global options
+```{r setoptions,echo=FALSE}
+knitr::opts_chunk$set(echo=FALSE, results="hide")
+```
+let's gen data
+```{r simdata,echo=TRUE} 
+x <- rnorm(100); y <- x+rnorm(100, sd=0.5) ## overrides default
+```
+Here's a scatterplot
+```{r scatterplot, fig.height=4}
+library(ggplot2)
+qplot(x,y, main="My Sim data")
+```
