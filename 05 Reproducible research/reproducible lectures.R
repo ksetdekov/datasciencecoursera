@@ -67,3 +67,6 @@ Gini(truthtest, testtypepred)
 
 table( testtypepred,truthtest)
 (107+104)/(107+104+1300+803)
+
+## week 3
+

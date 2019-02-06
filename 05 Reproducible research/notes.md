@@ -1,6 +1,6 @@
 # Reproducible research
-## Week 1
-### Conceptes and ideas
+# Week 1
+## Conceptes and ideas
 Replication is the most important in science. Very important for regulatory stuff.
 What is wrong with repication?
 Stidies are 
@@ -8,26 +8,26 @@ Stidies are
 - opportunistic
 - more expensive
 - unique
-#### Why we need middle ground?
+### Why we need middle ground?
 (data + computational infromation). Data + code => somewhat shure that reporducible.
 - high data collection speed
 - multidimensional
 - models, analysis and algorithms are much more comples -> every field "X" has a "Computational"
 
-#### research pipeline
+### research pipeline
 we read from text to data, but the pipeline came from measured data to the article.
 to read:
 1. Reproducible research in computational science (special issue)
 2. 60 minutes "The duke saga"
 3. Evolution of translational omics, lessons learned and path forward.
 
-#### what we need?
+### what we need?
 - analytic data are available (data used for analysis)
 - analytic code (code applied to this)
 - documentation of code
 - standard means of distribution
 
-#### players
+### players
 - authors
   - want reproducible 
   - need tools
@@ -35,22 +35,22 @@ to read:
   - want to reproduce
   - want tools for RR to have simpler life
   
-#### challenges
+### challenges
 - resources
 - effort
 - toolbox for RR are bad and fiew
 
-#### literate (statistical) programming
+### literate (statistical) programming
 * documentation language (human)
 * programming language (machine readable)
 Sweave (R + LaTeX) - combination
 better and newer - _knitr_
 LaTeX + markdown + html
 
-### Script your analysis
+## Script your analysis
 Now we write down programs.
 
-### Structure of Data Analysis
+## Structure of Data Analysis
 - Define qustions
 - Define ideal data set
 - determine what data can access
@@ -63,18 +63,18 @@ Now we write down programs.
 - synthesize/write up results
 - create reproducible code
 
-#### challenges
+### challenges
 Never good info, enough info.
 
-#### defining a question 
+### defining a question 
 the most dimension reducing thing. If can narrow down the question - less noise to deal with. Random application of statistics to dat as dangeous.
 
-#### example:
+### example:
 
 #####  ?
 start with a general ?. can i detect emails that are spam -> what quanittative metrics to determine if spam ore not?
 
-#####  ideal data set
+####  ideal data set
 depends on goal.
 - descriptive - all people
 - exploratory - random selection
@@ -84,21 +84,21 @@ Ideal - all google data center contents.
 In real world there are limitations.
 Possible solution - some subset, uci machine learning repository.
 
-##### obtain
+#### obtain
 get raw, reference the source, be polite, record url and time
 
-##### clean data
+#### clean data
 - process raw
 - learn how pre-processed
 - understand the source
 - record all preprocessing
 - *determine if data are good enough - if not, quit or change data*
 
-##### explore
+#### explore
 do exploratory data analysis
-##### statistical preditction/modelling
+#### statistical preditction/modelling
 
-##### interpret results
+#### interpret results
 Use the appropriate language
 - describes
 - correlates with/associated with
@@ -108,20 +108,20 @@ Give an explanation
 Interpret coefficients
 Interpret measures of uncertainty
 
-##### challenge results
+#### challenge results
 - challenge steps
 - challenge measures of uncertainty
 - choice of terms to include
 - think alternative analyses
 
-##### synthesize/write-up results
+#### synthesize/write-up results
 - Lead with the question
 - Summarize the analyses into the story
 - Don't include every analysis, include it (If it is needed for the story If it is needed to address a challenge)
 - Order analyses according to the story, rather than chronologically
 - Include "pretty" figures that contribute to the story
 
-### Organize data analysis
+## Organize data analysis
 key files
 
 - data
@@ -272,3 +272,39 @@ pretty crappy but have a table in the result
 - if data changes - rerun
 - dependencies are not checked explicitly
 - chunks with significant _side effects_ may not be cacheable
+
+# Week 3
+## communicating results
+
+* people are busi
+* hierarchical order of info
+* presentation [getting email response from busy people][https://simplystatistics.org/2011/09/23/getting-email-responses-from-busy-people/]
+
+### hierarchy of research paper
+
+1. title
+2. abstract
+3. body
+4. supplementary
+5. code
+
+### email presentation
+* subject
+        * include one, summary
+* body
+        * brief description, context
+        * if action - suggest option short
+        * if question - try to do binary response
+* attachments
+        * r markdown
+        * knitr
+        * stay short
+* link supplementary materials
+        * code/soft/data
+        * github/ project website
+        
+## RPubs
+
+[rpubs link][https://rpubs.com/] Can have research published
+
+for easy publishing of knitr html results
