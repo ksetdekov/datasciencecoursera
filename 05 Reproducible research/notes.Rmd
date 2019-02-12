@@ -325,3 +325,42 @@ for easy publishing of knitr html results
     * "we're just going to do this once"
 * dont point and click
     * gui is not reproducible
+* do teach a computer to do it
+    * if you teach it - have solid instruction
+    * teaching a computer guarantees reproducibility
+        * use _download.file_ instead of manually
+* do use version control software
+    * add changes in small chunks
+    * track snapshots, revert to versions
+* do track of you software environment
+    * keep track of
+        * computer architecture
+        * OS
+        * software toolchain
+        * support software
+        * external dependencies
+        * version numbers (ideally for everything)
+```{r}
+sessionInfo()
+```
+* dont save output
+    * avoid saving data analysis output, escept temporarily for efficiency purposes
+    * save data+code
+    * intermediate files are ok, every file is documented
+* do set your seed
+    * rng always must be set for non-trivial purposes
+```{r}
+set.seed(1)
+rnorm(1)
+```
+* do think about all the data pipeline
+    * raw data -> processed data -> analysis -> report
+### checklist
+* are we doing good science?
+* was anything done by hand?
+    * are manual parts precisely documented?
+* have you taught a PC to do?
+* are using version control?
+* are we documenting our environment?
+* have we saved any output that we cannot reconstruct?
+* how far back in the pipeline can we go to make it entirely reproducible?
