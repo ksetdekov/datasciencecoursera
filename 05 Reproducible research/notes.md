@@ -290,21 +290,38 @@ pretty crappy but have a table in the result
 
 ### email presentation
 * subject
-        * include one, summary
+    * include one, summary
 * body
-        * brief description, context
-        * if action - suggest option short
-        * if question - try to do binary response
+    * brief description, context
+    * if action - suggest option short
+    * if question - try to do binary response
 * attachments
-        * r markdown
-        * knitr
-        * stay short
+    * r markdown
+    * knitr
+    * stay short
 * link supplementary materials
-        * code/soft/data
-        * github/ project website
+    * code/soft/data
+    * github/ project website
         
 ## RPubs
 
-[rpubs link][https://rpubs.com/] Can have research published
+[rpubs link](https://rpubs.com/) Can have research published
 
 for easy publishing of knitr html results
+
+## reproducible research checklist
+
+* start with good science
+    * garbage in, garbage out
+    * coherent focused question
+    * working with good collaborators
+    * something that's interesting to you will (hopefully) motivate good habits
+
+* dont do things by hand. if you do, need precisely documented
+    * editing spreadsheets
+    * editing tables
+    * downloading data from a web site (clicking links)
+    * moving data around your computer,  splitting, reformatting data files
+    * "we're just going to do this once"
+* dont point and click
+    * gui is not reproducible
