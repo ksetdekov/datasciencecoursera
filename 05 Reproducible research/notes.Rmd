@@ -364,3 +364,29 @@ rnorm(1)
 * are we documenting our environment?
 * have we saved any output that we cannot reconstruct?
 * how far back in the pipeline can we go to make it entirely reproducible?
+
+## replication and reproducibility
+replication - focus on validity of scientific claim.
+
+### background
+* some studies cannot be replicated: no time, no money, opportunistic
+* lots of data
+
+### results
+* basic analyses are difficult to describe
+
+### what problem reproducibility solve
+what we get?
+* transparency
+* data availability
+* method availability
+* better knowledge transfer
+
+what we dont get
+* validity, correctness
+
+### problems with reproducibility
+* addresses post-publication side of research
+* assumes everyone plays by the rules
+
+to add something at the research conduction stage?
