@@ -390,3 +390,66 @@ what we dont get
 * assumes everyone plays by the rules
 
 to add something at the research conduction stage?
+
+## who resproduces research?
+
+someone needs to do something
+
+Original investigator -> someone who thinks wrong, different or dont care.
+
+### evidence-based data analysis
+
+* most data analyses involves stringing
+* some methods are standard
+* we should apply thoroghtly studied mehtods, mutually agreed
+* there should be evidence to justify
+
+_example_ histogram bin width
+
+## evidence-based data analysis
+
+* create analytic pipeline
+* deterministic statstic machine
+* once an evidence-based analytic pipeline is established and dont mess with this
+
+### deterministic statistical machine
+
+where we go from here?
+
+*cochrane collaboration*
+
+
+
+# week 4
+## caching computations
+
+To store database with cached calculations
+_cacher_ and _cacheSweave_
+
+### using cacher as an author
+
+1. parse r source file - creares cache directories and subdirectories
+2. cycle through each explression 
+
+use knitr insted
+
+resourse 
+https://yihui.name/knitr/demo/cache/
+
+```{r  cache=TRUE}
+library(kernlab)
+data(spam)
+set.seed(3435)
+trainIndicator=rbinom(dim(spam)[1],size = 1,prob=0.5)
+table(trainIndicator)
+
+trainSpam=spam[trainIndicator==1,]
+testSpam=spam[trainIndicator==0,]
+names(trainSpam)
+table(trainSpam$type)
+plot(trainSpam$capitalAve~trainSpam$type)
+library(party)
+cfit1 <- ctree(type ~ ., data = trainSpam)
+plot(cfit1)
+```
+
