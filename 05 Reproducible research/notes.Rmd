@@ -453,3 +453,5 @@ cfit1 <- ctree(type ~ ., data = trainSpam)
 plot(cfit1)
 ```
 
+## case study air pollution
+
