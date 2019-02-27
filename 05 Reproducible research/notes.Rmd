@@ -454,4 +454,21 @@ plot(cfit1)
 ```
 
 ## case study air pollution
+## case study about high thoroghtput biology
+
+### what we want
+* want data
+* provenance
+* code
+* describe nonscrptable steps
+* described planned design
+
+## Commentaries on Data Analysis
+
+what should be done?
+Poor analysis should be avoided.
+
+inapropriate framing of the question is bad
+
+
 
