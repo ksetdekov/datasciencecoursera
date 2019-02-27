@@ -15,6 +15,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Load libraries
 ```{r}
 library(ggplot2)
+library(dplyr)
+library(reshape2)
+library(usmap)
 ```
 
 
@@ -24,6 +27,38 @@ We cache the calculation and load the link and directrly read it into R.
 link="https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2"
 download.file(link, "data/noaa.bz2")
 noaa <- read.csv(bzfile("data/noaa.bz2"))
+```
+To plot data we need to summarize on an event type level damage
+```{r}
+damages <- noaa %>% group_by(EVTYPE) %>% summarise(property=sum(PROPDMG), crop=sum(CROPDMG), total=sum(PROPDMG+CROPDMG))
+damages <- damages[order(-damages$total),]
+damages$EVTYPE <- factor(damages$EVTYPE, levels = damages$EVTYPE[order(-damages$total)])
+damages_long <- melt(damages[1:10,c(1,2:3)], id = "EVTYPE")
+damages_long$EVTYPE <- droplevels(damages_long$EVTYPE)
+ggplot(data = damages_long, aes(x= EVTYPE, y = value ,
+                fill=variable)) +
+  geom_bar(stat = "identity")+ ylab("Total property damage")+labs(fill="Total damage breakdown", title = "10 disaster types sorted by total damage for all states")+theme_bw()+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+people <- noaa %>% group_by(EVTYPE) %>% summarise(injuries=sum(INJURIES), fatalities=sum(FATALITIES), total=sum(INJURIES+FATALITIES))
+people <- people[order(-people$total),]
+people$EVTYPE <- factor(people$EVTYPE, levels = people$EVTYPE[order(-people$fatalities)])
+people_long <- melt(people[1:10,c(1,2:3)], id = "EVTYPE")
+people_long$EVTYPE <- droplevels(people_long$EVTYPE)
+ggplot(data = people_long, aes(x= EVTYPE, y = value ,
+                fill=variable)) +
+  geom_bar(stat = "identity")+ ylab("People count")+labs(fill="Total death+injury", title = "10 disaster types sorted by fatalities for all states")+theme_bw()+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+library(ggplot2)
+
+plot_usmap(data = randompop, values = "most") + 
+  labs(title = "US Counties", subtitle = "This is a blank map of the counties of the United States.") + 
+  theme(panel.background = element_rect(colour = "black", fill = "lightblue"))
+
+randompop <- statepop
+randompop$most <- rnorm(n=51)
+
+
 ```
 
 
@@ -47,12 +82,6 @@ Across the United States, which types of events (as indicated in the \color{red}
 Across the United States, which types of events have the greatest economic consequences?
 
 Consider writing your report as if it were to be read by a government or municipal manager who might be responsible for preparing for severe weather events and will need to prioritize resources for different types of events. However, there is no need to make any specific recommendations in your report.
-
-##Requirements
-For this assignment you will need some specific tools
-
-RStudio: You will need RStudio to publish your completed analysis document to RPubs. You can also use RStudio to edit/write your analysis.
-knitr: You will need the knitr package in order to compile your R Markdown document and convert it to HTML
 
 
 # review criteria
