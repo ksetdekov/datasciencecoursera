@@ -49,14 +49,27 @@ ggplot(data = people_long, aes(x= EVTYPE, y = value ,
   geom_bar(stat = "identity")+ ylab("People count")+labs(fill="Total death+injury", title = "10 disaster types sorted by fatalities for all states")+theme_bw()+theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
-library(ggplot2)
 
-plot_usmap(data = randompop, values = "most") + 
-  labs(title = "US Counties", subtitle = "This is a blank map of the counties of the United States.") + 
-  theme(panel.background = element_rect(colour = "black", fill = "lightblue"))
+
+noaa %>% group_by(EVTYPE) %>% summarise(injuries=sum(INJURIES), fatalities=sum(FATALITIES), total=sum(INJURIES+FATALITIES))
+
+temp <- noaa  %>% group_by(STATE,EVTYPE) %>% summarise(FATALITIES = sum(FATALITIES)) %>% filter(FATALITIES == max(FATALITIES))%>% top_n(n=1, FATALITIES)%>%slice(1)
+
 
 randompop <- statepop
-randompop$most <- rnorm(n=51)
+## allocate the most important event here
+randompop<- left_join(randompop,temp,by = c("abbr" = "STATE"))
+randompop$EVTYPE <- as.character(randompop$EVTYPE ) 
+
+bystates <- (randompop%>%group_by(EVTYPE)%>%summarise(sum=sum(FATALITIES)))
+randompop$EVTYPE <- factor(randompop$EVTYPE, levels = bystates$EVTYPE[order(-bystates$sum)])
+```
+
+``` {r echo = FALSE, fig.width = 14, fig.height = 9, out.width = "1026", out.height = "528"}
+# plot
+plot_usmap(data = randompop, values = "EVTYPE") + 
+  labs(title = "US States", subtitle = "most deadly event for each state") + 
+  theme(panel.background = element_rect(colour = "black", fill = "lightblue"))
 
 
 ```
