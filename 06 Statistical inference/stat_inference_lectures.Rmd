@@ -11,3 +11,22 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 "Generating conclusions about a populations from a noisy sample"
+
+*pick frequentist paradigm.*
+[link to main repository](https://github.com/ksetdekov/courses/tree/master/06_StatisticalInference)
+
+```{r libload, message=FALSE, include=FALSE}
+#require(swirl)
+#install_from_swirl("Statistical Inference")
+```
+
+## Probability
+
+$$P(A\cup B)=P(A)+P(B)$$
+
+$$ P(A \cup B)=P(A)+P(B)-P(A \cap B)$$
+
+```{r}
+
+```
+
