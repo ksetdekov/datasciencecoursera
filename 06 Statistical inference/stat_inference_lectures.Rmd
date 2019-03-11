@@ -26,7 +26,86 @@ $$P(A\cup B)=P(A)+P(B)$$
 
 $$ P(A \cup B)=P(A)+P(B)-P(A \cap B)$$
 
+## probability mass function and density function
+
+* PMF
+    * must be larger or equal to 0
+    * the sum of possible values sum up to 1
+* PDF 
+    * must be larger or equal to 0
+    * the sum of possible values sum up to 1. Area under PDFs correspond to probabilities for that random variables
+
+    
 ```{r}
+x <- c(-0.5,0,1,1,1.5)
+y <- c(0,0,2,0,0)
+plot(x,y, lwd=3, frame = FALSE, type="l")
+
 
 ```
 
+## CDF and survival function
+
+- The **cumulative distribution function** (CDF) of a random variable $X$ is defined as the function 
+$$
+F(x) = P(X \leq x)
+$$
+- This definition applies regardless of whether $X$ is discrete or continuous.
+- The **survival function** of a random variable $X$ is defined as
+$$
+S(x) = P(X > x)
+$$
+- Notice that $S(x) = 1 - F(x)$
+- For continuous random variables, the PDF is the derivative of the CDF
+
+
+$$
+S(x) = 1 - x^2
+$$
+
+```{r}
+pbeta(c(0.4, 0.5, 0.6), 2, 1)
+```
+
+## Quantiles
+
+You've heard of sample quantiles. If you were the 95th percentile on an exam, you know
+that 95% of people scored worse than you and 5% scored better. 
+These are sample quantities. Here we define their population analogs.
+
+
+---
+## Definition
+
+The  $\alpha^{th}$ **quantile** of a distribution with distribution function $F$ is the point $x_\alpha$ so that
+$$
+F(x_\alpha) = \alpha
+$$
+- A **percentile** is simply a quantile with $\alpha$ expressed as a percent
+- The **median** is the $50^{th}$ percentile
+
+---
+
+## Example
+What is the median of the distribution that we were working with before?
+- We want to solve $0.5 = F(x) = x^2$
+- Resulting in the solution 
+```{r, echo = TRUE} 
+sqrt(0.5)
+``` 
+- Therefore, about `r sqrt(0.5)` of calls being answered on a random day is the median.
+
+---
+## Example continued
+R can approximate quantiles for you for common distributions
+
+```{r}
+qbeta(0.5, 2, 1) #quantiles
+```
+
+
+## summary
+- We're referring to are **population quantities**. Therefore, the median being
+  discussed is the **population median**.
+- A probability model connects the data to the population using assumptions.
+- Therefore the median we're discussing is the **estimand**, the sample median will be the **estimator**
