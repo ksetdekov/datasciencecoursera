@@ -164,3 +164,20 @@ $$
   - $A^c$ is independent of $B$ 
   - $A$ is independent of $B^c$
   - $A^c$ is independent of $B^c$
+  
+## The population mean
+- The **expected value** or **mean** of a random variable is the center of its distribution
+- For discrete random variable $X$ with PMF $p(x)$, it is defined as follows
+    $$
+    E[X] = \sum_x xp(x).
+    $$
+    where the sum is taken over the possible values of $x$
+- $E[X]$ represents the center of mass of a collection of locations and weights, $\{x, p(x)\}$
+
+---
+## The sample mean
+- The sample mean estimates this population mean
+- The center of mass of the data is the empirical mean
+$$
+\bar X = \sum_{i=1}^n x_i p(x_i)
+$$
