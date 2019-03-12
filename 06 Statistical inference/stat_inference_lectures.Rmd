@@ -74,7 +74,7 @@ that 95% of people scored worse than you and 5% scored better.
 These are sample quantities. Here we define their population analogs.
 
 
----
+
 ## Definition
 
 The  $\alpha^{th}$ **quantile** of a distribution with distribution function $F$ is the point $x_\alpha$ so that
@@ -84,7 +84,7 @@ $$
 - A **percentile** is simply a quantile with $\alpha$ expressed as a percent
 - The **median** is the $50^{th}$ percentile
 
----
+
 
 ## Example
 What is the median of the distribution that we were working with before?
@@ -95,7 +95,7 @@ sqrt(0.5)
 ``` 
 - Therefore, about `r sqrt(0.5)` of calls being answered on a random day is the median.
 
----
+
 ## Example continued
 R can approximate quantiles for you for common distributions
 
@@ -109,3 +109,58 @@ qbeta(0.5, 2, 1) #quantiles
   discussed is the **population median**.
 - A probability model connects the data to the population using assumptions.
 - Therefore the median we're discussing is the **estimand**, the sample median will be the **estimator**
+
+
+# conditinal probabilities
+## Conditional probability, definition
+
+- Let $B$ be an event so that $P(B) > 0$
+- Then the conditional probability of an event $A$ given that $B$ has occurred is
+  $$
+  P(A ~|~ B) = \frac{P(A \cap B)}{P(B)}
+  $$
+- Notice that if $A$ and $B$ are independent (defined later in the lecture), then
+  $$
+  P(A ~|~ B) = \frac{P(A) P(B)}{P(B)} = P(A)
+  $$
+ 
+ ## bayes' rule
+ 
+ ## Bayes' rule
+Baye's rule allows us to reverse the conditioning set provided
+that we know some marginal probabilities
+$$
+P(B ~|~ A) = \frac{P(A ~|~ B) P(B)}{P(A ~|~ B) P(B) + P(A ~|~ B^c)P(B^c)}.
+$$
+
+## Diagnostic tests
+
+- Let $+$ and $-$ be the events that the result of a diagnostic test is positive or negative respectively
+- Let $D$ and $D^c$ be the event that the subject of the test has or does not have the disease respectively 
+- The **sensitivity** is the probability that the test is positive given that the subject actually has the disease, $P(+ ~|~ D)$
+- The **specificity** is the probability that the test is negative given that the subject does not have the disease, $P(- ~|~ D^c)$
+
+---
+
+## More definitions
+
+- The **positive predictive value** is the probability that the subject has the  disease given that the test is positive, $P(D ~|~ +)$
+- The **negative predictive value** is the probability that the subject does not have the disease given that the test is negative, $P(D^c ~|~ -)$
+- The **prevalence of the disease** is the marginal probability of disease, $P(D)$
+
+---
+
+## More definitions
+
+- The **diagnostic likelihood ratio of a positive test**, labeled $DLR_+$, is $P(+ ~|~ D) / P(+ ~|~ D^c)$, which is the $$sensitivity / (1 - specificity)$$
+- The **diagnostic likelihood ratio of a negative test**, labeled $DLR_-$, is $P(- ~|~ D) / P(- ~|~ D^c)$, which is the $$(1 - sensitivity) / specificity$$
+
+## Independence
+
+- Two events $A$ and $B$ are **independent** if $$P(A \cap B) = P(A)P(B)$$
+- Equivalently if $P(A ~|~ B) = P(A)$ 
+- Two random variables, $X$ and $Y$ are independent if for any two sets $A$ and $B$ $$P([X \in A] \cap [Y \in B]) = P(X\in A)P(Y\in B)$$
+- If $A$ is independent of $B$ then 
+  - $A^c$ is independent of $B$ 
+  - $A$ is independent of $B^c$
+  - $A^c$ is independent of $B^c$

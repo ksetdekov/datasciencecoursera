@@ -244,6 +244,12 @@ S(x) = 1 - x^2
 <h2>Quantiles</h2>
 <p>You’ve heard of sample quantiles. If you were the 95th percentile on an exam, you know that 95% of people scored worse than you and 5% scored better. These are sample quantities. Here we define their population analogs.</p>
 </div>
+<div id="definition" class="section level2">
+<h2>Definition</h2>
+<p>The <span class="math inline">\(\alpha^{th}\)</span> <strong>quantile</strong> of a distribution with distribution function <span class="math inline">\(F\)</span> is the point <span class="math inline">\(x_\alpha\)</span> so that <span class="math display">\[
+F(x_\alpha) = \alpha
+\]</span> - A <strong>percentile</strong> is simply a quantile with <span class="math inline">\(\alpha\)</span> expressed as a percent - The <strong>median</strong> is the <span class="math inline">\(50^{th}\)</span> percentile</p>
+</div>
 <div id="example" class="section level2">
 <h2>Example</h2>
 <p>What is the median of the distribution that we were working with before? - We want to solve <span class="math inline">\(0.5 = F(x) = x^2\)</span> - Resulting in the solution</p>
@@ -252,7 +258,6 @@ S(x) = 1 - x^2
 <ul>
 <li>Therefore, about 0.7071068 of calls being answered on a random day is the median.</li>
 </ul>
-<hr />
 </div>
 <div id="example-continued" class="section level2">
 <h2>Example continued</h2>
@@ -267,6 +272,25 @@ S(x) = 1 - x^2
 <li>A probability model connects the data to the population using assumptions.</li>
 <li>Therefore the median we’re discussing is the <strong>estimand</strong>, the sample median will be the <strong>estimator</strong></li>
 </ul>
+</div>
+<div id="conditinal-probabilities" class="section level1">
+<h1>conditinal probabilities</h1>
+<div id="conditional-probability-definition" class="section level2">
+<h2>Conditional probability, definition</h2>
+<ul>
+<li>Let <span class="math inline">\(B\)</span> be an event so that <span class="math inline">\(P(B) &gt; 0\)</span></li>
+<li>Then the conditional probability of an event <span class="math inline">\(A\)</span> given that <span class="math inline">\(B\)</span> has occurred is <span class="math display">\[
+  P(A ~|~ B) = \frac{P(A \cap B)}{P(B)}
+  \]</span></li>
+<li>Notice that if <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are independent (defined later in the lecture), then <span class="math display">\[
+  P(A ~|~ B) = \frac{P(A) P(B)}{P(B)} = P(A)
+  \]</span></li>
+</ul>
+<p>## bayes’ rule</p>
+<p>## Bayes’ rule Baye’s rule allows us to reverse the conditioning set provided that we know some marginal probabilities <span class="math display">\[
+P(B ~|~ A) = \frac{P(A ~|~ B) P(B)}{P(A ~|~ B) P(B) + P(A ~|~ B^c)P(B^c)}.
+\]</span></p>
+</div>
 </div>
 
 
