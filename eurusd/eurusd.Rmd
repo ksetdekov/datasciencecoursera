@@ -1,0 +1,21 @@
+---
+title: "eurusd"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r readusd}
+library(readr)
+dataset <- read_csv("EUR_RUB.csv", 
+    col_types = cols(`Дата` = col_date(format = "%d.%m.%Y")), 
+    locale = locale(decimal_mark = ","))
+View(dataset)
+```
+
+
+```{r plot, echo=FALSE}
+plot(dataset$'Цена', type = "l")
+```
