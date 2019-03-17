@@ -181,3 +181,63 @@ $$
 $$
 \bar X = \sum_{i=1}^n x_i p(x_i)
 $$
+
+## simulation example
+Distribution of averages
+```{r, fig.height=6, figh.width=6, fig.align='center', echo = FALSE}
+library(ggplot2)
+nosim <- 10000
+n <- 10
+dat <- data.frame(x = c(rnorm(nosim), apply(matrix(
+rnorm(nosim * n), nosim
+), 1, mean)),
+what = factor(rep(c("Obs", "Mean"), c(nosim, nosim))))
+ggplot(dat, aes(x = x, fill = what)) + geom_density(size = 2, alpha = .2)
+
+```
+
+## Averages of x die rolls
+
+The population mean of averages of two die rolls is exactly the same as the population mean of die rolls.
+
+## Sumarizing what we know
+- Expected values are properties of distributions
+- The population mean is the center of mass of population
+- The sample mean is the center of mass of the observed data
+- The sample mean is an estimate of the population mean
+- The sample mean is unbiased 
+  - The population mean of its distribution is the mean that it's
+  trying to estimate
+- The more data that goes into the sample mean, the more 
+concentrated its density / mass function is around the population mean
+
+```{r, fig.align='center',fig.height=5, fig.width=10, echo = FALSE, warning=FALSE, error=FALSE, message=FALSE}  
+dat <- data.frame(
+  x = c(sample(1 : 6, nosim, replace = TRUE),
+        apply(matrix(sample(1 : 6, nosim * 2, replace = TRUE), 
+                     nosim), 1, mean),
+        apply(matrix(sample(1 : 6, nosim * 3, replace = TRUE), 
+                     nosim), 1, mean),
+        apply(matrix(sample(1 : 6, nosim * 4, replace = TRUE), 
+                     nosim), 1, mean)
+        ),
+  size = factor(rep(1 : 4, rep(nosim, 4))))
+g <- ggplot(dat, aes(x = x, fill = size)) + geom_histogram(alpha = .20, binwidth=.25, colour = "black") 
+g + facet_grid(. ~ size)
+```
+
+## Averages of x coin flips
+```{r, fig.align='center',fig.height=5, fig.width=10, echo = FALSE, warning=FALSE, error=FALSE, message=FALSE}
+dat <- data.frame(
+  x = c(sample(0 : 1, nosim, replace = TRUE),
+        apply(matrix(sample(0 : 1, nosim * 10, replace = TRUE), 
+                     nosim), 1, mean),
+        apply(matrix(sample(0 : 1, nosim * 20, replace = TRUE), 
+                     nosim), 1, mean),
+        apply(matrix(sample(0 : 1, nosim * 100, replace = TRUE), 
+                     nosim), 1, mean)
+        ),
+  size = factor(rep(c(1, 10, 20, 100), rep(nosim, 4))))
+g <- ggplot(dat, aes(x = x, fill = size)) + geom_histogram(alpha = .20,  colour = "black"); 
+g + facet_grid(. ~ size)
+```
