@@ -244,3 +244,47 @@ g + facet_grid(. ~ size)
 R has *integration* 
 
 integrate(mypdf,0,1.6)
+
+## Variablility
+
+## The variance
+
+- The variance of a random variable is a measure of *spread*
+- If $X$ is a random variable with mean $\mu$, the variance of $X$ is defined as
+
+$$
+Var(X) = E[(X - \mu)^2] = E[X^2] - E[X]^2
+$$ 
+
+## Example
+
+- What's the variance from the result of the toss of a coin with probability of heads (1) of $p$? 
+
+  - $E[X] = 0 \times (1 - p) + 1 \times p = p$
+  - $E[X^2] = E[X] = p$ 
+
+$$Var(X) = E[X^2] - E[X]^2 = p - p^2 = p(1 - p)$$
+
+
+## Distributions with increasing variance
+```{r, echo = FALSE, fig.height = 6, fig.width = 8, fig.align='center'}
+library(ggplot2)
+xvals <- seq(-10, 10, by = .01)
+dat <- data.frame(
+    y = c(
+        dnorm(xvals, mean = 0, sd = 1),
+        dnorm(xvals, mean = 0, sd = 2),
+        dnorm(xvals, mean = 0, sd = 3),
+        dnorm(xvals, mean = 0, sd = 4)
+    ),
+    x = rep(xvals, 4),
+    factor = factor(rep(1 : 4, rep(length(xvals), 4)))
+)
+ggplot(dat, aes(x = x, y = y, color = factor)) + geom_line(size = 2)    
+```
+
+Sample variance 
+- The sample variance is 
+$$
+S^2 = \frac{\sum_{i=1} (X_i - \bar X)^2}{n-1}
+$$
