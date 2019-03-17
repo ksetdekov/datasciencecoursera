@@ -241,3 +241,6 @@ dat <- data.frame(
 g <- ggplot(dat, aes(x = x, fill = size)) + geom_histogram(alpha = .20,  colour = "black"); 
 g + facet_grid(. ~ size)
 ```
+R has *integration* 
+
+integrate(mypdf,0,1.6)
