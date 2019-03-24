@@ -323,3 +323,50 @@ qplot(x, geom = 'blank') +
 round(c(var(x),var(x)/n,sd(x),sd(x)/sqrt(n)),2)
 ```
 
+## distributions
+$$ nCx=(n!)/(x!\cdot(n-x)!) $$
+$$ nC0=nCx=1 $$
+Probability to have 7 or more girs of 8 births
+
+```{r girls}
+choose(8,7)*.5^8+choose(8,8)*.5^8
+pbinom(6, size = 8, prob = .5, lower.tail = F)
+```
+
+## normal distribution
+```{r normal}
+x <- seq(-4, 4, length=100)
+hx <- dnorm(x)
+ggplot(data.frame(cbind(x, hx))) + 
+    geom_line(aes(x = x, y = hx)) + 
+    geom_vline(xintercept =qnorm(.95, 0, 1),
+               linetype = "dotted",
+               color = "blue")
+                                                                                  
+
+
+```
+
+## poisson example
+Mean people per hour = 2.4. Probability of 3 or fiewer in 4 hours is:
+```{r}
+ppois(3,lambda = 2.5*4)
+```
+
+## poisson approx for binomial
+flip a coin with success of 0.01
+probability of 2 or fewer successes?
+```{r poissapprox}
+pbinom(2, size = 500, prob = 0.01)
+ppois(2,lambda = 500*0.01)
+
+x <- 1:500
+require(dplyr)
+require(reshape)
+x <- data.frame(x)
+x <- x %>% mutate(binom = pbinom(2, size = x, prob = 0.01),
+             pois = ppois(2,lambda = x*0.01))
+x_long <- reshape::melt(x, id.vars = "x")
+ggplot(x_long)+geom_line(aes(x=x,  y=value, colour = variable))
+```
+
