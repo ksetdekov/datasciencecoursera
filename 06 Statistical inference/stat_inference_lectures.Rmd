@@ -393,8 +393,8 @@ distribution of averages of iid variables becomes that of a standard normal as t
 - Then $\frac{\bar X_n - \mu}{\sigma / \sqrt{n}}$ has a distribution like that of a standard normal for large $n$.
 - Remember the form
 $$\frac{\bar X_n - \mu}{\sigma / \sqrt{n}} = 
-    \frac{\mbox{Estimate} - \mbox{Mean of estimate}}{\mbox{Std. Err. of estimate}}.$$
-
+    \frac{\mbox{Estimate} - \mbox{Mean of estimate}}{\mbox{Std. Err. of estimate}}.
+$$
 - Usually, replacing the standard error by its estimated value doesn't change the CLT
 
 ## Coin CLT
@@ -404,12 +404,12 @@ $$\frac{\bar X_n - \mu}{\sigma / \sqrt{n}} =
 - $E[X_i] = p$ and $Var(X_i) = p(1-p)$
 - Standard error of the mean is $\sqrt{p(1-p)/n}$
 - Then
-
-    $$\frac{\hat p - p}{\sqrt{p(1-p)/n}}$$
+$$
+    \frac{\hat p - p}{\sqrt{p(1-p)/n}}
+$$
 will be approximately normally distributed
 
-
-
+---
 
 ```{r, echo = FALSE, fig.width=7.5, fig.height = 5}
 par(mfrow = c(2, 3))
@@ -423,7 +423,7 @@ for (n in c(1, 10, 20)){
   lines(seq(-3, 3, length = 100), dnorm(seq(-3, 3, length = 100)), col = grey(.8), lwd = 3)
   lines(dty$x, dty$y, lwd = 2)
 }
-for (n in c(1, 10, 1000)){
+for (n in c(1, 10, 20)){
   temp <- matrix(sample(0 : 1, n * 10000, replace = TRUE, prob = c(.9, .1)), ncol = n)
   temp <- apply(temp, 1, mean)
   temp <- (temp - .1) / sqrt(.1 * .9 / n)
@@ -433,170 +433,4 @@ for (n in c(1, 10, 1000)){
   lines(seq(-3, 3, length = 100), dnorm(seq(-3, 3, length = 100)), col = grey(.8), lwd = 3)
   lines(dty$x, dty$y, lwd = 2)
 }
-```
-
-
-# coinflip examples
-| Suppose we were going to flip a biased coin 5 times. The probability of
-| tossing a head is .8 and a tail .2. What is the probability that you'll toss
-| at least 3 heads.
-
-```{r}
-i <- 0
-for (x in 3:5) {
-     i <- i+choose(5,x)*(.8)^x*(.2)^(5-x)
-}
-i
-
-pbinom(2,size=5,prob=.8,lower.tail=FALSE)
-```
-
-# про распределения
-```{r}
-pnorm(1200,mean=1020,sd=50,lower.tail=FALSE) #lower tail false - gives p above
-pnorm((1200-1020)/50,lower.tail=FALSE)
-
-#percentile
-qnorm(0.75, mean = 1020, sd = 50, lower.tail = TRUE)
-```
-
-## poisson
-$$ X \sim Poisson(lambda \cdot t)$$
-suppose the number of people that show up at a bus stop is Poisson with a mean of
-2.5 per hour, and we want to know the probability that at most 3 people show up 
-in a 4 hour period.
-```{r}
-ppois(3,2.5*4)
-#compare poisson and binomial
-pbinom(5,1000,.01)
-ppois(5,1000*.01)
-```
-
-## Give a confidence interval for the average height of sons
-in Galton's data
-```{r}
-library(UsingR);data(father.son); x <- father.son$sheight
-(mean(x) + c(-1, 1) * qnorm(.975) * sd(x) / sqrt(length(x))) / 12
-```
-## Sample proportions
-
-- In the event that each $X_i$ is $0$ or $1$ with common success probability $p$ then $\sigma^2 = p(1 - p)$
-- The interval takes the form
-$$ \hat p \pm z_{1 - \alpha/2}  \sqrt{\frac{p(1 - p)}{n}}$$
-- Replacing $p$ by $\hat p$ in the standard error results in what is called a Wald confidence interval for $p$
-- Also note that $p(1-p) \leq 1/4$ for $0 \leq p \leq 1$
-- Let $\alpha = .05$ so that $z_{1 -\alpha/2} = 1.96 \approx 2$ then
-$$
-    2  \sqrt{\frac{p(1 - p)}{n}} \leq 2 \sqrt{\frac{1}{4n}} = \frac{1}{\sqrt{n}} 
-$$
-- Therefore $\hat p \pm \frac{1}{\sqrt{n}}$ is a quick CI estimate for $p$
-
----
-## Example
-* Your campaign advisor told you that in a random sample of 100 likely voters,
-  56 intent to vote for you. 
-  * Can you relax? Do you have this race in the bag?
-  * Without access to a computer or calculator, how precise is this estimate?
-* `1/sqrt(100)=.1` so a back of the envelope calculation gives an approximate 95% interval of `(0.46, 0.66)`
-  * Not enough for you to relax, better go do more campaigning!
-* Rough guidelines, 100 for 1 decimal place, 10,000 for 2, 1,000,000 for 3.
-```{r}
-round(1 / sqrt(10 ^ (1 : 6)), 3)
-```
-
-### R code
-```{r}
-0.56+c(-1,1)*qnorm(0.975)*sqrt(0.56*0.44/100)
-binom.test(56,100)
-```
-
-# consider a simulation - bootstrap test
-
-```{r}
-n <- 20
-pval <- seq(0.1,0.9, by=0.05)
-nosim <- 1000
-coverage <- sapply(pval, function(p){
- phat <- rbinom(nosim, prob = p, size = n)/n
- lowerlimit <- phat-qnorm(0.975)*sqrt(phat*(1-phat)/n)
- upperlimit <- phat+qnorm(0.975)*sqrt(phat*(1-phat)/n)
- mean(lowerlimit<p&upperlimit>p)
-})
-qplot(pval,coverage, geom = "line")+geom_hline(yintercept=0.95,linetype="dashed", color = "red")
-```
-
-quick fix - form the interval with Agresti/Coull interval. Add 2 successes and faulures
-$$\frac{X+2}{n+4}$$
-```{r}
-n <- 20
-pval <- seq(0.1,0.9, by=0.05)
-nosim <- 1000
-coverage <- sapply(pval, function(p){
- phat <- (rbinom(nosim, prob = p, size = n)+2)/(n+4)
- lowerlimit <- phat-qnorm(0.975)*sqrt(phat*(1-phat)/n)
- upperlimit <- phat+qnorm(0.975)*sqrt(phat*(1-phat)/n)
- mean(lowerlimit<p&upperlimit>p)
-})
-qplot(pval,coverage, geom = "line")+geom_hline(yintercept=0.95,linetype="dashed", color = "red")
-```
-
-## Poisson interval
-* A nuclear pump failed 5 times out of 94.32 days, give a 95% confidence interval for the failure rate per day?
-* $X \sim Poisson(\lambda t)$.
-* Estimate $\hat \lambda = X/t$
-* $Var(\hat \lambda) = \lambda / t$ 
-
-$$\frac{\hat \lambda - \lambda}{\sqrt{\hat \lambda / t}} = 
-\frac{X - t \lambda}{\sqrt{X}} 
-\rightarrow N(0,1)$$
-* This isn't the best interval.
-  * There are better asymptotic intervals.
-  * You can get an exact CI in this case.
-  
- ### R code
-```{r}
-x <- 5; t <- 94.32; lambda <- x / t
-round(lambda + c(-1, 1) * qnorm(.975) * sqrt(lambda / t), 3)
-poisson.test(x, T = 94.32)$conf
-```
-
-# simulatea a poisson coverage
-```{r poiscoverage}
-labdavals <- seq(0.005, 0.1, by = 0.01)
-nosim <- 1000
-t <- 10000
-coverage <- sapply(labdavals, function(lambda) {
-    lhat <- rpois(nosim, lambda = lambda * t) / t
-    lowerlimit <- lhat - qnorm(0.975) * sqrt(lhat / t)
-    upperlimit <- lhat + qnorm(0.975) * sqrt(lhat / t)
-    mean(lowerlimit < lambda & upperlimit > lambda)
-})
-qplot(labdavals,coverage, geom = "line")+geom_hline(yintercept=0.95,linetype="dashed", color = "red")
-```
-
-
-
-## In the regression class
-```{r}
-exp(confint(glm(x ~ 1 + offset(log(t)), family = poisson(link = log))))
-```
-
-# summary
-* lln states that averages of iid sample converges to the population means that they are estimating.
-* the CLT states that averages are approximatesly normal with distributions
-    * centerd at population mean
-    * $SD$ equal to standard error of the mean
-    * CLT gives no guarantee that $n$ is large enough
-    
-* Poisso and binomial case have exact intervals that do not require the CLT
-    * but a quick fix for small sample size for binomial is to add to fails and 2 successes
-
-for the test
-You flip a fair coin 5 times, about what's the probability of getting 4 or 5 heads?
-```{r}
-choose(5,5)*.5^5+choose(5,4)*.5^5
-```
-The respiratory disturbance index (RDI), a measure of sleep disturbance, for a specific population has a mean of 15 (sleep events per hour) and a standard deviation of 10. They are not normally distributed. Give your best estimate of the probability that a sample mean RDI of 100 people is between 14 and 16 events per hour?
-```{r}
-pnorm(16, mean = 15, sd = 10/sqrt(100)) - pnorm(14, mean = 15, sd = 10/sqrt(100))
 ```
