@@ -369,4 +369,68 @@ x <- x %>% mutate(binom = pbinom(2, size = x, prob = 0.01),
 x_long <- reshape::melt(x, id.vars = "x")
 ggplot(x_long)+geom_line(aes(x=x,  y=value, colour = variable))
 ```
+# Asymptotics
 
+``` {r}
+n <- 1000
+means <- cumsum(rnorm(n))/(1:n)
+plot(means)
+
+## coinflips
+means <- cumsum(sample(0:1, n, replace = TRUE))/(1:n)
+plot(means)
+```
+
+We define estimator as consistent if it converges to what you mant to estimate.
+LLN says that sample mean of iid sample is sonsistent for the population mean.
+Sample variance and sample SD are consistent as well.
+
+# Central Limit theorem
+distribution of averages of iid variables becomes that of a standard normal as the sample size increases.
+- The CLT applies in an endless variety of settings
+- Let $X_1,\ldots,X_n$ be a collection of iid random variables with mean $\mu$ and variance $\sigma^2$
+- Let $\bar X_n$ be their sample average
+- Then $\frac{\bar X_n - \mu}{\sigma / \sqrt{n}}$ has a distribution like that of a standard normal for large $n$.
+- Remember the form
+$$\frac{\bar X_n - \mu}{\sigma / \sqrt{n}} = 
+    \frac{\mbox{Estimate} - \mbox{Mean of estimate}}{\mbox{Std. Err. of estimate}}.
+$$
+- Usually, replacing the standard error by its estimated value doesn't change the CLT
+
+## Coin CLT
+
+ - Let $X_i$ be the $0$ or $1$ result of the $i^{th}$ flip of a possibly unfair coin
+- The sample proportion, say $\hat p$, is the average of the coin flips
+- $E[X_i] = p$ and $Var(X_i) = p(1-p)$
+- Standard error of the mean is $\sqrt{p(1-p)/n}$
+- Then
+$$
+    \frac{\hat p - p}{\sqrt{p(1-p)/n}}
+$$
+will be approximately normally distributed
+
+---
+
+```{r, echo = FALSE, fig.width=7.5, fig.height = 5}
+par(mfrow = c(2, 3))
+for (n in c(1, 10, 20)){
+  temp <- matrix(sample(0 : 1, n * 10000, replace = TRUE), ncol = n)
+  temp <- apply(temp, 1, mean)
+  temp <- (temp - .5) * 2 * sqrt(n)
+  dty <- density(temp)
+  plot(dty$x, dty$y, xlab = "", ylab = "density", type = "n", xlim = c(-3, 3), ylim = c(0, .5))
+  title(paste("sample mean of", n, "obs"))
+  lines(seq(-3, 3, length = 100), dnorm(seq(-3, 3, length = 100)), col = grey(.8), lwd = 3)
+  lines(dty$x, dty$y, lwd = 2)
+}
+for (n in c(1, 10, 20)){
+  temp <- matrix(sample(0 : 1, n * 10000, replace = TRUE, prob = c(.9, .1)), ncol = n)
+  temp <- apply(temp, 1, mean)
+  temp <- (temp - .1) / sqrt(.1 * .9 / n)
+  dty <- density(temp)
+  plot(dty$x, dty$y, xlab = "", ylab = "density", type = "n", xlim = c(-3, 3), ylim = c(0, .5))
+  title(paste("sample mean of", n, "obs"))
+  lines(seq(-3, 3, length = 100), dnorm(seq(-3, 3, length = 100)), col = grey(.8), lwd = 3)
+  lines(dty$x, dty$y, lwd = 2)
+}
+```
