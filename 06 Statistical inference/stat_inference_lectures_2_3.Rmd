@@ -144,3 +144,8 @@ ggplot(data=wideCW, aes(x= factor(Diet), y = gain, fill=Diet))+geom_violin()
 wideCW14 <- subset(wideCW, Diet %in% c(1,4))
 rbind(t.test(gain~Diet, paired = FALSE, var.equal = TRUE, data = wideCW14)$conf,t.test(gain~Diet, paired = FALSE, var.equal = FALSE, data = wideCW14)$conf)
 ```
+
+### Unequal variances.
+when in doubt - use unequal variance calculation.
+in R, t.test(..., var.equal = FALSE)
+
