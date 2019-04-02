@@ -17,18 +17,43 @@ For skewed distribution, the spirit of the t interval assumptions are violated.
 
 ## T confidenct with pair measurements
 
-```{r}
+
+```r
 data(sleep)
 head(sleep)
 ```
 
+```
+##   extra group ID
+## 1   0.7     1  1
+## 2  -1.6     1  2
+## 3  -0.2     1  3
+## 4  -1.2     1  4
+## 5  -0.1     1  5
+## 6   3.4     1  6
+```
+
 ---
-```{r}
+
+```r
 g1 <- sleep$extra[1 : 10]; g2 <- sleep$extra[11 : 20]
 difference <- g2 - g1
 mn <- mean(difference); s <- sd(difference); n <- 10
 mn + c(-1, 1) * qt(.975, n-1) * s / sqrt(n)
+```
+
+```
+## [1] 0.7001142 2.4598858
+```
+
+```r
 t.test(difference)$conf.int
+```
+
+```
+## [1] 0.7001142 2.4598858
+## attr(,"conf.level")
+## [1] 0.95
 ```
 
 ## T Independent group T intervals
@@ -108,13 +133,19 @@ $$
 - $\bar X_{OC} = 132.86$ mmHg with $s_{OC} = 15.34$ mmHg
 - $\bar X_{C} = 127.44$ mmHg with $s_{C} = 18.23$ mmHg
 - Pooled variance estimate
-```{r}
+
+```r
 sp <- sqrt((7 * 15.34^2 + 20 * 18.23^2) / (8 + 21 - 2))
 132.86 - 127.44 + c(-1, 1) * qt(.975, 27) * sp * (1 / 8 + 1 / 21)^.5
 ```
 
+```
+## [1] -9.521097 20.361097
+```
+
 ### lets mistreat sleep data as group
-```{r}
+
+```r
 data(sleep)
 x1 <- sleep$extra[sleep$group == 1]
 x2 <- sleep$extra[sleep$group == 2]
@@ -124,32 +155,172 @@ sp <- sqrt( ((n1 - 1) * sd(x1)^2 + (n2-1) * sd(x2)^2) / (n1 + n2-2))
 md <- mean(x1) - mean(x2)
 semd <- sp * sqrt(1 / n1 + 1/n2)
 md + c(-1, 1) * qt(.975, n1 + n2 - 2) * semd
+```
+
+```
+## [1] -3.363874  0.203874
+```
+
+```r
 t.test(x1, x2, paired = FALSE, var.equal = TRUE)$conf
+```
+
+```
+## [1] -3.363874  0.203874
+## attr(,"conf.level")
+## [1] 0.95
+```
+
+```r
 t.test(x1, x2, paired = TRUE)$conf
+```
+
+```
+## [1] -2.4598858 -0.7001142
+## attr(,"conf.level")
+## [1] 0.95
 ```
 
 
 ### chick weights
 
-```{r}
+
+```r
 require(party)
+```
+
+```
+## Loading required package: party
+```
+
+```
+## Warning: package 'party' was built under R version 3.5.2
+```
+
+```
+## Loading required package: grid
+```
+
+```
+## Loading required package: mvtnorm
+```
+
+```
+## Warning: package 'mvtnorm' was built under R version 3.5.2
+```
+
+```
+## Loading required package: modeltools
+```
+
+```
+## Loading required package: stats4
+```
+
+```
+## Loading required package: strucchange
+```
+
+```
+## Loading required package: zoo
+```
+
+```
+## 
+## Attaching package: 'zoo'
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     as.Date, as.Date.numeric
+```
+
+```
+## Loading required package: sandwich
+```
+
+```r
 library(datasets)
 require(reshape2)
-require(ggplot2)
+```
 
+```
+## Loading required package: reshape2
+```
+
+```r
+require(ggplot2)
+```
+
+```
+## Loading required package: ggplot2
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 3.5.2
+```
+
+```r
 data("ChickWeight")
 chick <- mob(data= ChickWeight, weight~Time|Diet, model = glinearModel, family=gaussian(link = "log"))
 plot(chick)
+```
 
+![](stat_inference_lectures_2_3_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
+```r
 wideCW <- dcast(ChickWeight, Diet+Chick~Time, value.var = "weight")
 require(dplyr)
+```
+
+```
+## Loading required package: dplyr
+```
+
+```
+## Warning: package 'dplyr' was built under R version 3.5.2
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 names(wideCW)[-(1:2)] <- paste("time",names(wideCW)[-(1:2)], sep = "")
 wideCW <- wideCW %>% mutate(gain = time21-time0)
 
 ggplot(data=wideCW, aes(x= factor(Diet), y = gain, fill=Diet))+geom_violin()
+```
 
+```
+## Warning: Removed 5 rows containing non-finite values (stat_ydensity).
+```
+
+![](stat_inference_lectures_2_3_files/figure-html/unnamed-chunk-5-2.png)<!-- -->
+
+```r
 wideCW14 <- subset(wideCW, Diet %in% c(1,4))
 rbind(t.test(gain~Diet, paired = FALSE, var.equal = TRUE, data = wideCW14)$conf,t.test(gain~Diet, paired = FALSE, var.equal = FALSE, data = wideCW14)$conf)
+```
+
+```
+##           [,1]      [,2]
+## [1,] -108.1468 -14.81154
+## [2,] -104.6590 -18.29932
 ```
 
 ### Unequal variances.
@@ -172,30 +343,3 @@ reject $H_0$ if Z-score is greater than hypothesized mean (at $\alpha=0.05$).
 
 or whenever:
 $$\sqrt{n}(\hat X - \mu_0)/s > Z_{1-\alpha}$$
-
-## two siced test
-2 sided tests
-$ H_a: \mu \neq K$
-We reject if the test statistic is too large or too small.
-
-need to split $\alpha=0.05$ into 2 tails
-
-```{r}
-qt(.025,15) #reject 2 sided if lower
-qt(.975,15) #reject 2 sided if higher
-```
-
-### T test in R
-
-```{r}
-require(UsingR)
-require(ggplot2)
-data(father.son)
-t.test(father.son$sheight - father.son$fheight)
-qplot(father.son$fheight,father.son$sheight)
-require(party)
-cfit <- ctree(sheight~., data = father.son)
-plot(cfit)
-cfit2 <- mob(sheight~fheight|fheight, data = father.son)
-plot(cfit2)
-```
