@@ -533,3 +533,55 @@ t.test(gain~Diet, paired = FALSE, var.equal = TRUE, data = wideCW14)
 ##        136.1875        197.6667
 ```
 
+## P-values
+__idea__ Suppose nothing is gouing on - how unusual is it to see the estimate we got?
+
+__Approach:__
+
+1. Define the hypothetical distr. of a data summary whtn nothing is going on $ H_0 $
+2. Calculate the statistics with data we have (*test statistics*).
+3. Compare what we calculated to our hypothetical distribution and see if value is "extreme" (*p-value*).
+
+*can look at this as attained significance level*
+Our test statistics was 2 for $H_0:\mu_0=30$ versus $H_a:\mu>30$.
+Reject one- sided test when $\alpha=0.05$.
+By reporting P-value, the reader can perform the hypothesis test at whatever $\alpha$ level he or she choses.
+
+### example
+* 8 children, 7 are girls
+* if gender is p=0.5, what's the probability of getting 7 or more girls out of 8 children?
+
+
+```r
+choose(8,7)*0.5^8+choose(8,8)*0.5^8
+```
+
+```
+## [1] 0.03515625
+```
+
+```r
+pbinom(6,size = 8, prob = 0.5, lower.tail = FALSE)
+```
+
+```
+## [1] 0.03515625
+```
+
+### poisson example
+
+* infection rate 10 inf per 100 person/days at risk (rate of 0.1)
+* Assume that an infection rate of 0.05 is a benchmark
+* given the model, could the observed rate being larger than 0.05 be attributed to chance?
+* under $H_0:\lambda=0.05$ so$\lambda_0\cdot{100}=5$
+* consider $ H_a:\lambda > 0.05 $
+
+
+```r
+ppois(9,5, lower.tail = FALSE)
+```
+
+```
+## [1] 0.03182806
+```
+

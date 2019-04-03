@@ -515,6 +515,40 @@ t.test(gain~Diet, paired = FALSE, var.equal = TRUE, data = wideCW14)</code></pre
 ##        136.1875        197.6667</code></pre>
 </div>
 </div>
+<div id="p-values" class="section level2">
+<h2>P-values</h2>
+<p><strong>idea</strong> Suppose nothing is gouing on - how unusual is it to see the estimate we got?</p>
+<p><strong>Approach:</strong></p>
+<ol style="list-style-type: decimal">
+<li>Define the hypothetical distr. of a data summary whtn nothing is going on $ H_0 $</li>
+<li>Calculate the statistics with data we have (<em>test statistics</em>).</li>
+<li>Compare what we calculated to our hypothetical distribution and see if value is “extreme” (<em>p-value</em>).</li>
+</ol>
+<p><em>can look at this as attained significance level</em> Our test statistics was 2 for <span class="math inline">\(H_0:\mu_0=30\)</span> versus <span class="math inline">\(H_a:\mu&gt;30\)</span>. Reject one- sided test when <span class="math inline">\(\alpha=0.05\)</span>. By reporting P-value, the reader can perform the hypothesis test at whatever <span class="math inline">\(\alpha\)</span> level he or she choses.</p>
+<div id="example" class="section level3">
+<h3>example</h3>
+<ul>
+<li>8 children, 7 are girls</li>
+<li>if gender is p=0.5, what’s the probability of getting 7 or more girls out of 8 children?</li>
+</ul>
+<pre class="r"><code>choose(8,7)*0.5^8+choose(8,8)*0.5^8</code></pre>
+<pre><code>## [1] 0.03515625</code></pre>
+<pre class="r"><code>pbinom(6,size = 8, prob = 0.5, lower.tail = FALSE)</code></pre>
+<pre><code>## [1] 0.03515625</code></pre>
+</div>
+<div id="poisson-example" class="section level3">
+<h3>poisson example</h3>
+<ul>
+<li>infection rate 10 inf per 100 person/days at risk (rate of 0.1)</li>
+<li>Assume that an infection rate of 0.05 is a benchmark</li>
+<li>given the model, could the observed rate being larger than 0.05 be attributed to chance?</li>
+<li>under <span class="math inline">\(H_0:\lambda=0.05\)</span> so<span class="math inline">\(\lambda_0\cdot{100}=5\)</span></li>
+<li>consider $ H_a:&gt; 0.05 $</li>
+</ul>
+<pre class="r"><code>ppois(9,5, lower.tail = FALSE)</code></pre>
+<pre><code>## [1] 0.03182806</code></pre>
+</div>
+</div>
 </div>
 
 
