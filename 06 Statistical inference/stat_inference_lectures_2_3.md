@@ -343,3 +343,193 @@ reject $H_0$ if Z-score is greater than hypothesized mean (at $\alpha=0.05$).
 
 or whenever:
 $$\sqrt{n}(\hat X - \mu_0)/s > Z_{1-\alpha}$$
+
+## two siced test
+2 sided tests
+$ H_a: \mu \neq K$
+We reject if the test statistic is too large or too small.
+
+need to split $\alpha=0.05$ into 2 tails
+
+
+```r
+qt(.025,15) #reject 2 sided if lower
+```
+
+```
+## [1] -2.13145
+```
+
+```r
+qt(.975,15) #reject 2 sided if higher
+```
+
+```
+## [1] 2.13145
+```
+
+### T test in R
+
+
+```r
+require(UsingR)
+```
+
+```
+## Loading required package: UsingR
+```
+
+```
+## Warning: package 'UsingR' was built under R version 3.5.2
+```
+
+```
+## Loading required package: MASS
+```
+
+```
+## 
+## Attaching package: 'MASS'
+```
+
+```
+## The following object is masked from 'package:dplyr':
+## 
+##     select
+```
+
+```
+## Loading required package: HistData
+```
+
+```
+## Warning: package 'HistData' was built under R version 3.5.2
+```
+
+```
+## Loading required package: Hmisc
+```
+
+```
+## Warning: package 'Hmisc' was built under R version 3.5.2
+```
+
+```
+## Loading required package: lattice
+```
+
+```
+## Loading required package: survival
+```
+
+```
+## Loading required package: Formula
+```
+
+```
+## 
+## Attaching package: 'Hmisc'
+```
+
+```
+## The following objects are masked from 'package:dplyr':
+## 
+##     src, summarize
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     format.pval, units
+```
+
+```
+## 
+## Attaching package: 'UsingR'
+```
+
+```
+## The following object is masked from 'package:survival':
+## 
+##     cancer
+```
+
+```r
+require(ggplot2)
+data(father.son)
+t.test(father.son$sheight - father.son$fheight)
+```
+
+```
+## 
+## 	One Sample t-test
+## 
+## data:  father.son$sheight - father.son$fheight
+## t = 11.789, df = 1077, p-value < 2.2e-16
+## alternative hypothesis: true mean is not equal to 0
+## 95 percent confidence interval:
+##  0.8310296 1.1629160
+## sample estimates:
+## mean of x 
+## 0.9969728
+```
+
+```r
+qplot(father.son$fheight,father.son$sheight)
+```
+
+![](stat_inference_lectures_2_3_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
+```r
+require(party)
+cfit <- ctree(sheight~., data = father.son)
+plot(cfit)
+```
+
+![](stat_inference_lectures_2_3_files/figure-html/unnamed-chunk-7-2.png)<!-- -->
+
+```r
+cfit2 <- mob(sheight~fheight|fheight, data = father.son)
+plot(cfit2)
+```
+
+![](stat_inference_lectures_2_3_files/figure-html/unnamed-chunk-7-3.png)<!-- -->
+
+### difference between groups
+$ H_0: \mu_1 =\mu_2$
+same as
+$ H_0: \mu_1 -\mu_2=0$
+
+
+```r
+library(datasets)
+require(reshape2)
+require(ggplot2)
+
+data("ChickWeight")
+
+wideCW <- dcast(ChickWeight, Diet + Chick ~ Time, value.var = "weight")
+require(dplyr)
+names(wideCW)[-(1:2)] <-
+    paste("time", names(wideCW)[-(1:2)], sep = "")
+
+wideCW <- wideCW %>% mutate(gain = time21 - time0)
+
+wideCW14 <- subset(wideCW, Diet %in% c(1,4))
+t.test(gain~Diet, paired = FALSE, var.equal = TRUE, data = wideCW14)
+```
+
+```
+## 
+## 	Two Sample t-test
+## 
+## data:  gain by Diet
+## t = -2.7252, df = 23, p-value = 0.01207
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -108.14679  -14.81154
+## sample estimates:
+## mean in group 1 mean in group 4 
+##        136.1875        197.6667
+```
+

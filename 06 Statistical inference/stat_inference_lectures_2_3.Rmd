@@ -199,3 +199,27 @@ plot(cfit)
 cfit2 <- mob(sheight~fheight|fheight, data = father.son)
 plot(cfit2)
 ```
+
+### difference between groups
+$ H_0: \mu_1 =\mu_2$
+same as
+$ H_0: \mu_1 -\mu_2=0$
+
+```{r chickweight}
+library(datasets)
+require(reshape2)
+require(ggplot2)
+
+data("ChickWeight")
+
+wideCW <- dcast(ChickWeight, Diet + Chick ~ Time, value.var = "weight")
+require(dplyr)
+names(wideCW)[-(1:2)] <-
+    paste("time", names(wideCW)[-(1:2)], sep = "")
+
+wideCW <- wideCW %>% mutate(gain = time21 - time0)
+
+wideCW14 <- subset(wideCW, Diet %in% c(1,4))
+t.test(gain~Diet, paired = FALSE, var.equal = TRUE, data = wideCW14)
+```
+
