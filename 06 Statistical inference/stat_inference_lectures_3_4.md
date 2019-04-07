@@ -267,7 +267,7 @@ chick <- mob(data= ChickWeight, weight~Time|Diet, model = glinearModel, family=g
 plot(chick)
 ```
 
-![](stat_inference_lectures_2_3_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+![](stat_inference_lectures_3_4_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 ```r
 wideCW <- dcast(ChickWeight, Diet+Chick~Time, value.var = "weight")
@@ -310,7 +310,7 @@ ggplot(data=wideCW, aes(x= factor(Diet), y = gain, fill=Diet))+geom_violin()
 ## Warning: Removed 5 rows containing non-finite values (stat_ydensity).
 ```
 
-![](stat_inference_lectures_2_3_files/figure-html/unnamed-chunk-5-2.png)<!-- -->
+![](stat_inference_lectures_3_4_files/figure-html/unnamed-chunk-5-2.png)<!-- -->
 
 ```r
 wideCW14 <- subset(wideCW, Diet %in% c(1,4))
@@ -478,7 +478,7 @@ t.test(father.son$sheight - father.son$fheight)
 qplot(father.son$fheight,father.son$sheight)
 ```
 
-![](stat_inference_lectures_2_3_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+![](stat_inference_lectures_3_4_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
 
 ```r
 require(party)
@@ -486,14 +486,14 @@ cfit <- ctree(sheight~., data = father.son)
 plot(cfit)
 ```
 
-![](stat_inference_lectures_2_3_files/figure-html/unnamed-chunk-7-2.png)<!-- -->
+![](stat_inference_lectures_3_4_files/figure-html/unnamed-chunk-7-2.png)<!-- -->
 
 ```r
 cfit2 <- mob(sheight~fheight|fheight, data = father.son)
 plot(cfit2)
 ```
 
-![](stat_inference_lectures_2_3_files/figure-html/unnamed-chunk-7-3.png)<!-- -->
+![](stat_inference_lectures_3_4_files/figure-html/unnamed-chunk-7-3.png)<!-- -->
 
 ### difference between groups
 $ H_0: \mu_1 =\mu_2$
