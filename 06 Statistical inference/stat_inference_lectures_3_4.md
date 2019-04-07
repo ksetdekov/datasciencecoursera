@@ -665,3 +665,96 @@ md + c(-1, 1) * qt(.95, n + n - 2) * semd
 ```
 ## [1] -5.363579 -2.636421
 ```
+
+# week 4
+** power**
+
+power - probability to reject null when it is false.
+Power is a good thing, you want more.
+Power = 1 - Type II error
+
+Used for designing studies, wanting high power.
+Type II error - fail to reject $H_0$ , when it is false. ($ \beta $)
+$$ Power=1-\beta $$
+we put requested $ \mu $ into test statistic calculation and get a Power thta matches the $ \mu $ we want to detect.
+
+- $H_0: \mu = 30$ versus $H_a: \mu > 30$
+- Then power is 
+$$P\left(\frac{\bar X - 30}{s /\sqrt{n}} > t_{1-\alpha,n-1} ~;~ \mu = \mu_a \right)$$
+- Note that this is a function that depends on the specific value of $\mu_a$!
+- Notice as $\mu_a$ approaches $30$ the power approaches $\alpha$
+
+## calculating power for gaussian data
+
+- We reject if $$\frac{\bar X - 30}{\sigma /\sqrt{n}} > z_{1-\alpha}$$ 
+    - Equivalently if $\bar X > 30 + Z_{1-\alpha} \frac{\sigma}{\sqrt{n}}$
+- Under $H_0 : \bar X \sim N(\mu_0, \sigma^2 / n)$
+- Under $H_a : \bar X \sim N(\mu_a, \sigma^2 / n)$
+
+## Example continued
+- $\mu_a = 32$, $\mu_0 = 30$, $n =16$, $\sigma = 4$
+
+```r
+mu0 = 30; mua = 32; sigma = 4; n = 16; alpha = 0.05
+z = qnorm(1 - alpha)
+pnorm(mu0 + z * sigma / sqrt(n), mean = mu0, sd = sigma / sqrt(n), 
+      lower.tail = FALSE)
+```
+
+```
+## [1] 0.05
+```
+
+```r
+pnorm(mu0 + z * sigma / sqrt(n), mean = mua, sd = sigma / sqrt(n), 
+      lower.tail = FALSE)
+```
+
+```
+## [1] 0.63876
+```
+
+```r
+#65% probability to detect
+```
+
+---
+##  Plotting the power curve
+
+<img src="stat_inference_lectures_3_4_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
+
+## Graphical Depiction of Power
+
+* red - distribution of sample mean
+* blue - under the alternative sample mean distribution
+* red to the right 
+* 5% is to the right of the line under red
+* power is area of blue to the right of blue
+* higher sigma - lower power
+* bigger difference in means - higher power
+* higher n - higher power
+* lower alpha - lower power
+
+```r
+library(manipulate)
+mu0 = 30
+myplot <- function(sigma, mua, n, alpha){
+    g = ggplot(data.frame(mu = c(27, 36)), aes(x = mu))
+    g = g + stat_function(fun=dnorm, geom = "line", 
+                          args = list(mean = mu0, sd = sigma / sqrt(n)), 
+                          size = 2, col = "red")
+    g = g + stat_function(fun=dnorm, geom = "line", 
+                          args = list(mean = mua, sd = sigma / sqrt(n)), 
+                          size = 2, col = "blue")
+    xitc = mu0 + qnorm(1 - alpha) * sigma / sqrt(n)
+    g = g + geom_vline(xintercept=xitc, size = 3)
+    g
+}
+manipulate(
+    myplot(sigma, mua, n, alpha),
+    sigma = slider(1, 10, step = 1, initial = 4),
+    mua = slider(30, 35, step = 1, initial = 32),
+    n = slider(1, 50, step = 1, initial = 16),
+    alpha = slider(0.01, 0.1, step = 0.01, initial = 0.05)
+    )
+```
