@@ -394,3 +394,33 @@ manipulate(
     )
 
 ```
+
+# Power.t.test
+needs non-central t distribution
+power.t.test depends only on $ \frac{\mu-\mu_0}{\sigma}$
+
+## Example
+$H_0: \mu=\mu_0$ 
+$H_0: \mu>\mu_0$ 
+
+same delta/sd - same result
+### power
+```{r}
+power.t.test(n = 16, delta = 2 / 4, sd=1, type = "one.sample",  alt = "one.sided")$power
+power.t.test(n = 16, delta = 2, sd=4, type = "one.sample",  alt = "one.sided")$power
+power.t.test(n = 16, delta = 100, sd=200, type = "one.sample", alt = "one.sided")$power
+```
+
+### sample size
+```{r}
+power.t.test(power = .8, delta = 2 / 4, sd=1, type = "one.sample",  alt = "one.sided")$n
+power.t.test(power = .8, delta = 2, sd=4, type = "one.sample",  alt = "one.sided")$n
+power.t.test(power = .8, delta = 100, sd=200, type = "one.sample", alt = "one.sided")$n
+```
+
+### determine sd
+```{r}
+power.t.test(power = .95, n = 400, sd=35/12, type = "one.sample", alternative = "one.sided")
+```
+
+one of the first attacks on power calculation.
