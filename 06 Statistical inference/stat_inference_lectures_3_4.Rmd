@@ -321,7 +321,7 @@ $$P\left(\frac{\bar X - 30}{s /\sqrt{n}} > t_{1-\alpha,n-1} ~;~ \mu = \mu_a \rig
 ## calculating power for gaussian data
 
 - We reject if $$\frac{\bar X - 30}{\sigma /\sqrt{n}} > z_{1-\alpha}$$ 
-    - Equivalently if $\bar X > 30 + Z_{1-\alpha} \frac{\sigma}{\sqrt{n}}$
+- Equivalently if $$\bar X > 30 + Z_{1-\alpha} \frac{\sigma}{\sqrt{n}}$$
 - Under $H_0 : \bar X \sim N(\mu_0, \sigma^2 / n)$
 - Under $H_a : \bar X \sim N(\mu_a, \sigma^2 / n)$
 
@@ -630,3 +630,66 @@ g = g + geom_histogram(fill = "lightblue", color = "black", binwidth = 1)
 g = g + geom_vline(xintercept = observedStat, size = 2)
 g
 ```
+
+Test
+
+```{r one}
+baseline <- c(140,138,150,148,135)
+twoweek <- c(132,135, 151, 146, 130)
+medical <- as.data.frame(cbind(baseline,twoweek))
+t.test(medical$twoweek- medical$baseline)
+```
+
+```{r two}
+1100+c(qt(.025,8),qt(1-0.025,8))*30/3
+```
+
+```{r tree}
+pbinom(2, size = 4, prob = 0.5, lower.tail = FALSE)
+```
+
+```{r four}
+ppois(10, lambda = 0.01 * 1787)
+
+```
+
+```{r five}
+sp <- sqrt((8 * 1.8^2 + 8 * 1.5^2) / (9 + 9 - 2))
+teststatistic <- (1 +3) /( sp * (1 / 9 + 1 / 9)^.5)
+pt(teststatistic,20, lower.tail = F)
+
+```
+
+```{r seven}
+mu0 = 0; mua = .01; sigma = 0.04; n = 100; alpha = 0.05
+z = qnorm(1 - alpha)
+pnorm(mu0 + z * sigma / sqrt(n), mean = mua, sd = sigma / sqrt(n), 
+      lower.tail = FALSE)
+#65% probability to detect
+
+
+pnorm(1.645 * 0.004, mean = 0.01, sd = 0.004, lower.tail = FALSE)
+```
+
+```{r eight}
+mu0 = 0; mua = .01; sigma = 0.04; n = 140; alpha = 0.05
+z = qnorm(1 - alpha)
+pnorm(mu0 + z * sigma / sqrt(n), mean = mua, sd = sigma / sqrt(n), 
+      lower.tail = FALSE)
+#65% probability to detect
+
+ceiling((4 * (qnorm(0.95) - qnorm(0.1)))^2)
+```
+
+
+question|short|answer
+---|---|---
+1|ttest|0.087
+2|sample average confidence interval|1077 to 1123
+3|binomical test|0.62 incorrect
+4|poison test?|0.03
+5|pvalue|very low
+6|twosided test|No you wouldn't reject.
+7|power|0.80
+8|n for power | 140
+9|big alpha? | big power
