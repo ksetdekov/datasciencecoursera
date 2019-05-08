@@ -564,3 +564,69 @@ g
 
 * bootstrap is non-parametric
 * there are better confidence intervals Biass corrected and accelerated interval" BCA
+
+## permutation test
+
+```{r, fig.height=6, fig.width=8, echo=FALSE, fig.align='center'}
+data(InsectSprays)
+g = ggplot(InsectSprays, aes(spray, count, fill = spray))
+g = g + geom_boxplot()
+g
+```
+
+Example - insect death count from sprays
+
+
+* $H_0$ - distribution of the observations from each grop is the same
+* labels are irrelevant at $H_0$
+* dataframe with count and spray
+* perpmutate group labels
+* recalculate the statistic
+    * mean disfference 
+    * geometric means
+    * T statistic
+* calculate the % of simulations where the simulated stat was more extreme (toward the alternative) than observed
+
+
+## Variations on permutation testing
+There are different implementations and names of the permutation tests.
+
+Data type | Statistic | Test name 
+---|---|---|
+Ranks | rank sum | rank sum test
+Binary | hypergeometric prob | Fisher's exact test
+Raw data | | ordinary permutation test
+
+- Also, so-called *randomization tests* are exactly permutation tests, with a different motivation.
+- For matched data, one can randomize the signs
+  - For ranks, this results in the signed rank test
+- Permutation strategies work for regression as well
+  - Permuting a regressor of interest
+- Permutation tests work very well in multivariate settings
+
+## Permutation test B v C group
+```{r}
+subdata <- InsectSprays[InsectSprays$spray %in% c("B", "C"), ]
+y <- subdata$count
+group <- as.character(subdata$spray)
+testStat <- function(w, g)
+    mean(w[g == "B"]) - mean(w[g == "C"])
+observedStat <- testStat(y, group)
+permutations <-
+    sapply(1:10000, function(i)
+        testStat(y, sample(group)))
+# difference in average count between b and c
+observedStat
+# share of more extreme
+mean(permutations > observedStat)
+# pvalue is very low - reject H0
+```
+
+## Histogram of permutations B v C
+```{r, echo= FALSE, fig.width=6, fig.height=6, fig.align='center'}
+g = ggplot(data.frame(permutations = permutations),
+           aes(permutations))
+g = g + geom_histogram(fill = "lightblue", color = "black", binwidth = 1)
+g = g + geom_vline(xintercept = observedStat, size = 2)
+g
+```
