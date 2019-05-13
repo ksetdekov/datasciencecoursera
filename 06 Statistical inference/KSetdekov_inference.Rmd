@@ -10,7 +10,7 @@ output:
 
 In the first part of this assignment, I will be exploring results of the simulation of exponential distribution and properties of the sample mean. In the second part of the assignment, I will explore the tooth growth dataset and apply statistical inference tools learned from the course.
 
-# Part 1.A simulation exercise.
+# Part 1. A simulation exercise.
 ## Simulations: 
 
 I simulate 1000 means of 40 exponential distribution and save them in a vector **mns**.
@@ -19,7 +19,8 @@ I simulate 1000 means of 40 exponential distribution and save them in a vector *
 require(knitr)
 require(ggplot2)
 require(ggpubr)
-
+require(gridExtra)
+require(dplyr)
 ```
 ```{r simulation}
 set.seed(42)
@@ -80,15 +81,15 @@ ggqqplot(mns)
 
 
 
-# Basic inferential data analysis.
+# Part 2. Basic inferential data analysis.
+"Tooth" dataset consists of 60 observatiosn of measurements of tooth growth related cells in 60 guinea pigs. There were 3 dose levels of vitamin C (encoded as "dose") and 2 types of delivery methods, encoded as "supp", where VC is vitamin C and OJ is orange juice.
 
 ```{r tooth_exploratory, message=FALSE, warning=FALSE, fig.height = 3}
 tooth <- datasets::ToothGrowth
-
 summary(tooth)
 
-library(ggplot2)
-library(gridExtra)
+
+
 p1 <-
     ggplot(tooth, aes(x = dose, y = len, color = supp)) +
     geom_point() + geom_smooth() +
@@ -99,18 +100,54 @@ p2 <-
 grid.arrange(p1, p2, nrow = 1)
 ```
 
+On the plots we can see that Vitamin C leads to higher variance in tooth growth in total.
+If we look at mean length by supp and dose, we can see that it increases with dose and is higher for OJ than for VC for all doses, excep 2.0 mg.
+```{r dosevssupp}
+kable(tooth %>% group_by(supp, dose) %>% summarise(mean(len)))
+```
+
+
 ## testing
-Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose. (Only use the techniques from class, even if there's other approaches worth considering)
+### Tooth growth vs supp testing
+
+```{r supp}
+t.test(len~supp, paired = FALSE, var.equal = FALSE, data = tooth)
+
+```
+We conduct t-test for difference in means between group OJ and VC. We can see that the confidence interval includes zero and p-value > 0.05. We cannot reject the $H_0$ of no difference between these groups in terms of mean tooth growth.
+
+However, if we  look at permutation testing and compare mean tooth growth for OJ and VC, we can reject $H_0$ at $\alpha = 0.05$.
+```{r permutation}
+toothshort <- tooth
+y <- toothshort$len
+group <- as.character(toothshort$supp)
+testStat <- function(w, g)
+    mean(w[g == "OJ"]) - mean(w[g == "VC"])
+observedStat <- testStat(y, group)
+permutations <-
+    sapply(1:10000, function(i)
+        testStat(y, sample(group)))
+# difference in average count between b and c
+observedStat
+# share of more extreme
+mean(permutations > observedStat)
+# pvalue is very low - reject H0
+```
+
+### Tooth growth vs dose testing
+
+```{r dose}
+tooth2doses <- subset(tooth, dose %in% c(0.5,2))
+t.test(len~dose, paired = FALSE, var.equal = FALSE, data = tooth2doses)
+```
+We conduct t-test for difference in means between group doses of 0.5 and 2 mg. We can see that p-value < 0.01. We can reject the $H_0$ of no difference between mean tooth growh for low and high dosages of Vitamin C.
 
 ## conclusions
-State your conclusions and the assumptions needed for your conclusions.
+Based on t-test and visual analysis of the data, we conclude that the amount of vitamin C consumed is linked to tooth growth, however the type of delivery in genereal does not lead to a statistically significant difference in tooth growth.
 
+For these two tests I used the following assumptions:
 
-# review criteria
+* These are unpaired observations;
+* Variance in unequal between tested groups.
 
-* Did you show where the distribution is centered at and compare it to the theoretical center of the distribution?
-* Did you show how variable it is and compare it to the theoretical variance of the distribution?
-* Did you perform an exploratory data analysis of at least a single plot or table highlighting basic features of the data?
-* Did the student perform some relevant confidence intervals and/or tests?
-* Were the results of the tests and/or intervals interpreted in the context of the problem correctly?
-* Did the student describe the assumptions needed for their conclusions?
+Using perputation testing, we can say that at $\alpha = 0.05$, there is higher mean tooth growth for OJ, but this is not significant at a higher confidence level.
