@@ -11,6 +11,8 @@ https://github.com/bcaffo/courses/tree/master/07_RegressionModels
 https://www.youtube.com/playlist?list=PLpl-gQkQivXjqHAJd2t-J_One_fYE55tC
 https://leanpub.com/regmods
 http://datasciencespecialization.github.io/ 
+### advanced
+https://leanpub.com/lm 
 
 ## questions for the class
 
