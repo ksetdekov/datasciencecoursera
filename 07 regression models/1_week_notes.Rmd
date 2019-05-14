@@ -1,0 +1,21 @@
+# week 1
+# Introduction to regression
+
+## linear model - great start
+
+## material
+read simply statistics blog
+https://simplystatistics.org
+
+https://github.com/bcaffo/courses/tree/master/07_RegressionModels
+https://www.youtube.com/playlist?list=PLpl-gQkQivXjqHAJd2t-J_One_fYE55tC
+https://leanpub.com/regmods
+http://datasciencespecialization.github.io/ 
+
+## questions for the class
+
+* use simple relations - parents and child heights
+* find parsimonious, easily described mean relationship
+* quantify what genotype info has beyond parental height in child height
+* how we take data and generalize? what assumptions are needed for this?
+* why there is a regression to the mean?
