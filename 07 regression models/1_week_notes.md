@@ -7,10 +7,7 @@ output:
     keep_md: yes
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,
-                      cache = TRUE)
-```
+
 
 # week 1
 # Introduction to regression
