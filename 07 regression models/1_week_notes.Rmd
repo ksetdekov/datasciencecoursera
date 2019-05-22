@@ -48,3 +48,46 @@ https://leanpub.com/lm
 `
 install_from_swirl("Regression Models")
 `
+Galton data
+
+Looking at distributions
+
+```{r galtondata1}
+require("UsingR")
+require(ggplot2)
+require(reshape2)
+data("galton")
+long <- melt(galton)
+g <- ggplot(long, aes(x = value, fill = variable))+
+    geom_histogram(color="black",
+                   binwidth = 1)+
+    facet_grid(.~variable)
+g
+```
+
+### finding the middle with least squares
+
+$\mu$
+  that minimizes $$\sum_{i=1}^n (Y_i - \mu)^2$$
+
+```{r manupulatemean}
+require(manipulate)
+myHist <- function(mu) {
+    mse <- mean((galton$child - mu) ^ 2)
+    g <- ggplot(galton, aes(x = child)) +
+        geom_histogram(fill = "salmon", binwidth = 1) +
+        geom_vline(xintercept = mu, size = 3) +
+        ggtitle(paste("mu =", mu, ", MSE = ", round(mse, 2), sep = ""))
+    g
+}
+#manipulate(myHist(mu), mu=slider(62, 74, step = 0.1))
+
+## true mean
+g <- ggplot(galton, aes(x = child)) +
+    geom_histogram(fill = "salmon",
+                   binwidth = 1,
+                   color = "black") +
+    geom_vline(xintercept = mean(galton$child), size = 3)
+g
+```
+
