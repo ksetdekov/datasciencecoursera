@@ -52,89 +52,46 @@ Looking at distributions
 
 ```r
 require("UsingR")
+require(ggplot2)
+require(reshape2)
+data("galton")
+library(dplyr)
 ```
 
 ```
-## Loading required package: UsingR
-```
-
-```
-## Warning: package 'UsingR' was built under R version 3.5.2
-```
-
-```
-## Loading required package: MASS
-```
-
-```
-## Loading required package: HistData
-```
-
-```
-## Warning: package 'HistData' was built under R version 3.5.2
-```
-
-```
-## Loading required package: Hmisc
-```
-
-```
-## Warning: package 'Hmisc' was built under R version 3.5.2
-```
-
-```
-## Loading required package: lattice
-```
-
-```
-## Loading required package: survival
-```
-
-```
-## Loading required package: Formula
-```
-
-```
-## Loading required package: ggplot2
-```
-
-```
-## Warning: package 'ggplot2' was built under R version 3.5.2
+## Warning: package 'dplyr' was built under R version 3.5.2
 ```
 
 ```
 ## 
-## Attaching package: 'Hmisc'
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:Hmisc':
+## 
+##     src, summarize
+```
+
+```
+## The following object is masked from 'package:MASS':
+## 
+##     select
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
 ```
 
 ```
 ## The following objects are masked from 'package:base':
 ## 
-##     format.pval, units
-```
-
-```
-## 
-## Attaching package: 'UsingR'
-```
-
-```
-## The following object is masked from 'package:survival':
-## 
-##     cancer
+##     intersect, setdiff, setequal, union
 ```
 
 ```r
-require(ggplot2)
-require(reshape2)
-```
-
-```
-## Loading required package: reshape2
-```
-
-```r
-data("galton")
 long <- melt(galton)
 ```
 
@@ -191,4 +148,56 @@ g
 ```
 
 ![](1_week_notes_files/figure-html/manupulatemean-1.png)<!-- -->
+
+
+```r
+ggplot(galton, aes(x = parent, y = child)) +
+    geom_jitter()
+```
+
+![](1_week_notes_files/figure-html/childplot-1.png)<!-- -->
+
+```r
+freqData <- as.data.frame(table(galton$child, galton$parent))
+names(freqData) <- c("child", "parent", "freq")
+freqData$child <- as.numeric(as.character(freqData$child))
+freqData$parent <- as.numeric(as.character(freqData$parent))
+g <- ggplot(filter(freqData, freq > 0), aes(x = parent, y = child))
+g <- g  + scale_size(range = c(2, 20), guide = "none" )
+g <- g + geom_point(colour="grey50", aes(size = freq+20, show_guide = FALSE))
+```
+
+```
+## Warning: Ignoring unknown aesthetics: show_guide
+```
+
+```r
+g <- g + geom_point(aes(colour=freq, size = freq))
+g <- g + scale_colour_gradient(low = "lightblue", high="white")                    
+g
+```
+
+![](1_week_notes_files/figure-html/childplot-2.png)<!-- -->
+
+### Regreassion through the origin.
+
+Consider picking the slope $\beta$ that minimizes $$\sum_{i=1}^n (Y_i - X_i \beta)^2$$
+
+
+### In the next few lectures we'll talk about why this is the solution
+
+```r
+lm(I(child - mean(child))~ I(parent - mean(parent)) - 1, data = galton)
+```
+
+```
+## 
+## Call:
+## lm(formula = I(child - mean(child)) ~ I(parent - mean(parent)) - 
+##     1, data = galton)
+## 
+## Coefficients:
+## I(parent - mean(parent))  
+##                   0.6463
+```
 
