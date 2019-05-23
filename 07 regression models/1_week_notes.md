@@ -314,3 +314,13 @@ g
 
 ![](1_week_notes_files/figure-html/regmeanexample-1.png)<!-- -->
 Level of regression to the mean - is just correlation.
+
+
+```r
+all.equal(c(1:10), c(1:10))
+```
+
+```
+## [1] TRUE
+```
+

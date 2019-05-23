@@ -210,3 +210,8 @@ g <- ggplot(data.frame(x=x, y=y), aes(x = x, y = y))+
 g
 ```
 Level of regression to the mean - is just correlation.
+
+```{r swirl1}
+all.equal(c(1:10), c(1:10))
+```
+
