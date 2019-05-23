@@ -242,3 +242,32 @@ $$
 where $S_x$ and $S_y$ are the estimates of standard deviations 
 for the $X$ observations and $Y$ observations, respectively.
 
+## linear least squares
+
+## Results
+* The least squares model fit to the line $Y = \beta_0 + \beta_1 X$ through the data pairs $(X_i, Y_i)$ with $Y_i$ as the outcome obtains the line $Y = \hat \beta_0 + \hat \beta_1 X$ where
+  $$\hat \beta_1 = Cor(Y, X) \frac{Sd(Y)}{Sd(X)} ~~~ \hat \beta_0 = \bar Y - \hat \beta_1 \bar X$$
+* $\hat \beta_1$ has the units of $Y / X$, $\hat \beta_0$ has the units of $Y$.
+* The line passes through the point $(\bar X, \bar Y$)
+* The slope of the regression line with $X$ as the outcome and $Y$ as the predictor is $Cor(Y, X) Sd(X)/ Sd(Y)$. 
+* The slope is the same one you would get if you centered the data,
+$(X_i - \bar X, Y_i - \bar Y)$, and did regression through the origin.
+* If you normalized the data, $\{ \frac{X_i - \bar X}{Sd(X)}, \frac{Y_i - \bar Y}{Sd(Y)}\}$, the slope is $Cor(Y, X)$.
+
+## Revisiting Galton's data
+### Double check our calculations using R
+
+
+```r
+y <- galton$child
+x <- galton$parent
+beta1 <- cor(y, x) *  sd(y) / sd(x)
+beta0 <- mean(y) - beta1 * mean(x)
+rbind(c(beta0, beta1), coef(lm(y ~ x)))
+```
+
+```
+##      (Intercept)         x
+## [1,]    23.94153 0.6462906
+## [2,]    23.94153 0.6462906
+```
