@@ -173,7 +173,8 @@ g <- g + geom_point(colour="grey50", aes(size = freq+20, show_guide = FALSE))
 
 ```r
 g <- g + geom_point(aes(colour=freq, size = freq))
-g <- g + scale_colour_gradient(low = "lightblue", high="white")                    
+g <- g + scale_colour_gradient(low = "lightblue", high="white")
+g <- g + geom_smooth(method = "lm", formula = y~x) 
 g
 ```
 
@@ -271,3 +272,45 @@ rbind(c(beta0, beta1), coef(lm(y ~ x)))
 ## [1,]    23.94153 0.6462906
 ## [2,]    23.94153 0.6462906
 ```
+
+## regression to the mean
+
+
+```r
+x <- rnorm(100)
+y <- rnorm(100)
+odr <- order(x)
+x[odr[100]] #biggest X
+```
+
+```
+## [1] 1.976297
+```
+
+```r
+y[odr[100]] #its pair
+```
+
+```
+## [1] 0.756592
+```
+
+
+```r
+require(UsingR)
+data("father.son")
+y <- (father.son$sheight - mean(father.son$sheight))/sd(father.son$sheight)
+x <- (father.son$fheight - mean(father.son$fheight))/sd(father.son$fheight)
+rho <- cor(x,y)
+g <- ggplot(data.frame(x=x, y=y), aes(x = x, y = y))+
+    geom_point(size = 4, colour = "salmon", alpha = 0.2)+
+    geom_abline(intercept = 0, slope = 1)+
+    geom_vline(xintercept = 0)+
+    geom_hline(yintercept = 0)+
+    geom_abline(intercept = 0, slope = rho, size = 2)+
+    geom_abline(intercept = 0, slope = 1/rho, size = 2)
+g
+```
+
+![](1_week_notes_files/figure-html/regmeanexample-1.png)<!-- -->
+Level of regression to the mean - is just correlation.
