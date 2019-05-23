@@ -119,3 +119,44 @@ Consider picking the slope $\beta$ that minimizes $$\sum_{i=1}^n (Y_i - X_i \bet
 lm(I(child - mean(child))~ I(parent - mean(parent)) - 1, data = galton)
 ```
 
+## Basic notation and background 
+
+### Variance
+
+Define the empirical variance as 
+$$
+S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar X)^2 
+= \frac{1}{n-1} \left( \sum_{i=1}^n X_i^2 - n \bar X ^ 2 \right)
+$$
+ 
+The empirical standard deviation is defined as
+$S = \sqrt{S^2}$. Notice that the standard deviation has the same units as the data.
+
+The data defined by $X_i / s$ have empirical standard deviation 1. This is called "scaling" the data.
+
+## Normalization
+
+The data defined by
+$$
+Z_i = \frac{X_i - \bar X}{s}
+$$
+
+have empirical mean zero and empirical standard deviation 1. 
+
+## The empirical covariance
+ Consider now when we have pairs of data, $(X_i, Y_i)$.
+
+ Their empirical covariance is 
+$$
+Cov(X, Y) = 
+\frac{1}{n-1}\sum_{i=1}^n (X_i - \bar X) (Y_i - \bar Y)
+= \frac{1}{n-1}\left( \sum_{i=1}^n X_i Y_i - n \bar X \bar Y\right)
+$$
+
+ The correlation is defined is
+$$
+Cor(X, Y) = \frac{Cov(X, Y)}{S_x S_y}
+$$
+where $S_x$ and $S_y$ are the estimates of standard deviations 
+for the $X$ observations and $Y$ observations, respectively.
+
