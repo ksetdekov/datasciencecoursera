@@ -235,3 +235,95 @@ predict(fit, newdata = data.frame(carat = newx))
 ##  335.7381  745.0508 1228.7840
 ```
 
+## residuals
+
+###Properties of the residuals
+
+* $E[e_i] = 0$.
+* If an intercept is included, $\sum_{i=1}^n e_i = 0$
+* If a regressor variable, $X_i$, is included in the model $\sum_{i=1}^n e_i X_i = 0$. 
+* Residuals are useful for investigating poor model fit.
+* Positive residuals are above the line, negative residuals are below.
+* Residuals can be thought of as the outcome ($Y$) with the
+  linear association of the predictor ($X$) removed.
+* One differentiates residual variation (variation after removing
+the predictor) from systematic variation (variation explained by the regression model).
+* Residual plots highlight poor model fit.
+
+
+```r
+data("diamond")
+y <- diamond$price
+x <- diamond$carat
+n <- length(y)
+fit <- lm(y ~ x)
+e <- resid(fit)
+yhat <- predict(fit)
+max(abs(e - (y - yhat)))
+```
+
+```
+## [1] 9.485746e-13
+```
+
+```r
+max(abs(e - (y - coef(fit)[1] - coef(fit)[2] * x)))
+```
+
+```
+## [1] 9.485746e-13
+```
+
+
+```r
+plot(x, e,  
+     xlab = "Mass (carats)", 
+     ylab = "Residuals (SIN $)", 
+     bg = "lightblue", 
+     col = "black", cex = 2, pch = 21,frame = FALSE)
+abline(h = 0, lwd = 2)
+for (i in 1 : n) 
+  lines(c(x[i], x[i]), c(e[i], 0), col = "red" , lwd = 2)
+```
+
+![](2_week_notes_files/figure-html/residplot-1.png)<!-- -->
+### Diamond data residual plot
+
+
+```r
+diamond$e <- resid(lm(price ~ carat, data = diamond))
+g = ggplot(diamond, aes(x = carat, y = e))
+g = g + xlab("Mass (carats)")
+g = g + ylab("Residual price (SIN $)")
+g = g + geom_hline(yintercept = 0, size = 2)
+g = g + geom_point(size = 5, colour = "blue", alpha=0.2)
+g
+```
+
+![](2_week_notes_files/figure-html/diamondresidualsgg-1.png)<!-- -->
+### Diamond data residual plot mean model vs linear model
+
+
+```r
+e = c(resid(lm(price ~ 1, data = diamond)),
+      resid(lm(price ~ carat, data = diamond)),
+      resid(lm(price~ I(carat)+I(exp(carat)), data = diamond)))
+fit = factor(c(rep("Itc", nrow(diamond)),
+               rep("Itc, slope", nrow(diamond)),
+               rep("Itc, slope and exp", nrow(diamond))))
+g = ggplot(data.frame(e = e, fit = fit), aes(y = e, x = fit, fill = fit))
+g = g + geom_dotplot(binaxis = "y", size = 2, stackdir = "center", binwidth = 20)
+```
+
+```
+## Warning: Ignoring unknown parameters: size
+```
+
+```r
+g = g + xlab("Fitting approach")
+g = g + ylab("Residual price")
+g
+```
+
+![](2_week_notes_files/figure-html/twomodels-1.png)<!-- -->
+
