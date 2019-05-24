@@ -1,0 +1,29 @@
+---
+title: "Regression models lectures 2"
+author: "Kirill Setdekov"
+date: "May 22, 2019"
+output:
+  html_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      cache = TRUE)
+```
+
+# week 2
+
+## Statistical linear regression models
+
+How do we do inference?
+
+Consider developing a probabilistic model for linear regression
+$$
+Y_i = \beta_0 + \beta_1 X_i + \epsilon_{i}
+$$
+Here the $\epsilon_{i}$ are assumed iid $N(0, \sigma^2)$. 
+
+Note, $E[Y_i ~|~ X_i = x_i] = \mu_i = \beta_0 + \beta_1 x_i$
+
+Note, $Var(Y_i ~|~ X_i = x_i) = \sigma^2$.
