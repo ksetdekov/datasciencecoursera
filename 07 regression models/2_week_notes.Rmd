@@ -27,3 +27,69 @@ Here the $\epsilon_{i}$ are assumed iid $N(0, \sigma^2)$.
 Note, $E[Y_i ~|~ X_i = x_i] = \mu_i = \beta_0 + \beta_1 x_i$
 
 Note, $Var(Y_i ~|~ X_i = x_i) = \sigma^2$.
+
+### Interpretting regression coefficients, the slope
+* $\beta_0$ is the expected value of the response when the predictor is 0
+* $\beta_1$ is the expected change in response for a 1 unit change in the predictor
+$$
+E[Y ~|~ X = x+1] - E[Y ~|~ X = x] =
+\beta_0 + \beta_1 (x + 1) - (\beta_0 + \beta_1 x ) = \beta_1
+$$
+* Consider the impact of changing the units of $X$. 
+$$
+Y_i = \beta_0 + \beta_1 X_i + \epsilon_i
+= \beta_0 + \frac{\beta_1}{a} (X_i a) + \epsilon_i
+= \beta_0 + \tilde \beta_1 (X_i a) + \epsilon_i
+$$
+* Therefore, multiplication of $X$ by a factor $a$ results in dividing the coefficient by a factor of $a$. 
+* Example: $X$ is height in $m$ and $Y$ is weight in $kg$. Then $\beta_1$ is $kg/m$. Converting $X$ to $cm$ implies multiplying $X$ by $100 cm/m$. To get $\beta_1$ in the right units, we have to divide by $100 cm /m$ to get it to have the right units. 
+$$
+X m \times \frac{100cm}{m} = (100 X) cm
+~~\mbox{and}~~
+\beta_1 \frac{kg}{m} \times\frac{1 m}{100cm} = 
+\left(\frac{\beta_1}{100}\right)\frac{kg}{cm}
+$$
+
+
+### linear regression for prediciton
+
+Better if X is from the input cloud range.
+
+```{r diamondexample}
+require(UsingR)
+data("diamond")
+require(ggplot2)
+ggplot(diamond, aes(x = carat, y = price))+
+    labs( x = "Mass (carats)", y = "Price")+
+    geom_point(size = 5, colour = "blue", alpha=0.2)+
+    geom_smooth(method = "lm", colour = "black")
+
+fit <- lm(price~carat, data=diamond)
+fit
+summary(fit)
+coef(fit)
+```
+
+Getting a better interpretable intercept
+
+```{r diamondbetterintercept}
+fit2 <- lm(price ~ I(carat - mean(carat)), diamond)
+coef(fit2)
+```
+Intercept is a price for a mean diamond
+
+```{r diamondtenth}
+fit3 <- lm(price ~ I(carat * 10), diamond)
+coef(fit3)
+```
+
+This is 1/10 th carat.
+
+```{r diampredict}
+newx <- c(0.16, 0.27, 0.4)
+# manual precition
+coef(fit)[1] + coef(fit)[2] * newx
+# using predict
+predict(fit, newdata = data.frame(carat = newx))
+```
+
