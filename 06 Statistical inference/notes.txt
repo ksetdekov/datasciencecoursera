@@ -1,0 +1,2 @@
+### mean of two supply methods
+tapply(data$len,data$supp,mean)
