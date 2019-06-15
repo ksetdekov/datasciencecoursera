@@ -484,3 +484,115 @@ ggplot(dat, aes(x = x, y = y)) +
 ![](2_week_notes_files/figure-html/predicting-1.png)<!-- -->
 
 We are more confident near the mean than far away from them.
+
+#quiz
+
+```r
+#1
+
+x <- c(0.61, 0.93, 0.83, 0.35, 0.54, 0.16, 0.91, 0.62, 0.62)
+y <- c(0.67, 0.84, 0.6, 0.18, 0.85, 0.47, 1.1, 0.65, 0.36)
+fit <- lm(y ~ x)
+summary(fit)
+```
+
+```
+## 
+## Call:
+## lm(formula = y ~ x)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.27636 -0.18807  0.01364  0.16595  0.27143 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)  
+## (Intercept)   0.1885     0.2061   0.914    0.391  
+## x             0.7224     0.3107   2.325    0.053 .
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.223 on 7 degrees of freedom
+## Multiple R-squared:  0.4358,	Adjusted R-squared:  0.3552 
+## F-statistic: 5.408 on 1 and 7 DF,  p-value: 0.05296
+```
+
+```r
+#2
+0.223
+```
+
+```
+## [1] 0.223
+```
+
+```r
+#3
+data("mtcars")
+fit3 <- lm(mtcars$mpg ~ mtcars$wt)
+summary(fit3)
+```
+
+```
+## 
+## Call:
+## lm(formula = mtcars$mpg ~ mtcars$wt)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.5432 -2.3647 -0.1252  1.4096  6.8727 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  37.2851     1.8776  19.858  < 2e-16 ***
+## mtcars$wt    -5.3445     0.5591  -9.559 1.29e-10 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.046 on 30 degrees of freedom
+## Multiple R-squared:  0.7528,	Adjusted R-squared:  0.7446 
+## F-statistic: 91.38 on 1 and 30 DF,  p-value: 1.294e-10
+```
+
+```r
+predict(fit3, mean(mtcars$wt))
+```
+
+```
+##         1         2         3         4         5         6         7 
+## 23.282611 21.919770 24.885952 20.102650 18.900144 18.793255 18.205363 
+##         8         9        10        11        12        13        14 
+## 20.236262 20.450041 18.900144 18.900144 15.533127 17.350247 17.083024 
+##        15        16        17        18        19        20        21 
+##  9.226650  8.296712  8.718926 25.527289 28.653805 27.478021 24.111004 
+##        22        23        24        25        26        27        28 
+## 18.472586 18.926866 16.762355 16.735633 26.943574 25.847957 29.198941 
+##        29        30        31        32 
+## 20.343151 22.480940 18.205363 22.427495
+```
+
+```r
+data(mtcars)
+fit <- lm(mpg ~ I(wt - mean(wt)), data = mtcars)
+confint(fit)
+```
+
+```
+##                      2.5 %    97.5 %
+## (Intercept)      18.990982 21.190268
+## I(wt - mean(wt)) -6.486308 -4.202635
+```
+
+```r
+18.991
+```
+
+```
+## [1] 18.991
+```
+
+```r
+#4 
+#The estimated expected change in mpg per 1,000 lb increase in weight.
+```
+
