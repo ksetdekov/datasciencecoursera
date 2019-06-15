@@ -62,7 +62,7 @@ require(UsingR)
 ```
 
 ```
-## Warning: package 'UsingR' was built under R version 3.5.2
+## Warning: package 'UsingR' was built under R version 3.5.3
 ```
 
 ```
@@ -74,7 +74,7 @@ require(UsingR)
 ```
 
 ```
-## Warning: package 'HistData' was built under R version 3.5.2
+## Warning: package 'HistData' was built under R version 3.5.3
 ```
 
 ```
@@ -82,7 +82,7 @@ require(UsingR)
 ```
 
 ```
-## Warning: package 'Hmisc' was built under R version 3.5.2
+## Warning: package 'Hmisc' was built under R version 3.5.3
 ```
 
 ```
@@ -99,10 +99,6 @@ require(UsingR)
 
 ```
 ## Loading required package: ggplot2
-```
-
-```
-## Warning: package 'ggplot2' was built under R version 3.5.2
 ```
 
 ```
@@ -356,3 +352,135 @@ Statistics like $\frac{\hat \theta - \theta}{\hat \sigma_{\hat \theta}}$ often h
     4. Can be used to create a confidence interval for $\theta$ via $\hat \theta \pm Q_{1-\alpha/2} \hat \sigma_{\hat \theta}$
     where $Q_{1-\alpha/2}$ is the relevant quantile from either a normal or T distribution.
     
+
+```r
+library(UsingR)
+data(diamond)
+y <- diamond$price
+x <- diamond$carat
+n <- length(y)
+beta1 <- cor(y, x) * sd(y) / sd(x)
+beta0 <- mean(y) - beta1 * mean(x)
+e <- y - beta0 - beta1 * x
+sigma <- sqrt(sum(e ^ 2) / (n - 2))
+ssx <- sum((x - mean(x)) ^ 2)
+seBeta0 <- (1 / n + mean(x) ^ 2 / ssx) ^ .5 * sigma
+seBeta1 <- sigma / sqrt(ssx)
+tBeta0 <- beta0 / seBeta0
+tBeta1 <- beta1 / seBeta1
+pBeta0 <- 2 * pt(abs(tBeta0), df = n - 2, lower.tail = FALSE)
+pBeta1 <- 2 * pt(abs(tBeta1), df = n - 2, lower.tail = FALSE)
+coefTable <-
+    rbind(c(beta0, seBeta0, tBeta0, pBeta0),
+          c(beta1, seBeta1, tBeta1, pBeta1))
+colnames(coefTable) <-
+    c("Estimate", "Std. Error", "t value", "P(>|t|)")
+rownames(coefTable) <- c("(Intercept)", "x")
+## easy
+coefTable
+```
+
+```
+##              Estimate Std. Error   t value      P(>|t|)
+## (Intercept) -259.6259   17.31886 -14.99094 2.523271e-19
+## x           3721.0249   81.78588  45.49715 6.751260e-40
+```
+
+```r
+fit <- lm(y ~ x); 
+summary(fit)$coefficients
+```
+
+```
+##              Estimate Std. Error   t value     Pr(>|t|)
+## (Intercept) -259.6259   17.31886 -14.99094 2.523271e-19
+## x           3721.0249   81.78588  45.49715 6.751260e-40
+```
+
+```r
+summary(fit)
+```
+
+```
+## 
+## Call:
+## lm(formula = y ~ x)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -85.159 -21.448  -0.869  18.972  79.370 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  -259.63      17.32  -14.99   <2e-16 ***
+## x            3721.02      81.79   45.50   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 31.84 on 46 degrees of freedom
+## Multiple R-squared:  0.9783,	Adjusted R-squared:  0.9778 
+## F-statistic:  2070 on 1 and 46 DF,  p-value: < 2.2e-16
+```
+
+## Getting a confidence interval
+
+```r
+sumCoef <- summary(fit)$coefficients
+sumCoef[1,1] + c(-1, 1) * qt(.975, df = fit$df) * sumCoef[1, 2]
+```
+
+```
+## [1] -294.4870 -224.7649
+```
+
+```r
+sumCoef[2,1] + c(-1, 1) * qt(.975, df = fit$df) * sumCoef[2, 2]
+```
+
+```
+## [1] 3556.398 3885.651
+```
+With 95% confidence, we estimate that a 0.1 carat increase in
+diamond size results in a 355.6 to 388.6 increase in price in (Singapore) dollars.
+
+# Prediction
+## Prediction of outcomes
+* Consider predicting $Y$ at a value of $X$
+  * Predicting the price of a diamond given the carat
+  * Predicting the height of a child given the height of the parents
+* The obvious estimate for prediction at point $x_0$ is 
+$$
+\hat \beta_0 + \hat \beta_1 x_0
+$$
+* A standard error is needed to create a prediction interval.
+* There's a distinction between intervals for the regression
+  line at point $x_0$ and the prediction of what a $y$ would be
+  at point $x_0$. 
+* Line at $x_0$ se, $\hat \sigma\sqrt{\frac{1}{n} +  \frac{(x_0 - \bar X)^2}{\sum_{i=1}^n (X_i - \bar X)^2}}$
+* Prediction interval se at $x_0$, $\hat \sigma\sqrt{1 + \frac{1}{n} + \frac{(x_0 - \bar X)^2}{\sum_{i=1}^n (X_i - \bar X)^2}}$
+
+
+
+```r
+require(ggplot2)
+newx <- data.frame(x = seq(min(x), max(x), length = 100))
+p1 <-
+    data.frame(predict(fit, newdata = newx, interval = ("confidence")))
+p2 <-
+    data.frame(predict(fit, newdata = newx, interval = ("prediction")))
+p1$interval = "confidence"
+p2$interval = "prediction"
+p1$x <- newx$x
+p2$x <- newx$x
+dat <- rbind(p1, p2)
+names(dat)[1] <- "y"
+
+ggplot(dat, aes(x = x, y = y)) +
+    geom_ribbon(aes(ymin = lwr, ymax = upr, fill = interval), alpha = 0.2) +
+    geom_line() +
+    geom_point(data = data.frame(x = x, y = y), aes(x = x, y = y), size = 4)
+```
+
+![](2_week_notes_files/figure-html/predicting-1.png)<!-- -->
+
+We are more confident near the mean than far away from them.
