@@ -70,6 +70,10 @@ require(UsingR)
 ```
 
 ```
+## Warning: package 'MASS' was built under R version 3.5.3
+```
+
+```
 ## Loading required package: HistData
 ```
 
@@ -94,11 +98,19 @@ require(UsingR)
 ```
 
 ```
+## Warning: package 'survival' was built under R version 3.5.3
+```
+
+```
 ## Loading required package: Formula
 ```
 
 ```
 ## Loading required package: ggplot2
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 3.5.3
 ```
 
 ```
@@ -518,6 +530,14 @@ summary(fit)
 ```
 
 ```r
+0.05296
+```
+
+```
+## [1] 0.05296
+```
+
+```r
 #2
 0.223
 ```
@@ -594,5 +614,71 @@ confint(fit)
 ```r
 #4 
 #The estimated expected change in mpg per 1,000 lb increase in weight.
+
+
+#5
+fit <- lm(mpg ~ wt, data = mtcars)
+newwt <- data.frame(wt=c(3))
+predict(fit, newwt, interval = ("prediction"))
+```
+
+```
+##        fit      lwr      upr
+## 1 21.25171 14.92987 27.57355
+```
+
+```r
+27.57
+```
+
+```
+## [1] 27.57
+```
+
+```r
+#6
+fit <- lm(mpg ~ I(wt/2), data = mtcars)
+confint(fit)
+```
+
+```
+##                 2.5 %   97.5 %
+## (Intercept)  33.45050 41.11975
+## I(wt/2)     -12.97262 -8.40527
+```
+
+```r
+-12.97262
+```
+
+```
+## [1] -12.97262
+```
+
+```r
+#7
+# smaller unit - bigger slope by 100
+
+#8
+#b0-cb1
+
+#9
+
+#0.25 times
+
+fit1 <- lm(mpg ~ wt, data = mtcars)
+fit2 <- lm(mpg ~ 1, data = mtcars)
+
+sse1 <- sum((predict(fit1) - mtcars$mpg)^2)
+sse2 <- sum((predict(fit2) - mtcars$mpg)^2)
+sse1/sse2
+```
+
+```
+## [1] 0.2471672
+```
+
+```r
+#10 zero if intercept
 ```
 
