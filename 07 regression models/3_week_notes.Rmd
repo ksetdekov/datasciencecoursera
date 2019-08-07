@@ -58,5 +58,99 @@ ggpairs(swiss, lower = list(continuous = wrap("smooth", method = "loess")))
 #fitting all
 summary(lm(Fertility~., data = swiss))
 summary(lm(Fertility~., data = swiss))$coefficients
+
+#only one result
+summary(lm(Fertility~Agriculture, data = swiss))
 ```
 
+How can adjustment reverse the sign of an effect? Let's try a simulation.
+```{r, echo = TRUE}
+n <- 100; x2 <- 1 : n; x1 <- .01 * x2 + runif(n, -.1, .1); y = -x1 + x2 + rnorm(n, sd = .01)
+summary(lm(y ~ x1))$coef
+summary(lm(y ~ x1 + x2))$coef
+```
+
+---
+```{r changeinsign, echo = FALSE, fig.height=5, fig.width=10, results = 'show'}
+par(mfrow = c(1, 2))
+plot(
+    x1,
+    y,
+    pch = 21,
+    col = "black",
+    bg = topo.colors(n)[x2],
+    frame = FALSE,
+    cex = 1.5
+)
+title('Unadjusted, color is X2')
+abline(lm(y ~ x1), lwd = 2)
+plot(
+    resid(lm(x1 ~ x2)),
+    resid(lm(y ~ x2)),
+    pch = 21,
+    col = "black",
+    bg = "lightblue",
+    frame = FALSE,
+    cex = 1.5
+)
+title('Adjusted')
+abline(0, coef(lm(y ~ x1 + x2))[2], lwd = 2)
+```
+
+## Dummy variables
+
+More than 2 levels
+
+* Consider a multilevel factor level. For didactic reasons, let's say a three level factor (example, US political party affiliation: Republican, Democrat, Independent)
+
+* $Y_i = \beta_0 + X_{i1} \beta_1 + X_{i2} \beta_2 + \epsilon_i$.
+
+* $X_{i1}$ is 1 for Republicans and 0 otherwise.
+
+* $X_{i2}$ is 1 for Democrats and 0 otherwise.
+
+* If $i$ is Republican $E[Y_i] = \beta_0 +\beta_1$
+
+* If $i$ is Democrat $E[Y_i] = \beta_0 + \beta_2$.
+
+* If $i$ is Independent $E[Y_i] = \beta_0$. 
+
+* $\beta_1$ compares Republicans to Independents.
+
+* $\beta_2$ compares Democrats to Independents.
+
+* $\beta_1 - \beta_2$ compares Republicans to Democrats.
+
+* (Choice of reference category changes the interpretation.)
+
+```{r example02}
+require(datasets)
+data(InsectSprays)
+require(stats)
+require(graphics)
+ggplot(data = InsectSprays, aes(y = count, x = spray, fill = spray)) +
+    geom_violin(colour = "black", size = 1) +
+    xlab("Type of spray") + ylab("insect count")
+# model
+summary(lm(count~spray, data = InsectSprays))
+#without intercept
+summary(lm(count~spray -1, data = InsectSprays))
+```
+Hardcode dummy - I are instances.
+Reference level is "C"
+```{r exapmle02hardcode}
+summary(lm(count ~
+               I(1 * (spray == 'A')) +
+               I(1 * (spray == 'B')) +
+               I(1 * (spray == 'D')) +
+               I(1 * (spray == 'E')) +
+               I(1 * (spray == 'F'))
+           , data = InsectSprays))
+
+```
+Better way to relevel:
+
+```{r exapmle02relevel}
+spray2 <- relevel(InsectSprays$spray,"C")
+summary(lm(count~spray2, data = InsectSprays))
+```
