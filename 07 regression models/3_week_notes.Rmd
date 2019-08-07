@@ -29,3 +29,34 @@ coef(lm(ey ~ ex - 1))
 coef(lm(y ~ x + x2 + x3))
 ```
 
+## Fitted values, residuals and residual variation
+All of our SLR quantities can be extended to linear models
+
+* Model $Y_i = \sum_{k=1}^p X_{ik} \beta_{k} + \epsilon_{i}$ where $\epsilon_i \sim N(0, \sigma^2)$
+
+* Fitted responses $\hat Y_i = \sum_{k=1}^p X_{ik} \hat \beta_{k}$
+
+* Residuals $e_i = Y_i - \hat Y_i$
+
+* Variance estimate $\hat \sigma^2 = \frac{1}{n-p} \sum_{i=1}^n e_i ^2$
+
+* To get predicted responses at new values, $x_1, \ldots, x_p$, simply plug them into the linear model $\sum_{k=1}^p x_{k} \hat \beta_{k}$
+
+* Coefficients have standard errors, $\hat \sigma_{\hat \beta_k}$, and
+$\frac{\hat \beta_k - \beta_k}{\hat \sigma_{\hat \beta_k}}$
+follows a $T$ distribution with $n-p$ degrees of freedom.
+
+* Predicted responses have standard errors and we can calculate predicted and expected response intervals.
+
+```{r examples}
+require(datasets)
+data("swiss")
+require(GGally)
+require(ggplot2)
+ggpairs(swiss, lower = list(continuous = wrap("smooth", method = "loess")))
+
+#fitting all
+summary(lm(Fertility~., data = swiss))
+summary(lm(Fertility~., data = swiss))$coefficients
+```
+
