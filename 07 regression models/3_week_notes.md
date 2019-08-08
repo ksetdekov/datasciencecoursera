@@ -29,7 +29,7 @@ sum(ey * ex) / sum(ex ^ 2)
 ```
 
 ```
-## [1] 0.9901238
+## [1] 0.9938615
 ```
 
 ```r
@@ -38,7 +38,7 @@ coef(lm(ey ~ ex - 1))
 
 ```
 ##        ex 
-## 0.9901238
+## 0.9938615
 ```
 
 ```r
@@ -47,7 +47,7 @@ coef(lm(y ~ x + x2 + x3))
 
 ```
 ## (Intercept)           x          x2          x3 
-##   0.9980859   0.9901238   1.0076565   0.9972149
+##   0.9955067   0.9938615   0.9992904   1.0108809
 ```
 
 ## Fitted values, residuals and residual variation
@@ -177,9 +177,9 @@ summary(lm(y ~ x1))$coef
 ```
 
 ```
-##              Estimate Std. Error    t value     Pr(>|t|)
-## (Intercept)  0.414199   1.287321  0.3217526 7.483254e-01
-## x1          97.193910   2.199533 44.1884335 1.597213e-66
+##              Estimate Std. Error   t value     Pr(>|t|)
+## (Intercept)  1.577835   1.249944  1.262325 2.098277e-01
+## x1          96.441811   2.157004 44.710994 5.326147e-67
 ```
 
 ```r
@@ -187,10 +187,10 @@ summary(lm(y ~ x1 + x2))$coef
 ```
 
 ```
-##                 Estimate   Std. Error     t value      Pr(>|t|)
-## (Intercept)  0.005004131 0.0020911510    2.393003  1.863620e-02
-## x1          -0.998108605 0.0164953696  -60.508411  7.665163e-79
-## x2           0.999907793 0.0001639918 6097.303973 1.280674e-272
+##                 Estimate   Std. Error      t value      Pr(>|t|)
+## (Intercept) -0.001601374 0.0023033814   -0.6952273  4.885750e-01
+## x1          -1.007787418 0.0184211694  -54.7081131  1.022855e-74
+## x2           1.000090161 0.0001846685 5415.5974143 1.265019e-267
 ```
 
 ---
@@ -364,4 +364,189 @@ summary(lm(count~spray2, data = InsectSprays))
 ## Residual standard error: 3.922 on 66 degrees of freedom
 ## Multiple R-squared:  0.7244,	Adjusted R-squared:  0.7036 
 ## F-statistic:  34.7 on 5 and 66 DF,  p-value: < 2.2e-16
+```
+
+Fitting multiple lines. ANCOVA
+
+```r
+require(datasets)
+data("swiss")
+hist(swiss$Catholic)
+```
+
+![](3_week_notes_files/figure-html/example03-1.png)<!-- -->
+
+```r
+library(dplyr)
+```
+
+```
+## Warning: package 'dplyr' was built under R version 3.5.2
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following object is masked from 'package:GGally':
+## 
+##     nasa
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
+swiss <- swiss %>% mutate(CatholicBin = 1 * (Catholic > 50))
+
+g <-
+    ggplot(swiss, aes(
+        x = Agriculture,
+        y = Fertility,
+        colour = factor(CatholicBin)
+    )) +
+    geom_point (size = 4, alpha = 0.75)
+
+g
+```
+
+![](3_week_notes_files/figure-html/example03-2.png)<!-- -->
+
+Could mace a factor - with x2 = 1 for CatholicBin
+
+
+```r
+fit <- lm(Fertility ~ Agriculture, data = swiss)
+g1 <- g +
+    geom_abline(intercept = coef(fit)[1], slope = coef(fit)[2], size = 2)
+g1
+```
+
+![](3_week_notes_files/figure-html/example04simple-1.png)<!-- -->
+
+```r
+summary(fit)
+```
+
+```
+## 
+## Call:
+## lm(formula = Fertility ~ Agriculture, data = swiss)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -25.5374  -7.8685  -0.6362   9.0464  24.4858 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 60.30438    4.25126  14.185   <2e-16 ***
+## Agriculture  0.19420    0.07671   2.532   0.0149 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 11.82 on 45 degrees of freedom
+## Multiple R-squared:  0.1247,	Adjusted R-squared:  0.1052 
+## F-statistic: 6.409 on 1 and 45 DF,  p-value: 0.01492
+```
+
+```r
+fit <-
+    lm(Fertility ~ Agriculture + factor(CatholicBin), data = swiss)
+g1 <- g +
+    geom_abline(intercept = coef(fit)[1],
+                slope = coef(fit)[2],
+                size = 2)
+g1 <- g1 +
+    geom_abline(
+        intercept = coef(fit)[1] + coef(fit)[3],
+        slope = coef(fit)[2],
+        size = 2
+    )
+g1
+```
+
+![](3_week_notes_files/figure-html/example04withcatholic-1.png)<!-- -->
+
+```r
+summary(fit)
+```
+
+```
+## 
+## Call:
+## lm(formula = Fertility ~ Agriculture + factor(CatholicBin), data = swiss)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -29.803  -6.701   1.382   6.855  20.435 
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)           60.8322     4.1059  14.816   <2e-16 ***
+## Agriculture            0.1242     0.0811   1.531   0.1329    
+## factor(CatholicBin)1   7.8843     3.7484   2.103   0.0412 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 11.39 on 44 degrees of freedom
+## Multiple R-squared:  0.2046,	Adjusted R-squared:  0.1685 
+## F-statistic:  5.66 on 2 and 44 DF,  p-value: 0.006492
+```
+
+With interaction
+
+```r
+fit <-
+    lm(Fertility ~ Agriculture * factor(CatholicBin), data = swiss) #fits all interaction
+g1 <- g +
+    geom_abline(intercept = coef(fit)[1],
+                slope = coef(fit)[2],
+                size = 2)
+g1 <- g1 +
+    geom_abline(
+        intercept = coef(fit)[1] + coef(fit)[3],
+        slope = coef(fit)[2] + coef(fit)[4],
+        size = 2
+    )
+g1
+```
+
+![](3_week_notes_files/figure-html/example04interaction-1.png)<!-- -->
+
+```r
+summary(fit)
+```
+
+```
+## 
+## Call:
+## lm(formula = Fertility ~ Agriculture * factor(CatholicBin), data = swiss)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -28.840  -6.668   1.016   7.092  20.242 
+## 
+## Coefficients:
+##                                  Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)                      62.04993    4.78916  12.956   <2e-16 ***
+## Agriculture                       0.09612    0.09881   0.973    0.336    
+## factor(CatholicBin)1              2.85770   10.62644   0.269    0.789    
+## Agriculture:factor(CatholicBin)1  0.08914    0.17611   0.506    0.615    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 11.49 on 43 degrees of freedom
+## Multiple R-squared:  0.2094,	Adjusted R-squared:  0.1542 
+## F-statistic: 3.795 on 3 and 43 DF,  p-value: 0.01683
 ```

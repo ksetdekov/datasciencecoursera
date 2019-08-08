@@ -154,3 +154,66 @@ Better way to relevel:
 spray2 <- relevel(InsectSprays$spray,"C")
 summary(lm(count~spray2, data = InsectSprays))
 ```
+
+Fitting multiple lines. ANCOVA
+```{r example03}
+require(datasets)
+data("swiss")
+hist(swiss$Catholic)
+library(dplyr)
+swiss <- swiss %>% mutate(CatholicBin = 1 * (Catholic > 50))
+
+g <-
+    ggplot(swiss, aes(
+        x = Agriculture,
+        y = Fertility,
+        colour = factor(CatholicBin)
+    )) +
+    geom_point (size = 4, alpha = 0.75)
+
+g
+```
+
+Could mace a factor - with x2 = 1 for CatholicBin
+
+```{r example04simple}
+fit <- lm(Fertility ~ Agriculture, data = swiss)
+g1 <- g +
+    geom_abline(intercept = coef(fit)[1], slope = coef(fit)[2], size = 2)
+g1
+summary(fit)
+```
+```{r example04withcatholic}
+fit <-
+    lm(Fertility ~ Agriculture + factor(CatholicBin), data = swiss)
+g1 <- g +
+    geom_abline(intercept = coef(fit)[1],
+                slope = coef(fit)[2],
+                size = 2)
+g1 <- g1 +
+    geom_abline(
+        intercept = coef(fit)[1] + coef(fit)[3],
+        slope = coef(fit)[2],
+        size = 2
+    )
+g1
+summary(fit)
+```
+
+With interaction
+```{r example04interaction}
+fit <-
+    lm(Fertility ~ Agriculture * factor(CatholicBin), data = swiss) #fits all interaction
+g1 <- g +
+    geom_abline(intercept = coef(fit)[1],
+                slope = coef(fit)[2],
+                size = 2)
+g1 <- g1 +
+    geom_abline(
+        intercept = coef(fit)[1] + coef(fit)[3],
+        slope = coef(fit)[2] + coef(fit)[4],
+        size = 2
+    )
+g1
+summary(fit)
+```
