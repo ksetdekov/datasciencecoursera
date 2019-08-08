@@ -29,7 +29,7 @@ sum(ey * ex) / sum(ex ^ 2)
 ```
 
 ```
-## [1] 0.9938615
+## [1] 1.007227
 ```
 
 ```r
@@ -37,8 +37,8 @@ coef(lm(ey ~ ex - 1))
 ```
 
 ```
-##        ex 
-## 0.9938615
+##       ex 
+## 1.007227
 ```
 
 ```r
@@ -47,7 +47,7 @@ coef(lm(y ~ x + x2 + x3))
 
 ```
 ## (Intercept)           x          x2          x3 
-##   0.9955067   0.9938615   0.9992904   1.0108809
+##   0.9953067   1.0072266   1.0150600   0.9841509
 ```
 
 ## Fitted values, residuals and residual variation
@@ -178,8 +178,8 @@ summary(lm(y ~ x1))$coef
 
 ```
 ##              Estimate Std. Error   t value     Pr(>|t|)
-## (Intercept)  1.577835   1.249944  1.262325 2.098277e-01
-## x1          96.441811   2.157004 44.710994 5.326147e-67
+## (Intercept)  2.346214   1.039146  2.257828 2.617469e-02
+## x1          94.745091   1.779854 53.231959 3.927335e-74
 ```
 
 ```r
@@ -187,10 +187,10 @@ summary(lm(y ~ x1 + x2))$coef
 ```
 
 ```
-##                 Estimate   Std. Error      t value      Pr(>|t|)
-## (Intercept) -0.001601374 0.0023033814   -0.6952273  4.885750e-01
-## x1          -1.007787418 0.0184211694  -54.7081131  1.022855e-74
-## x2           1.000090161 0.0001846685 5415.5974143 1.265019e-267
+##                 Estimate  Std. Error      t value      Pr(>|t|)
+## (Intercept) -0.001402072 0.002198472   -0.6377486  5.251400e-01
+## x1          -1.012017073 0.020286582  -49.8860319  5.816202e-71
+## x2           1.000144998 0.000208387 4799.4604370 1.549216e-262
 ```
 
 ---
@@ -550,3 +550,47 @@ summary(fit)
 ## Multiple R-squared:  0.2094,	Adjusted R-squared:  0.1542 
 ## F-statistic: 3.795 on 3 and 43 DF,  p-value: 0.01683
 ```
+
+Adding adjustments
+
+## Consider the following simulated data
+Code for the first plot, rest omitted
+
+
+```r
+n <-
+    100
+t <- rep(c(0, 1), c(n / 2, n / 2))
+x <- c(runif(n / 2), runif(n / 2))
+
+beta0 <- 0
+beta1 <- 2
+tau <- 1
+sigma <- .2
+y <- beta0 + x * beta1 + t * tau + rnorm(n, sd = sigma)
+plot(x, y, type = "n", frame = FALSE)
+abline(lm(y ~ x), lwd = 2)
+abline(h = mean(y[1:(n / 2)]), lwd = 3)
+abline(h = mean(y[(n / 2 + 1):n]), lwd = 3)
+fit <- lm(y ~ x + t)
+abline(coef(fit)[1], coef(fit)[2], lwd = 3)
+abline(coef(fit)[1] + coef(fit)[3], coef(fit)[2], lwd = 3)
+points(
+    x[1:(n / 2)],
+    y[1:(n / 2)],
+    pch = 21,
+    col = "black",
+    bg = "lightblue",
+    cex = 2
+)
+points(
+    x[(n / 2 + 1):n],
+    y[(n / 2 + 1):n],
+    pch = 21,
+    col = "black",
+    bg = "salmon",
+    cex = 2
+)
+```
+
+![](3_week_notes_files/figure-html/adjustmentsim-1.png)<!-- -->
