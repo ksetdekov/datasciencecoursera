@@ -791,3 +791,10 @@ fit <- lm(V1 ~ . - 1, data = dat); plot(predict(fit), resid(fit), pch = '.')
 * looks normal
 * third plots - scaled residuals
 * residual vs scale - we dont want high leverage with high residuals
+
+# model Selection
+We want parsimony - simplest model, interpretable, but not simpler
+
+A model is a lense through which to look at your data. (I attribute this quote to Scott Zeger)
+
+*There are known knowns. These are things we know that we know. There are known unknowns. That is to say, there are things that we know we don't know. But there are also unknown unknowns. There are things we don't know we don't know.* Donald Rumsfeld
