@@ -7,6 +7,8 @@ output:
     keep_md: yes
 ---
 
+
+
 # week 3
 
 ## Multivariable  regression analyses.
@@ -29,7 +31,7 @@ sum(ey * ex) / sum(ex ^ 2)
 ```
 
 ```
-## [1] 1.007227
+## [1] 0.9847117
 ```
 
 ```r
@@ -37,8 +39,8 @@ coef(lm(ey ~ ex - 1))
 ```
 
 ```
-##       ex 
-## 1.007227
+##        ex 
+## 0.9847117
 ```
 
 ```r
@@ -47,7 +49,7 @@ coef(lm(y ~ x + x2 + x3))
 
 ```
 ## (Intercept)           x          x2          x3 
-##   0.9953067   1.0072266   1.0150600   0.9841509
+##   1.0000499   0.9847117   0.9981139   1.0108964
 ```
 
 ## Fitted values, residuals and residual variation
@@ -178,8 +180,8 @@ summary(lm(y ~ x1))$coef
 
 ```
 ##              Estimate Std. Error   t value     Pr(>|t|)
-## (Intercept)  2.346214   1.039146  2.257828 2.617469e-02
-## x1          94.745091   1.779854 53.231959 3.927335e-74
+## (Intercept)  1.703034   1.107872  1.537213 1.274638e-01
+## x1          97.524206   1.934407 50.415564 6.713306e-72
 ```
 
 ```r
@@ -187,10 +189,10 @@ summary(lm(y ~ x1 + x2))$coef
 ```
 
 ```
-##                 Estimate  Std. Error      t value      Pr(>|t|)
-## (Intercept) -0.001402072 0.002198472   -0.6377486  5.251400e-01
-## x1          -1.012017073 0.020286582  -49.8860319  5.816202e-71
-## x2           1.000144998 0.000208387 4799.4604370 1.549216e-262
+##                 Estimate   Std. Error      t value      Pr(>|t|)
+## (Intercept) -0.001254677 0.0019143720   -0.6553986  5.137625e-01
+## x1          -1.008029572 0.0173129986  -58.2238580  2.902944e-77
+## x2           1.000083659 0.0001724962 5797.7155396 1.697791e-270
 ```
 
 ---
@@ -594,3 +596,39 @@ points(
 ```
 
 ![](3_week_notes_files/figure-html/adjustmentsim-1.png)<!-- -->
+
+## Simulation 2
+strong marginal effect when disregard effect, very subtle effect if adjust for X
+![](3_week_notes_files/figure-html/adjustmentsim2-1.png)<!-- -->
+
+## Simulation 3 
+illustration of simpson's paradox
+![](3_week_notes_files/figure-html/adjustmentsim3-1.png)<!-- -->
+
+## Simulation 4
+no marginal effect, but a huge effect, when adjust for X
+![](3_week_notes_files/figure-html/adjustmentsim4-1.png)<!-- -->
+
+## Simulation 5
+This will be wrong if we think that slopes are equeal - need to have an interaction term
+![](3_week_notes_files/figure-html/adjustmentsim5-1.png)<!-- -->
+
+### Simulation 6
+Binary treatment - not necessary.
+
+![](3_week_notes_files/figure-html/adjustmentsim6-1.png)<!-- -->
+
+Need to look in 3d
+
+
+```r
+library(rgl)
+```
+
+```
+## Warning: package 'rgl' was built under R version 3.5.3
+```
+
+```r
+plot3d(x1, x2, y)
+```
