@@ -31,7 +31,7 @@ sum(ey * ex) / sum(ex ^ 2)
 ```
 
 ```
-## [1] 0.9847117
+## [1] 1.011272
 ```
 
 ```r
@@ -39,8 +39,8 @@ coef(lm(ey ~ ex - 1))
 ```
 
 ```
-##        ex 
-## 0.9847117
+##       ex 
+## 1.011272
 ```
 
 ```r
@@ -49,7 +49,7 @@ coef(lm(y ~ x + x2 + x3))
 
 ```
 ## (Intercept)           x          x2          x3 
-##   1.0000499   0.9847117   0.9981139   1.0108964
+##   1.0083895   1.0112715   1.0027038   0.9868151
 ```
 
 ## Fitted values, residuals and residual variation
@@ -179,9 +179,9 @@ summary(lm(y ~ x1))$coef
 ```
 
 ```
-##              Estimate Std. Error   t value     Pr(>|t|)
-## (Intercept)  1.703034   1.107872  1.537213 1.274638e-01
-## x1          97.524206   1.934407 50.415564 6.713306e-72
+##              Estimate Std. Error    t value     Pr(>|t|)
+## (Intercept)  1.105911   1.243252  0.8895313 3.758960e-01
+## x1          96.446636   2.129868 45.2829090 1.622483e-67
 ```
 
 ```r
@@ -189,10 +189,10 @@ summary(lm(y ~ x1 + x2))$coef
 ```
 
 ```
-##                 Estimate   Std. Error      t value      Pr(>|t|)
-## (Intercept) -0.001254677 0.0019143720   -0.6553986  5.137625e-01
-## x1          -1.008029572 0.0173129986  -58.2238580  2.902944e-77
-## x2           1.000083659 0.0001724962 5797.7155396 1.697791e-270
+##                  Estimate   Std. Error      t value      Pr(>|t|)
+## (Intercept) -0.0003280676 0.0023666542   -0.1386208  8.900372e-01
+## x1          -0.9943295733 0.0190938737  -52.0758431  1.045631e-72
+## x2           0.9999143987 0.0001915045 5221.3629858 4.372732e-266
 ```
 
 ---
@@ -635,3 +635,28 @@ plot3d(x1, x2, y)
 Better to look at residuals
 Strong relationsip between Y and X2
 ![](3_week_notes_files/figure-html/resuduals-1.png)<!-- -->
+
+# residual diagnostics.
+Linear model.
+Define the residuals as
+
+* $e_i = Y_i -  \hat Y_i =  Y_i - \sum_{k=1}^p X_{ik} \hat \beta_j$
+
+* Our estimate of residual variation is $\hat \sigma^2 = \frac{\sum_{i=1}^n e_i^2}{n-p}$, the $n-p$ so that $E[\hat \sigma^2] = \sigma^2$
+
+
+```r
+data(swiss)
+par(mfrow = c(2, 2))
+fit <- lm(Fertility ~ . , data = swiss)
+plot(fit)
+```
+
+![](3_week_notes_files/figure-html/residual plots-1.png)<!-- -->
+
+Influential vs outlier points.
+Leverage - how high away from the average is the point
+Influence - how far away from the regression line.
+
+## Influential, high leverage and outlying points
+![](3_week_notes_files/figure-html/influenceleverage-1.png)<!-- -->

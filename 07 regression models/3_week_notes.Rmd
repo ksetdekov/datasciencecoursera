@@ -473,3 +473,46 @@ abline(lm(I(resid(lm(
     y ~ x2
 )))), lwd = 2)
 ```
+
+# residual diagnostics.
+Linear model.
+Define the residuals as
+
+* $e_i = Y_i -  \hat Y_i =  Y_i - \sum_{k=1}^p X_{ik} \hat \beta_j$
+
+* Our estimate of residual variation is $\hat \sigma^2 = \frac{\sum_{i=1}^n e_i^2}{n-p}$, the $n-p$ so that $E[\hat \sigma^2] = \sigma^2$
+
+```{r residual plots, fig.height = 5, fig.width = 5}
+data(swiss)
+par(mfrow = c(2, 2))
+fit <- lm(Fertility ~ . , data = swiss)
+plot(fit)
+```
+
+Influential vs outlier points.
+Leverage - how high away from the average is the point
+Influence - how far away from the regression line.
+
+## Influential, high leverage and outlying points
+```{r influenceleverage, fig.height = 5, fig.width=5, echo = FALSE, results='hide'}
+n <- 100
+x <- rnorm(n)
+y <- x + rnorm(n, sd = .3)
+plot(
+    c(-3, 6),
+    c(-3, 6),
+    type = "n",
+    frame = FALSE,
+    xlab = "X",
+    ylab = "Y"
+)
+abline(lm(y ~ x), lwd = 2)
+points(x, y, cex = 2, bg = "lightblue", col = "black", pch = 21)
+points(0, 0, cex = 2, bg = "darkorange", col = "black", pch = 21)
+points(0, 5, cex = 2, bg = "darkorange", col = "black", pch = 21)
+points(5, 5, cex = 2, bg = "darkorange", col = "black", pch = 21)
+points(5, 0, cex = 2, bg = "darkorange", col = "black", pch = 21)
+text(0,0, labels = "low leverage,\nlow influence", pos = 4)
+text(0,5, labels = "high leverage, high influence", pos = 1)
+text(5,5, labels = "high levereage,\nlow influence", pos = 3)
+```
