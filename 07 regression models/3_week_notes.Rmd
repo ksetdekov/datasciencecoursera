@@ -620,3 +620,63 @@ We want parsimony - simplest model, interpretable, but not simpler
 A model is a lense through which to look at your data. (I attribute this quote to Scott Zeger)
 
 *There are known knowns. These are things we know that we know. There are known unknowns. That is to say, there are things that we know we don't know. But there are also unknown unknowns. There are things we don't know we don't know.* Donald Rumsfeld
+
+Variance inflation
+## Variance inflation
+```{r varinflation, echo = TRUE}
+n <- 100
+nosim <- 1000
+x1 <- rnorm(n)
+x2 <- rnorm(n)
+x3 <- rnorm(n)
+betas <- sapply(1 : nosim, function(i){
+    y <- x1 + rnorm(n, sd = .3)
+    c(coef(lm(y ~ x1))[2], 
+      coef(lm(y ~ x1 + x2))[2], 
+      coef(lm(y ~ x1 + x2 + x3))[2])
+})
+round(apply(betas, 1, sd), 5) #sd of beta
+```
+neglidgeble change as new variables are not dependatn on X1
+
+but if they depend?
+
+## Variance inflation
+```{r, echo = TRUE}
+n <- 100
+nosim <- 1000
+x1 <- rnorm(n)
+x2 <- x1 / sqrt(2) + rnorm(n) / sqrt(2)
+x3 <- x1 * 0.95 + rnorm(n) * sqrt(1 - 0.95^2); 
+betas <- sapply(1 : nosim, function(i){
+    y <- x1 + rnorm(n, sd = .3)
+    c(coef(lm(y ~ x1))[2], 
+      coef(lm(y ~ x1 + x2))[2], 
+      coef(lm(y ~ x1 + x2 + x3))[2])
+})
+round(apply(betas, 1, sd), 5)
+barplot(round(apply(betas, 1, sd), 5))
+```
+
+* The variance inflation factor (VIF) is the increase in the variance for the ith regressor compared to the ideal setting where it is orthogonal to the other regressors.
+  * (The square root of the VIF is the increase in the sd ...)
+## Swiss data VIFs, 
+```{r}
+require(car)
+fit <- lm(Fertility ~ . , data = swiss)
+vif(fit)
+sqrt(vif(fit)) #I prefer sd 
+```
+
+Good approach - looking at nested models
+
+```{r nested}
+fit1 <- lm(Fertility ~ Agriculture, data = swiss)
+fit3 <-
+    update(fit, Fertility ~ Agriculture + Examination + Education)
+fit5 <-
+    update(fit,
+           Fertility ~ Agriculture + Examination + Education + Catholic + Infant.Mortality)
+anova(fit1, fit3, fit5)
+```
+

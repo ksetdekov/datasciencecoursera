@@ -798,3 +798,140 @@ We want parsimony - simplest model, interpretable, but not simpler
 A model is a lense through which to look at your data. (I attribute this quote to Scott Zeger)
 
 *There are known knowns. These are things we know that we know. There are known unknowns. That is to say, there are things that we know we don't know. But there are also unknown unknowns. There are things we don't know we don't know.* Donald Rumsfeld
+
+Variance inflation
+## Variance inflation
+
+```r
+n <- 100
+nosim <- 1000
+x1 <- rnorm(n)
+x2 <- rnorm(n)
+x3 <- rnorm(n)
+betas <- sapply(1 : nosim, function(i){
+    y <- x1 + rnorm(n, sd = .3)
+    c(coef(lm(y ~ x1))[2], 
+      coef(lm(y ~ x1 + x2))[2], 
+      coef(lm(y ~ x1 + x2 + x3))[2])
+})
+round(apply(betas, 1, sd), 5) #sd of beta
+```
+
+```
+##      x1      x1      x1 
+## 0.03003 0.03007 0.03010
+```
+neglidgeble change as new variables are not dependatn on X1
+
+but if they depend?
+
+## Variance inflation
+
+```r
+n <- 100
+nosim <- 1000
+x1 <- rnorm(n)
+x2 <- x1 / sqrt(2) + rnorm(n) / sqrt(2)
+x3 <- x1 * 0.95 + rnorm(n) * sqrt(1 - 0.95^2); 
+betas <- sapply(1 : nosim, function(i){
+    y <- x1 + rnorm(n, sd = .3)
+    c(coef(lm(y ~ x1))[2], 
+      coef(lm(y ~ x1 + x2))[2], 
+      coef(lm(y ~ x1 + x2 + x3))[2])
+})
+round(apply(betas, 1, sd), 5)
+```
+
+```
+##      x1      x1      x1 
+## 0.03071 0.04746 0.11406
+```
+
+```r
+barplot(round(apply(betas, 1, sd), 5))
+```
+
+![](3_week_notes_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+* The variance inflation factor (VIF) is the increase in the variance for the ith regressor compared to the ideal setting where it is orthogonal to the other regressors.
+  * (The square root of the VIF is the increase in the sd ...)
+## Swiss data VIFs, 
+
+```r
+require(car)
+```
+
+```
+## Loading required package: car
+```
+
+```
+## Warning: package 'car' was built under R version 3.5.2
+```
+
+```
+## Loading required package: carData
+```
+
+```
+## 
+## Attaching package: 'car'
+```
+
+```
+## The following object is masked from 'package:dplyr':
+## 
+##     recode
+```
+
+```r
+fit <- lm(Fertility ~ . , data = swiss)
+vif(fit)
+```
+
+```
+##      Agriculture      Examination        Education         Catholic 
+##         2.287787         3.972467         2.898462        13.405099 
+## Infant.Mortality      CatholicBin 
+##         1.107804        14.575205
+```
+
+```r
+sqrt(vif(fit)) #I prefer sd 
+```
+
+```
+##      Agriculture      Examination        Education         Catholic 
+##         1.512543         1.993105         1.702487         3.661297 
+## Infant.Mortality      CatholicBin 
+##         1.052523         3.817749
+```
+
+Good approach - looking at nested models
+
+
+```r
+fit1 <- lm(Fertility ~ Agriculture, data = swiss)
+fit3 <-
+    update(fit, Fertility ~ Agriculture + Examination + Education)
+fit5 <-
+    update(fit,
+           Fertility ~ Agriculture + Examination + Education + Catholic + Infant.Mortality)
+anova(fit1, fit3, fit5)
+```
+
+```
+## Analysis of Variance Table
+## 
+## Model 1: Fertility ~ Agriculture
+## Model 2: Fertility ~ Agriculture + Examination + Education
+## Model 3: Fertility ~ Agriculture + Examination + Education + Catholic + 
+##     Infant.Mortality
+##   Res.Df    RSS Df Sum of Sq      F    Pr(>F)    
+## 1     45 6283.1                                  
+## 2     43 3180.9  2    3102.2 30.211 8.638e-09 ***
+## 3     41 2105.0  2    1075.9 10.477 0.0002111 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
