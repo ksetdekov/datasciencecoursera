@@ -660,3 +660,134 @@ Influence - how far away from the regression line.
 
 ## Influential, high leverage and outlying points
 ![](3_week_notes_files/figure-html/influenceleverage-1.png)<!-- -->
+
+* Outlier - too vague.
+* Could be rear or spurious process.
+* Can conform or not to the regression.
+
+solutions - ```?influence.measures```
+
+Main plot - residuals vs fitted values - if we have systematic patterns
+Residual Q-Q plot - check normality
+Leverage plot
+
+## Influence measures
+  * `rstandard` - standardized residuals, residuals divided by their standard deviations)
+  * `rstudent` - standardized residuals, residuals divided by their standard deviations, where the ith data point was deleted in the calculation of the standard deviation for the residual to follow a t distribution
+  * `hatvalues` - measures of leverage
+  * `dffits` - change in the predicted response when the $i^{th}$ point is deleted in fitting the model.
+  * `dfbetas` - change in individual coefficients when the $i^{th}$ point is deleted in fitting the model.
+  * `cooks.distance` - overall change in the coefficients when the $i^{th}$ point is deleted.
+  * `resid` - returns the ordinary residuals
+  * `resid(fit) / (1 - hatvalues(fit))` where `fit` is the linear model fit returns the PRESS residuals, i.e. the leave one out cross validation residuals - the difference in the response and the predicted response at data point $i$, where it was not included in the model fitting.
+  
+# simulation experiments
+
+## Case 1
+![](3_week_notes_files/figure-html/case1-1.png)<!-- -->![](3_week_notes_files/figure-html/case1-2.png)<!-- -->
+
+```r
+fit <- lm(y ~ x)
+round(dfbetas(fit)[1 : 10, 2], 3)
+```
+
+```
+##      1      2      3      4      5      6      7      8      9     10 
+##  6.863  0.000 -0.064 -0.081  0.045 -0.045  0.033 -0.044 -0.051 -0.002
+```
+
+```r
+round(hatvalues(fit)[1 : 10], 3)
+```
+
+```
+##     1     2     3     4     5     6     7     8     9    10 
+## 0.449 0.014 0.024 0.019 0.023 0.025 0.011 0.015 0.018 0.010
+```
+for point 1 there is a higher level of both metrics
+
+## Case 2
+![](3_week_notes_files/figure-html/case2-1.png)<!-- -->
+
+
+```r
+round(dfbetas(fit2)[1 : 10, 2], 3)
+```
+
+```
+##      1      2      3      4      5      6      7      8      9     10 
+## -0.152  0.005  0.109  0.090  0.061  0.349 -0.130  0.002 -0.534 -0.060
+```
+
+```r
+round(hatvalues(fit2)[1 : 10], 3)
+```
+
+```
+##     1     2     3     4     5     6     7     8     9    10 
+## 0.217 0.010 0.019 0.011 0.011 0.101 0.016 0.010 0.047 0.012
+```
+
+** Example by stefanski **
+
+```r
+require(GGally)
+require(ggplot2)
+
+dat <- read.table('http://www4.stat.ncsu.edu/~stefanski/NSF_Supported/Hidden_Images/orly_owl_files/orly_owl_Lin_4p_5_flat.txt', header = FALSE)
+pairs(dat)
+```
+
+![](3_week_notes_files/figure-html/stefanski-1.png)<!-- -->
+
+```r
+ggpairs(dat, lower = list(continuous = wrap("smooth", method = "loess")))
+```
+
+![](3_week_notes_files/figure-html/stefanski-2.png)<!-- -->
+
+## Got our P-values, should we bother to do a residual plot?
+
+```r
+summary(lm(V1 ~ . -1, data = dat))
+```
+
+```
+## 
+## Call:
+## lm(formula = V1 ~ . - 1, data = dat)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2.0640 -0.9868  0.1429  0.7969  1.9573 
+## 
+## Coefficients:
+##    Estimate Std. Error t value Pr(>|t|)    
+## V2  0.98562    0.12798   7.701 1.99e-14 ***
+## V3  0.97147    0.12664   7.671 2.50e-14 ***
+## V4  0.86064    0.11958   7.197 8.30e-13 ***
+## V5  0.92670    0.08328  11.127  < 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.001 on 2294 degrees of freedom
+## Multiple R-squared:  0.05122,	Adjusted R-squared:  0.04956 
+## F-statistic: 30.96 on 4 and 2294 DF,  p-value: < 2.2e-16
+```
+
+## Residual plot - fin
+### P-values significant, O RLY?
+
+```r
+fit <- lm(V1 ~ . - 1, data = dat); plot(predict(fit), resid(fit), pch = '.')
+```
+
+![](3_week_notes_files/figure-html/residuals-1.png)<!-- -->
+
+## Back to the Swiss data
+![](3_week_notes_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
+* not many signs of heteroskedasticity
+* looks normal
+* third plots - scaled residuals
+* residual vs scale - we dont want high leverage with high residuals
