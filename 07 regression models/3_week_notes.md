@@ -632,3 +632,6 @@ library(rgl)
 ```r
 plot3d(x1, x2, y)
 ```
+Better to look at residuals
+Strong relationsip between Y and X2
+![](3_week_notes_files/figure-html/resuduals-1.png)<!-- -->

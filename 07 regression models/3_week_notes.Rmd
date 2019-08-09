@@ -455,3 +455,21 @@ Need to look in 3d
 library(rgl)
 plot3d(x1, x2, y)
 ```
+Better to look at residuals
+Strong relationsip between Y and X2
+```{r resuduals, fig.height=5, fig.width=5, echo = FALSE, results='hide'}
+plot(
+    resid(lm(x1 ~ x2)),
+    resid(lm(y ~ x2)),
+    frame = FALSE,
+    col = "black",
+    bg = "lightblue",
+    pch = 21,
+    cex = 2
+)
+abline(lm(I(resid(lm(
+    x1 ~ x2
+))) ~ I(resid(lm(
+    y ~ x2
+)))), lwd = 2)
+```
