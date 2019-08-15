@@ -935,3 +935,23 @@ anova(fit1, fit3, fit5)
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
 
+# swirl
+
+```r
+library(datasets)
+sapply(InsectSprays, class) #find column types
+```
+
+```
+##     count     spray 
+## "numeric"  "factor"
+```
+
+```r
+nfit <- lm(count ~ spray - 1, InsectSprays) # model without intercept
+
+spray2 <- relevel(x = InsectSprays$spray, "C") #change base factor
+fit2 <- lm(count ~ spray2, InsectSprays)
+```
+
+
