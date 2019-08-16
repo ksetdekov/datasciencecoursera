@@ -688,12 +688,37 @@ nfit <- lm(count ~ spray - 1, InsectSprays) # model without intercept
 
 spray2 <- relevel(x = InsectSprays$spray, "C") #change base factor
 fit2 <- lm(count ~ spray2, InsectSprays)
-
+plot(dfbeta(fit2))
 ```
 
 adding interaction
-lmInter <- lm(Numeric ~Year+Sex+Sex*Year, data = hunger)
+`lmInter <- lm(Numeric ~Year+Sex+Sex*Year, data = hunger)`
 
-```{r swril2}
+функция, которая выводит метрику dfbeta для результатов регрессии (что если исключить каждое значение по очереди, построить модель и посмотреть, как коэффициенты изменятся. Сильные изменения коэффициентов - вероятно это лишнее значение.)
+`View(dfbeta(fit))`
 
+Функция, которая показывает насколько каждое значение разница остатков для включения и исключения значения отличается у конкретного наблюдения от единицы - leverage или hat value
+`View(hatvalues(fit))`
+
+Стандартизированные остатки
+`View(rstandard(fit))`
+их график выводится
+`plot(fit, which=3)`
+
+График нормальности остатков - 
+`plot(fit, which=2)`
+
+Стьюдентизированные остатки -
+`View(rstudent(fit))`
+
+Cook's distance
+`plot(fit, which=5)`
+```{r dataanalysisquiz}
+install.packages("devtools")
+devtools::install_github("jhudsl/collegeIncome")
+library(collegeIncome)
+data(college)
+
+devtools::install_github("jhudsl/matahari")
+library(matahari)
 ```
