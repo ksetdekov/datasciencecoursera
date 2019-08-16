@@ -952,9 +952,251 @@ nfit <- lm(count ~ spray - 1, InsectSprays) # model without intercept
 
 spray2 <- relevel(x = InsectSprays$spray, "C") #change base factor
 fit2 <- lm(count ~ spray2, InsectSprays)
+plot(dfbeta(fit2))
 ```
 
-adding interaction
-lmInter <- lm(Numeric ~Year+Sex+Sex*Year, data = hunger)
+![](3_week_notes_files/figure-html/swril1-1.png)<!-- -->
 
+adding interaction
+`lmInter <- lm(Numeric ~Year+Sex+Sex*Year, data = hunger)`
+
+функция, которая выводит метрику dfbeta для результатов регрессии (что если исключить каждое значение по очереди, построить модель и посмотреть, как коэффициенты изменятся. Сильные изменения коэффициентов - вероятно это лишнее значение.)
+`View(dfbeta(fit))`
+
+А стандартизированное - dfbetas
+`View(dfbetas(fit))`
+
+Функция, которая показывает насколько каждое значение разница остатков для включения и исключения значения отличается у конкретного наблюдения от единицы - leverage или hat value
+`View(hatvalues(fit))`
+
+Стандартизированные остатки
+`View(rstandard(fit))`
+их график выводится
+`plot(fit, which=3)`
+
+График нормальности остатков - 
+`plot(fit, which=2)`
+
+Стьюдентизированные остатки -
+`View(rstudent(fit))`
+
+Cook's distance
+`plot(fit, which=5)`
+
+```r
+# install.packages("devtools")
+# devtools::install_github("jhudsl/collegeIncome")
+# library(collegeIncome)
+# data(college)
+# 
+# devtools::install_github("jhudsl/matahari")
+# library(matahari)
+```
+
+
+```r
+#1 -6.071
+require(dplyr)
+
+mtcars <- mtcars %>% 
+    mutate(cylf = factor(cyl)) %>% 
+    mutate(cylf = relevel(cylf, "4"))
+
+fit1 <- lm(mpg~cylf+wt, data = mtcars)
+summary(fit1)
+```
+
+```
+## 
+## Call:
+## lm(formula = mpg ~ cylf + wt, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.5890 -1.2357 -0.5159  1.3845  5.7915 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  33.9908     1.8878  18.006  < 2e-16 ***
+## cylf6        -4.2556     1.3861  -3.070 0.004718 ** 
+## cylf8        -6.0709     1.6523  -3.674 0.000999 ***
+## wt           -3.2056     0.7539  -4.252 0.000213 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.557 on 28 degrees of freedom
+## Multiple R-squared:  0.8374,	Adjusted R-squared:   0.82 
+## F-statistic: 48.08 on 3 and 28 DF,  p-value: 3.594e-11
+```
+
+```r
+#2 Holding weight constant, cylinder appears to have less of an impact on mpg than if weight is disregarded.
+fit2 <- lm(mpg~cylf, data = mtcars)
+summary(fit2)
+```
+
+```
+## 
+## Call:
+## lm(formula = mpg ~ cylf, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -5.2636 -1.8357  0.0286  1.3893  7.2364 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  26.6636     0.9718  27.437  < 2e-16 ***
+## cylf6        -6.9208     1.5583  -4.441 0.000119 ***
+## cylf8       -11.5636     1.2986  -8.905 8.57e-10 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.223 on 29 degrees of freedom
+## Multiple R-squared:  0.7325,	Adjusted R-squared:  0.714 
+## F-statistic:  39.7 on 2 and 29 DF,  p-value: 4.979e-09
+```
+
+```r
+#3 The P-value is larger than 0.05. So, according to our criterion, we would fail to reject, which suggests that the interaction terms may not be necessary.
+fit3 <- lm(mpg~cylf*wt, data = mtcars)
+summary(fit3)
+```
+
+```
+## 
+## Call:
+## lm(formula = mpg ~ cylf * wt, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.1513 -1.3798 -0.6389  1.4938  5.2523 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   39.571      3.194  12.389 2.06e-12 ***
+## cylf6        -11.162      9.355  -1.193 0.243584    
+## cylf8        -15.703      4.839  -3.245 0.003223 ** 
+## wt            -5.647      1.359  -4.154 0.000313 ***
+## cylf6:wt       2.867      3.117   0.920 0.366199    
+## cylf8:wt       3.455      1.627   2.123 0.043440 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.449 on 26 degrees of freedom
+## Multiple R-squared:  0.8616,	Adjusted R-squared:  0.8349 
+## F-statistic: 32.36 on 5 and 26 DF,  p-value: 2.258e-10
+```
+
+```r
+anova(fit1, fit3)
+```
+
+```
+## Analysis of Variance Table
+## 
+## Model 1: mpg ~ cylf + wt
+## Model 2: mpg ~ cylf * wt
+##   Res.Df    RSS Df Sum of Sq      F Pr(>F)
+## 1     28 183.06                           
+## 2     26 155.89  2     27.17 2.2658 0.1239
+```
+
+```r
+#4 expected change in MPG per one ton increase in weight.
+
+fit4 <- lm(mpg ~ I(wt * 0.5) + factor(cyl), data = mtcars)
+summary(fit4)
+```
+
+```
+## 
+## Call:
+## lm(formula = mpg ~ I(wt * 0.5) + factor(cyl), data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.5890 -1.2357 -0.5159  1.3845  5.7915 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)    33.991      1.888  18.006  < 2e-16 ***
+## I(wt * 0.5)    -6.411      1.508  -4.252 0.000213 ***
+## factor(cyl)6   -4.256      1.386  -3.070 0.004718 ** 
+## factor(cyl)8   -6.071      1.652  -3.674 0.000999 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.557 on 28 degrees of freedom
+## Multiple R-squared:  0.8374,	Adjusted R-squared:   0.82 
+## F-statistic: 48.08 on 3 and 28 DF,  p-value: 3.594e-11
+```
+
+```r
+#5 0.9946
+x <- c(0.586, 0.166, -0.042, -0.614, 11.72)
+y <- c(0.549, -0.026, -0.127, -0.751, 1.344)
+fit5 <- lm(y~x)
+hatvalues(fit5)
+```
+
+```
+##         1         2         3         4         5 
+## 0.2286650 0.2438146 0.2525027 0.2804443 0.9945734
+```
+
+```r
+influence(fit5)$hat
+```
+
+```
+##         1         2         3         4         5 
+## 0.2286650 0.2438146 0.2525027 0.2804443 0.9945734
+```
+
+```r
+#6 -134
+x <- c(0.586, 0.166, -0.042, -0.614, 11.72)
+y <- c(0.549, -0.026, -0.127, -0.751, 1.344)
+fit6 <- lm(y~x)
+hatvalues(fit6)
+```
+
+```
+##         1         2         3         4         5 
+## 0.2286650 0.2438146 0.2525027 0.2804443 0.9945734
+```
+
+```r
+dfbetas(fit6)
+```
+
+```
+##   (Intercept)             x
+## 1  1.06212391   -0.37811633
+## 2  0.06748037   -0.02861769
+## 3 -0.01735756    0.00791512
+## 4 -1.24958248    0.67253246
+## 5  0.20432010 -133.82261293
+```
+
+```r
+influence.measures(fit6)
+```
+
+```
+## Influence measures of
+## 	 lm(formula = y ~ x) :
+## 
+##    dfb.1_     dfb.x     dffit cov.r   cook.d   hat inf
+## 1  1.0621 -3.78e-01    1.0679 0.341 2.93e-01 0.229   *
+## 2  0.0675 -2.86e-02    0.0675 2.934 3.39e-03 0.244    
+## 3 -0.0174  7.92e-03   -0.0174 3.007 2.26e-04 0.253   *
+## 4 -1.2496  6.73e-01   -1.2557 0.342 3.91e-01 0.280   *
+## 5  0.2043 -1.34e+02 -149.7204 0.107 2.70e+02 0.995   *
+```
+
+```r
+#7 It is possible for the coefficient to reverse sign after adjustment. For example, it can be strongly significant and positive before adjustment and strongly significant and negative after adjustment.
+```
 
