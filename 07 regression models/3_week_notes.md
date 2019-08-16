@@ -954,4 +954,7 @@ spray2 <- relevel(x = InsectSprays$spray, "C") #change base factor
 fit2 <- lm(count ~ spray2, InsectSprays)
 ```
 
+adding interaction
+lmInter <- lm(Numeric ~Year+Sex+Sex*Year, data = hunger)
+
 
