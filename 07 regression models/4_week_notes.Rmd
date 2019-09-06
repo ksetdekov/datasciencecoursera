@@ -21,3 +21,6 @@ swirl
 11. Overfitting and Underfitting
 12. Binary Outcomes
 13. Count Outcomes
+
+
+VIF is the square of standard error inflation.
