@@ -24,3 +24,17 @@ swirl
 
 
 VIF is the square of standard error inflation.
+
+anova to assess the significance of the two added regressors
+The three asterisks, ***, at the lower right of the printed table indicate that the null hypothesis is rejected at the 0.001 level, so at
+| least one of the two additional regressors is significant
+
+`anova(fit1, fit3)`
+but 
+Model residuals should be tested for normality.
+normality test
+shapiro.test(fit3$residuals)
+
+
+deviance(model), calculates the residual sum of squares
+
