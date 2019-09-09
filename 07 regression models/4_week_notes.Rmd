@@ -38,3 +38,11 @@ shapiro.test(fit3$residuals)
 
 deviance(model), calculates the residual sum of squares
 
+`all.equal(lhs,rhs)`
+var(data)=var(estimate)+var(residuals)
+
+## binary results
+logit model, logistic regression
+$log(p/(1-p)) = b0 + b1*score$ . The link function, $log(p/(1-p))$
+
+

@@ -17,3 +17,28 @@ swirl
 11. Overfitting and Underfitting
 12. Binary Outcomes
 13. Count Outcomes
+
+
+VIF is the square of standard error inflation.
+
+anova to assess the significance of the two added regressors
+The three asterisks, ***, at the lower right of the printed table indicate that the null hypothesis is rejected at the 0.001 level, so at
+| least one of the two additional regressors is significant
+
+`anova(fit1, fit3)`
+but 
+Model residuals should be tested for normality.
+normality test
+shapiro.test(fit3$residuals)
+
+
+deviance(model), calculates the residual sum of squares
+
+`all.equal(lhs,rhs)`
+var(data)=var(estimate)+var(residuals)
+
+## binary results
+logit model, logistic regression
+$log(p/(1-p)) = b0 + b1*score$ . The link function, $log(p/(1-p))$
+
+
