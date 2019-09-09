@@ -41,4 +41,18 @@ var(data)=var(estimate)+var(residuals)
 logit model, logistic regression
 $log(p/(1-p)) = b0 + b1*score$ . The link function, $log(p/(1-p))$
 
+## count outcomes
+Poisson process
 
+http://jtleek.com/codedata.html
+
+class test `class(hits[,'date'])`
+
+` mdl <- glm(visits ~ date, poisson, hits)`
+poisson regression - result is a number
+
+confidence interval vor logit regression
+`exp(confint(mdl,'date'))`
+
+offset
+`mdl2 <- glm(formula = simplystats ~ date, family = poisson, data = hits, offset = log(visits + 1))`
