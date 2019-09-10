@@ -60,3 +60,51 @@ confidence interval vor logit regression
 
 offset
 `mdl2 <- glm(formula = simplystats ~ date, family = poisson, data = hits, offset = log(visits + 1))`
+
+#Quiz
+1. -0.031 - coefficient wrong
+
+```{r quiz1}
+library(MASS)
+?shuttle
+
+mdl <- glm(use~wind, binomial, shuttle)
+summary(mdl)
+exp(mdl$coefficients)
+```
+ 2. 1.485 wrong
+ 
+```{r quiz2}
+mdl2 <- glm(use~wind+magn, binomial, shuttle)
+
+summary(mdl2)
+
+```
+
+3. The coefficients reverse their signs. right
+
+4. Consider the insect spray data \verb|InsectSprays|InsectSprays. Fit a Poisson model using spray as a factor level. Report the estimated relative rate comapring spray A (numerator) to spray B (denominator).
+-0.05588 wrong
+
+```{r quiz4}
+library(datasets)
+?InsectSprays
+
+mdl4 <- glm(formula = count ~ spray, family = poisson, data = InsectSprays)
+summary(mdl4)
+
+-0.05588
+```
+5. The coefficient estimate is multiplied by 10. wrong
+
+6. 1.01307 right
+```{r quiz6}
+x <- -5:5
+y <- c(5.12, 3.93, 2.67, 1.87, 0.52, 0.08, 0.93, 2.05, 2.54, 3.87, 4.97)
+plot(x,y)
+library(lspline)
+m1 <- lm(y ~ lspline(x, c(0)))
+summary(m1)
+```
+
+
