@@ -91,6 +91,47 @@ $b_1$ - Log odds ratio of win probability for each point scored (compared to zer
 
 $exp(b_1)$ ration of increase per 1 point
 
+## Ravens logistic regression
+
+```{r logReg, dependson = "loadRavens"}
+logRegRavens <-
+    glm(ravensData$ravenWinNum ~ ravensData$ravenScore, family = "binomial")
+summary(logRegRavens)
+```
+
+## Ravens fitted values
+
+```{r dependson = "logReg",fig.height=4,fig.width=4}
+plot(ravensData$ravenScore,logRegRavens$fitted,pch=19,col="blue",xlab="Score",ylab="Prob Ravens Win")
+```
+
+## Odds ratios and confidence intervals
+
+```{r dependson = "logReg",fig.height=4,fig.width=4}
+exp(logRegRavens$coeff)
+
+## 11% increase per score
+exp(confint(logRegRavens))  ##- odds ratio
+```
+
+
+confidence interval - includes 1, increase in score is not significant
+
+## ANOVA for logistic regression
+
+```{r dependson = "logReg",fig.height=4,fig.width=4}
+anova(logRegRavens,test="Chisq")
+```
+
+### Interpreting Odds Ratios
+
+* Not probabilities 
+* Odds ratio of 1 = no difference in odds
+* Log odds ratio of 0 = no difference in odds
+* Odds ratio < 0.5 or > 2 commonly a "moderate effect"
+* Relative risk $\frac{\rm{Pr}(RW_i | RS_i = 10)}{\rm{Pr}(RW_i | RS_i = 0)}$ often easier to interpret, harder to estimate
+* For small probabilities RR $\approx$ OR but __they are not the same__!
+
 #Quiz
 1. -0.031 - coefficient wrong
 

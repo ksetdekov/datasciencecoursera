@@ -98,6 +98,111 @@ $b_1$ - Log odds ratio of win probability for each point scored (compared to zer
 
 $exp(b_1)$ ration of increase per 1 point
 
+## Ravens logistic regression
+
+
+```r
+logRegRavens <-
+    glm(ravensData$ravenWinNum ~ ravensData$ravenScore, family = "binomial")
+summary(logRegRavens)
+```
+
+```
+## 
+## Call:
+## glm(formula = ravensData$ravenWinNum ~ ravensData$ravenScore, 
+##     family = "binomial")
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.7575  -1.0999   0.5305   0.8060   1.4947  
+## 
+## Coefficients:
+##                       Estimate Std. Error z value Pr(>|z|)
+## (Intercept)           -1.68001    1.55412  -1.081     0.28
+## ravensData$ravenScore  0.10658    0.06674   1.597     0.11
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 24.435  on 19  degrees of freedom
+## Residual deviance: 20.895  on 18  degrees of freedom
+## AIC: 24.895
+## 
+## Number of Fisher Scoring iterations: 5
+```
+
+## Ravens fitted values
+
+
+```r
+plot(ravensData$ravenScore,logRegRavens$fitted,pch=19,col="blue",xlab="Score",ylab="Prob Ravens Win")
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-1-1.png)<!-- -->
+
+## Odds ratios and confidence intervals
+
+
+```r
+exp(logRegRavens$coeff)
+```
+
+```
+##           (Intercept) ravensData$ravenScore 
+##             0.1863724             1.1124694
+```
+
+```r
+## 11% increase per score
+exp(confint(logRegRavens))  ##- odds ratio
+```
+
+```
+## Waiting for profiling to be done...
+```
+
+```
+##                             2.5 %   97.5 %
+## (Intercept)           0.005674966 3.106384
+## ravensData$ravenScore 0.996229662 1.303304
+```
+
+
+confidence interval - includes 1, increase in score is not significant
+
+## ANOVA for logistic regression
+
+
+```r
+anova(logRegRavens,test="Chisq")
+```
+
+```
+## Analysis of Deviance Table
+## 
+## Model: binomial, link: logit
+## 
+## Response: ravensData$ravenWinNum
+## 
+## Terms added sequentially (first to last)
+## 
+## 
+##                       Df Deviance Resid. Df Resid. Dev Pr(>Chi)  
+## NULL                                     19     24.435           
+## ravensData$ravenScore  1   3.5398        18     20.895  0.05991 .
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+### Interpreting Odds Ratios
+
+* Not probabilities 
+* Odds ratio of 1 = no difference in odds
+* Log odds ratio of 0 = no difference in odds
+* Odds ratio < 0.5 or > 2 commonly a "moderate effect"
+* Relative risk $\frac{\rm{Pr}(RW_i | RS_i = 10)}{\rm{Pr}(RW_i | RS_i = 0)}$ often easier to interpret, harder to estimate
+* For small probabilities RR $\approx$ OR but __they are not the same__!
+
 #Quiz
 1. -0.031 - coefficient wrong
 
