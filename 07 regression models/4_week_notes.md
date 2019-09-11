@@ -58,6 +58,45 @@ offset
 `mdl2 <- glm(formula = simplystats ~ date, family = poisson, data = hits, offset = log(visits + 1))`
 
 #Lectures
+
+#GLMs
+## Example, logistic regression
+* Assume that $Y_i \sim Bernoulli(\mu_i)$ so that $E[Y_i] = \mu_i$ where $0\leq \mu_i \leq 1$.
+* Linear predictor $\eta_i = \sum_{k=1}^p X_{ik} \beta_k$
+* Link function 
+$g(\mu) = \eta = \log\left( \frac{\mu}{1 - \mu}\right)$
+$g$ is the (natural) log odds, referred to as the **logit**.
+* Note then we can invert the logit function as
+
+
+$$\mu_i = \frac{\exp(\eta_i)}{1 + \exp(\eta_i)}$$
+$$1 - \mu_i = \frac{1}{1 + \exp(\eta_i)}$$
+Thus the likelihood is
+$$
+\prod_{i=1}^n \mu_i^{y_i} (1 - \mu_i)^{1-y_i}
+= \exp\left(\sum_{i=1}^n y_i \eta_i \right)
+\prod_{i=1}^n (1 + \eta_i)^{-1}
+$$
+
+---
+## Example, Poisson regression
+* Assume that $Y_i \sim Poisson(\mu_i)$ so that $E[Y_i] = \mu_i$ where $0\leq \mu_i$
+* Linear predictor $\eta_i = \sum_{k=1}^p X_{ik} \beta_k$
+* Link function 
+$g(\mu) = \eta = \log(\mu)$
+* Recall that $e^x$ is the inverse of $\log(x)$ so that 
+
+
+$$
+\mu_i = e^{\eta_i}
+$$
+Thus, the likelihood is
+$$
+\prod_{i=1}^n (y_i !)^{-1} \mu_i^{y_i}e^{-\mu_i}
+\propto \exp\left(\sum_{i=1}^n y_i \eta_i - \sum_{i=1}^n \mu_i\right)
+$$
+
+
 Logistic regression
 Binomial random variables and binary
 
@@ -420,39 +459,142 @@ lines(
 zero inflation - lots of zeros not randomly in the dataset (e.g. in the beginning)
 * [pscl package](http://cran.r-project.org/web/packages/pscl/index.html) - the function _zeroinfl_ fits zero inflated models. 
 
+# fitting split functions
 
+## How to fit functions using linear models
+* Consider a model $Y_i = f(X_i) + \epsilon$. 
+* How can we fit such a model using linear models (called scatterplot smoothing)
+* Consider the model 
+  $$
+  Y_i = \beta_0 + \beta_1 X_i + \sum_{k=1}^d (x_i - \xi_k)_+ \gamma_k + \epsilon_{i}
+  $$
+where $(a)_+ = a$ if $a > 0$ and $0$ otherwise and $\xi_1 \leq ... \leq \xi_d$ are known knot points.
+* Prove to yourelf that the mean function
+$$
+\beta_0 + \beta_1 X_i + \sum_{k=1}^d (x_i - \xi_k)_+ \gamma_k
+$$
+is continuous at the knot points.
+
+---
+## Simulated example
+
+```r
+n <- 500; x <- seq(0, 4 * pi, length = n); y <- sin(x) + rnorm(n, sd = .3)
+knots <- seq(0, 8 * pi, length = 20); 
+splineTerms <- sapply(knots, function(knot) (x > knot) * (x - knot))
+xMat <- cbind(1, x, splineTerms)
+yhat <- predict(lm(y ~ xMat - 1))
+plot(x, y, frame = FALSE, pch = 21, bg = "lightblue", cex = 2)
+lines(x, yhat, col = "red", lwd = 2)
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
+## Adding squared terms
+* Adding squared terms makes it continuously differentiable at the knot points.
+* Adding cubic terms makes it twice continuously differentiable at the knot points; etcetera.
+$$
+  Y_i = \beta_0 + \beta_1 X_i + \beta_2 X_i^2 + \sum_{k=1}^d (x_i - \xi_k)_+^2 \gamma_k + \epsilon_{i}
+$$
+
+---
+
+```r
+splineTerms <- sapply(knots, function(knot) (x > knot) * (x - knot)^2)
+xMat <- cbind(1, x, x^2, splineTerms)
+yhat <- predict(lm(y ~ xMat - 1))
+plot(x, y, frame = FALSE, pch = 21, bg = "lightblue", cex = 2)
+lines(x, yhat, col = "red", lwd = 2)
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+
+## Notes
+* The collection of regressors is called a basis.
+  * People have spent **a lot** of time thinking about bases for this kind of problem. So, consider this as just a teaser.
+* Single knot point terms can fit hockey stick like processes.
+* These bases can be used in GLMs as well.
+* An issue with these approaches is the large number of parameters introduced. 
+  * Requires some method of so called regularization.
+
+---
+## Harmonics using linear models
+
+```r
+##Chord finder, playing the white keys on a piano from octave c4 - c5
+notes4 <-
+    c(261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25)
+t <- seq(0, 2, by = .001)
+n <- length(t)
+c4 <-
+    sin(2 * pi * notes4[1] * t)
+e4 <- sin(2 * pi * notes4[3] * t)
+
+g4 <- sin(2 * pi * notes4[5] * t)
+chord <- c4 + e4 + g4 + rnorm(n, 0, 0.3)
+x <- sapply(notes4, function(freq)
+    sin(2 * pi * freq * t))
+fit <- lm(chord ~ x - 1)
+```
+
+---
+![](4_week_notes_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+
+---
+
+```r
+##(How you would really do it)
+a <- fft(chord)
+plot(Re(a) ^ 2, type = "l")
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+
+# more
+
+* more glm
+* correlated data and longitudinal data
 
 #Quiz
-1. -0.031 - coefficient wrong
-
+1. 0.969
+-0.031 - coefficient wrong
 
 ```r
 library(MASS)
-?shuttle
+library(dplyr)
+head(shuttle)
 ```
 
 ```
-## starting httpd help server ... done
+##   stability error sign wind   magn vis  use
+## 1     xstab    LX   pp head  Light  no auto
+## 2     xstab    LX   pp head Medium  no auto
+## 3     xstab    LX   pp head Strong  no auto
+## 4     xstab    LX   pp tail  Light  no auto
+## 5     xstab    LX   pp tail Medium  no auto
+## 6     xstab    LX   pp tail Strong  no auto
 ```
 
 ```r
-mdl <- glm(use~wind, binomial, shuttle)
+shuttle <-
+    shuttle %>% mutate(autobin = ifelse(use == "auto", 1, 0))
+mdl <- glm(autobin~wind, binomial, shuttle)
 summary(mdl)
 ```
 
 ```
 ## 
 ## Call:
-## glm(formula = use ~ wind, family = binomial, data = shuttle)
+## glm(formula = autobin ~ wind, family = binomial, data = shuttle)
 ## 
 ## Deviance Residuals: 
 ##    Min      1Q  Median      3Q     Max  
-## -1.073  -1.073  -1.060   1.286   1.300  
+## -1.300  -1.286   1.060   1.073   1.073  
 ## 
 ## Coefficients:
 ##             Estimate Std. Error z value Pr(>|z|)
-## (Intercept) -0.25131    0.17817  -1.410    0.158
-## windtail    -0.03181    0.25224  -0.126    0.900
+## (Intercept)  0.25131    0.17817   1.410    0.158
+## windtail     0.03181    0.25224   0.126    0.900
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
@@ -469,13 +611,47 @@ exp(mdl$coefficients)
 
 ```
 ## (Intercept)    windtail 
-##   0.7777778   0.9686888
+##    1.285714    1.032323
 ```
- 2. 1.485 wrong
+
+```r
+1/1.032323 
+```
+
+```
+## [1] 0.9686891
+```
+
+```r
+#solution
+## Make our own variables just for illustration
+shuttle$auto <- 1 * (shuttle$use == "auto")
+shuttle$headwind <- 1 * (shuttle$wind == "head")
+fit <- glm(auto ~ headwind, data = shuttle, family = binomial)
+exp(coef(fit))
+```
+
+```
+## (Intercept)    headwind 
+##   1.3272727   0.9686888
+```
+
+```r
+## Another way without redifing variables
+fit <- glm(relevel(use, "noauto") ~ relevel(wind, "tail"), data = shuttle, family = binomial)
+exp(coef(fit))
+```
+
+```
+##               (Intercept) relevel(wind, "tail")head 
+##                 1.3272727                 0.9686888
+```
+ 2. 0.969
+ 1.485 wrong
  
 
 ```r
-mdl2 <- glm(use~wind+magn, binomial, shuttle)
+mdl2 <- glm(autobin~wind+magn, binomial, shuttle)
 
 summary(mdl2)
 ```
@@ -483,19 +659,19 @@ summary(mdl2)
 ```
 ## 
 ## Call:
-## glm(formula = use ~ wind + magn, family = binomial, data = shuttle)
+## glm(formula = autobin ~ wind + magn, family = binomial, data = shuttle)
 ## 
 ## Deviance Residuals: 
 ##    Min      1Q  Median      3Q     Max  
-## -1.184  -1.040  -1.015   1.321   1.349  
+## -1.349  -1.321   1.015   1.040   1.184  
 ## 
 ## Coefficients:
 ##               Estimate Std. Error z value Pr(>|z|)
-## (Intercept) -3.635e-01  2.841e-01  -1.280    0.201
-## windtail    -3.201e-02  2.530e-01  -0.127    0.899
-## magnMedium   2.442e-16  3.599e-01   0.000    1.000
-## magnOut      3.795e-01  3.568e-01   1.064    0.287
-## magnStrong   6.441e-02  3.590e-01   0.179    0.858
+## (Intercept)  3.635e-01  2.841e-01   1.280    0.201
+## windtail     3.201e-02  2.530e-01   0.127    0.899
+## magnMedium   1.205e-15  3.599e-01   0.000    1.000
+## magnOut     -3.795e-01  3.568e-01  -1.064    0.287
+## magnStrong  -6.441e-02  3.590e-01  -0.179    0.858
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
@@ -506,16 +682,62 @@ summary(mdl2)
 ## Number of Fisher Scoring iterations: 4
 ```
 
+```r
+exp(mdl2$coefficients)
+```
+
+```
+## (Intercept)    windtail  magnMedium     magnOut  magnStrong 
+##   1.4383682   1.0325265   1.0000000   0.6841941   0.9376181
+```
+
+```r
+1/1.0325265
+```
+
+```
+## [1] 0.9684981
+```
+
+```r
+## Another way without redifing variables
+fit <- glm(relevel(use, "noauto") ~ relevel(wind, "tail") + magn, data = shuttle, 
+    family = binomial)
+exp(coef(fit))
+```
+
+```
+##               (Intercept) relevel(wind, "tail")head 
+##                 1.4851533                 0.9684981 
+##                magnMedium                   magnOut 
+##                 1.0000000                 0.6841941 
+##                magnStrong 
+##                 0.9376181
+```
+
 3. The coefficients reverse their signs. right
 
 4. Consider the insect spray data \verb|InsectSprays|InsectSprays. Fit a Poisson model using spray as a factor level. Report the estimated relative rate comapring spray A (numerator) to spray B (denominator).
+0.9456521
 -0.05588 wrong
 
 
 ```r
 library(datasets)
-?InsectSprays
+head(InsectSprays)
+```
 
+```
+##   count spray
+## 1    10     A
+## 2     7     A
+## 3    20     A
+## 4    14     A
+## 5    14     A
+## 6    12     A
+```
+
+```r
 mdl4 <- glm(formula = count ~ spray, family = poisson, data = InsectSprays)
 summary(mdl4)
 ```
@@ -550,13 +772,37 @@ summary(mdl4)
 ```
 
 ```r
--0.05588
+exp(mdl4$coefficients)
 ```
 
 ```
-## [1] -0.05588
+## (Intercept)      sprayB      sprayC      sprayD      sprayE      sprayF 
+##  14.5000000   1.0574713   0.1436782   0.3390805   0.2413793   1.1494253
 ```
-5. The coefficient estimate is multiplied by 10. wrong
+
+```r
+1/1.0574713
+```
+
+```
+## [1] 0.9456521
+```
+
+```r
+fit <- glm(count ~ relevel(spray, "B"), data = InsectSprays, family = poisson)
+exp(coef(fit))[2]
+```
+
+```
+## relevel(spray, "B")A 
+##            0.9456522
+```
+
+```r
+#when we relevel we decare the basis one
+```
+5. coefficient is unchanged 
+The coefficient estimate is multiplied by 10. wrong
 
 6. 1.01307 right
 
@@ -594,6 +840,17 @@ summary(m1)
 ## Residual standard error: 0.2276 on 8 degrees of freedom
 ## Multiple R-squared:  0.986,	Adjusted R-squared:  0.9825 
 ## F-statistic: 282.3 on 2 and 8 DF,  p-value: 3.812e-08
+```
+
+```r
+#shorter one
+z <- (x > 0) * x
+fit <- lm(y ~ x + z)
+sum(coef(fit)[2:3])
+```
+
+```
+## [1] 1.013067
 ```
 
 
