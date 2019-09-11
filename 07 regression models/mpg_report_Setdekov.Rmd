@@ -1,0 +1,58 @@
+---
+title: "Which transmission type gets better MPG and by how much?"
+author: "Kirill Setdekov"
+date: "September 11, 2019"
+output: 
+  pdf_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	cache = TRUE,
+	echo = TRUE
+)
+```
+
+```{r load}
+require(datasets)
+require(ggplot2)
+require(dplyr)
+data(mtcars)
+head(mtcars)
+```
+
+
+```{r preparation}
+# convert weight to metric t
+mtcars <- mtcars %>% mutate(wt = wt*0.45359237 )
+
+# exploratory analysis
+mt <- lm(mpg~., data = mtcars)
+summary(mt)
+anova(mt)
+
+mt2 <- lm(mpg~disp*cyl+wt+am, data = mtcars)
+summary(mt2)
+```
+
+“Is an automatic or manual transmission better for MPG”
+
+
+"Quantify the MPG difference between automatic and manual transmissions"
+
+
+Your report must be:
+
+* Written as a PDF printout of a compiled (using knitr) R markdown document.
+*Brief. Roughly the equivalent of 2 pages or less for the main text. Supporting figures in an appendix can be included up to 5 total pages including the 2 for the main report. The appendix can only include figures.
+* Include a first paragraph executive summary.
+* Upload your PDF by clicking the Upload button below the text box.
+
+Did the student interpret the coefficients correctly?
+Did the student do some exploratory data analyses?
+Did the student fit multiple models and detail their strategy for model selection?
+Did the student answer the questions of interest or detail why the question(s) is (are) not answerable?
+Did the student do a residual plot and some diagnostics?
+Did the student quantify the uncertainty in their conclusions and/or perform an inference correctly?
+Was the report brief (about 2 pages long) for the main body of the report and no longer than 5 with supporting appendix of figures?
