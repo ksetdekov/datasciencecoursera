@@ -203,6 +203,225 @@ anova(logRegRavens,test="Chisq")
 * Relative risk $\frac{\rm{Pr}(RW_i | RS_i = 10)}{\rm{Pr}(RW_i | RS_i = 0)}$ often easier to interpret, harder to estimate
 * For small probabilities RR $\approx$ OR but __they are not the same__!
 
+* [Open Intro Chapter on Logistic Regression](http://www.openintro.org/stat/down/oiStat2_08.pdf)
+
+# poisson GLM
+
+* Many data take the form of counts
+  * Calls to a call center
+  * Number of flu cases in an area
+  * Number of cars that cross a bridge
+* Data may also be in the form of rates
+  * Percent of children passing a test
+  * Percent of hits to a website from a country
+* Linear regression with transformation is an option
+
+Useful for counts and rates.
+
+## The Poisson mass function
+- $X \sim Poisson(t\lambda)$ if
+$$
+P(X = x) = \frac{(t\lambda)^x e^{-t\lambda}}{x!}
+$$
+For $x = 0, 1, \ldots$.
+- The mean of the Poisson is $E[X] = t\lambda$, thus $E[X / t] = \lambda$
+- The variance of the Poisson is $Var(X) = t\lambda$.
+- The Poisson tends to a normal as $t\lambda$ gets large.
+
+Mean and variance are equal.
+
+* Since the unit of time is always one day, set $t = 1$ and then
+the Poisson mean is interpretted as web hits per day. (If we set $t = 24$, it would
+be web hits per hour).
+
+
+
+```r
+load("./gaData.rda")
+library(ggplot2)
+gaData$julian <- julian(gaData$date)
+head(gaData)
+```
+
+```
+##         date visits simplystats julian
+## 1 2011-01-01      0           0  14975
+## 2 2011-01-02      0           0  14976
+## 3 2011-01-03      0           0  14977
+## 4 2011-01-04      0           0  14978
+## 5 2011-01-05      0           0  14979
+## 6 2011-01-06      0           0  14980
+```
+
+
+```r
+qplot(julian, visits, data=gaData)
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+```r
+plot(gaData$julian,gaData$visits,pch=19,col="darkgrey",xlab="Julian",ylab="Visits")
+lm1 <- lm(gaData$visits ~ gaData$julian)
+abline(lm1,col="red",lwd=3)
+```
+
+![](4_week_notes_files/figure-html/linReg-1.png)<!-- -->
+
+add a log of hits
+
+- When you take the natural log of outcomes and fit a regression model, your exponentiated coefficients
+estimate things about geometric means.
+- $e^{\beta_0}$ estimated geometric mean hits on day 0
+- $e^{\beta_1}$ estimated relative increase or decrease in geometric mean hits per day
+- There's a problem with logs with you have zero counts, adding a constant works
+
+```r
+round(exp(coef(lm(I(log(gaData$visits + 1)) ~ gaData$julian))), 5)
+```
+
+```
+##   (Intercept) gaData$julian 
+##       0.00000       1.00231
+```
+
+## Linear vs. Poisson regression
+
+__Linear__
+
+$$ NH_i = b_0 + b_1 JD_i + e_i $$
+
+or
+
+$$ E[NH_i | JD_i, b_0, b_1] = b_0 + b_1 JD_i$$
+
+__Poisson/log-linear__
+
+$$ \log\left(E[NH_i | JD_i, b_0, b_1]\right) = b_0 + b_1 JD_i $$
+
+or
+
+$$ E[NH_i | JD_i, b_0, b_1] = \exp\left(b_0 + b_1 JD_i\right) $$
+
+
+## Poisson regression in R
+
+
+```r
+plot(gaData$julian,gaData$visits,pch=19,col="darkgrey",xlab="Julian",ylab="Visits")
+glm1 <- glm(gaData$visits ~ gaData$julian,family="poisson")
+abline(lm1,col="red",lwd=3); lines(gaData$julian,glm1$fitted,col="blue",lwd=3)
+```
+
+![](4_week_notes_files/figure-html/poisReg-1.png)<!-- -->
+
+## Model agnostic standard errors 
+
+
+```r
+library(sandwich)
+confint.agnostic <- function (object, parm, level = 0.95, ...)
+{
+    cf <- coef(object); pnames <- names(cf)
+    if (missing(parm))
+        parm <- pnames
+    else if (is.numeric(parm))
+        parm <- pnames[parm]
+    a <- (1 - level)/2; a <- c(a, 1 - a)
+    pct <- stats:::format.perc(a, 3)
+    fac <- qnorm(a)
+    ci <- array(NA, dim = c(length(parm), 2L), dimnames = list(parm,
+                                                               pct))
+    ses <- sqrt(diag(sandwich::vcovHC(object)))[parm]
+    ci[] <- cf[parm] + ses %o% fac
+    ci
+}
+```
+[http://stackoverflow.com/questions/3817182/vcovhc-and-confidence-interval](http://stackoverflow.com/questions/3817182/vcovhc-and-confidence-interval)
+
+---
+
+## Estimating confidence intervals
+
+
+```r
+confint(glm1)
+```
+
+```
+## Waiting for profiling to be done...
+```
+
+```
+##                       2.5 %        97.5 %
+## (Intercept)   -34.346577587 -31.159715656
+## gaData$julian   0.002190043   0.002396461
+```
+
+```r
+confint.agnostic(glm1)
+```
+
+```
+##                       2.5 %        97.5 %
+## (Intercept)   -36.362674594 -29.136997254
+## gaData$julian   0.002058147   0.002527955
+```
+
+Rates.
+Hitsfromstat/allhits
+$$ \log\left(E[NHSS_i | JD_i, b_0, b_1]\right) = \log(Totalhits_i) + b_0 + b_1 JD_i $$
+
+```r
+glm2 <-
+    glm(
+        gaData$simplystats ~ julian(gaData$date),
+        offset = log(visits + 1), #+1 because take log of 0
+        family = "poisson",
+        data = gaData
+    )
+plot(
+    julian(gaData$date),
+    glm2$fitted,
+    col = "blue",
+    pch = 19,
+    xlab = "Date",
+    ylab = "Fitted Counts"
+)
+points(julian(gaData$date),
+       glm1$fitted,
+       col = "red",
+       pch = 19)
+```
+
+![](4_week_notes_files/figure-html/ratesFit-1.png)<!-- -->
+
+```r
+#basically rates are blue points devided by red line
+##rates
+plot(
+    julian(gaData$date),
+    gaData$simplystats / (gaData$visits + 1),
+    col = "grey",
+    xlab = "Date",
+    ylab = "Fitted Rates",
+    pch = 19
+)
+lines(
+    julian(gaData$date),
+    glm2$fitted / (gaData$visits + 1),
+    col = "blue",
+    lwd = 3
+)
+```
+
+![](4_week_notes_files/figure-html/ratesFit-2.png)<!-- -->
+## More information
+zero inflation - lots of zeros not randomly in the dataset (e.g. in the beginning)
+* [pscl package](http://cran.r-project.org/web/packages/pscl/index.html) - the function _zeroinfl_ fits zero inflated models. 
+
+
+
 #Quiz
 1. -0.031 - coefficient wrong
 
