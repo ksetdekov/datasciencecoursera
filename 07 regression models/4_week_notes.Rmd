@@ -61,6 +61,36 @@ confidence interval vor logit regression
 offset
 `mdl2 <- glm(formula = simplystats ~ date, family = poisson, data = hits, offset = log(visits + 1))`
 
+#Lectures
+Logistic regression
+Binomial random variables and binary
+
+```{r loadRavens,cache=TRUE}
+load("./ravensData.rda")
+head(ravensData)
+```
+
+__Log odds $(-\infty,\infty)$__
+
+$$\ln\left(\frac{\rm{Pr}(RW_i | RS_i, b_0, b_1 )}{1-\rm{Pr}(RW_i | RS_i, b_0, b_1)}\right)$$ 
+$$Odds=\frac{p}{1-p} $$
+$$P=\frac{Odds}{1-Odds} $$
+logit == log of the odds.
+
+
+__Logistic__
+
+$$ \rm{Pr}(RW_i | RS_i, b_0, b_1) = \frac{\exp(b_0 + b_1 RS_i)}{1 + \exp(b_0 + b_1 RS_i)}$$
+
+or
+
+$$ \ln\left(\frac{\rm{Pr}(RW_i | RS_i, b_0, b_1 )}{1-\rm{Pr}(RW_i | RS_i, b_0, b_1)}\right) = b_0 + b_1 RS_i $$
+$b_0$ - Log odds of a Ravens win if they score zero points
+$$\frac{exp(b_0)}{1-exp(b_0)} = probability of winnin with 0 points$$
+$b_1$ - Log odds ratio of win probability for each point scored (compared to zero points)
+
+$exp(b_1)$ ration of increase per 1 point
+
 #Quiz
 1. -0.031 - coefficient wrong
 
