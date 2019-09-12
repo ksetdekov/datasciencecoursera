@@ -3,8 +3,7 @@ title: "Which transmission type gets better MPG and by how much?"
 author: "Kirill Setdekov"
 date: "September 11, 2019"
 output:
-  pdf_document:
-    keep_md: yes
+  pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -56,6 +55,7 @@ A manual transmission is better for
 mt <- lm(mpg~. -cylsize, data = mtcars)
 summary(mt)
 anova(mt)
+plot(mt)
 
 mt2 <- lm(mpg~disp+cyl+wt+am+cylsize, data = mtcars)
 summary(mt2)
@@ -66,6 +66,7 @@ summary(mt3)
 anova(mt3,mt2)
 anova(mt3)
 shapiro.test(mt3$residuals)
+plot(mt3)
 
 mt4 <- lm(mpg~disp+cyl+wt+cylsize, data = mtcars)
 anova(mt3,mt4)
@@ -77,16 +78,17 @@ anova(mt)
 
 mtam <- lm(mpg~am, data = mtcars)
 summary(mtam)
+par(mfrow = c(2, 2))
 
-
+plot(mtam)
 ```
 
 "Quantify the MPG difference between automatic and manual transmissions"
-By itsetlf manual transmission yields`{r} mtam$coefficients[2]` higher MPG compared to an automatic transmission
+By itsetlf manual transmission yields`r mtam$coefficients[2]` higher MPG compared to an automatic transmission
 
-Adjusted for all factors - manual transmissions in a car gives it `{r} mt$coefficients[9]` higher MPG compared to an automatic transmission.
+Adjusted for all factors - manual transmissions in a car gives it `r mt$coefficients[9]` higher MPG compared to an automatic transmission.
 However, this result is statistically insignificant and the best predictors of MPG are cylinder count, displacement, cylinder size and weight.
-Adjusting for the factors in the best model, manual transmission provides `{r} mt3$coefficients[6]` lower MPG compared to an automatic transmission.
+Adjusting for the factors in the best model, manual transmission provides `r mt3$coefficients[6]` lower MPG compared to an automatic transmission.
 
 ```{r compare}
 mancoef <- c(mtam$coefficients[2],mt$coefficients[9],mt3$coefficients[6])
