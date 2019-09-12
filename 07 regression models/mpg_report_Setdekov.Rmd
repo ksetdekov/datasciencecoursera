@@ -12,85 +12,88 @@ knitr::opts_chunk$set(
 	echo = TRUE
 )
 ```
-
-```{r load}
+```{r load, message=FALSE, warning=FALSE, include=FALSE}
 require(datasets)
 require(ggplot2)
 require(dplyr)
 require(gridExtra)
 data(mtcars)
-head(mtcars)
 ```
-
-
 ```{r preparation}
-# convert weight to metric t
-mtcars <- mtcars %>% 
-    mutate(wt = wt*0.45359237,
-                            am = factor(am, levels = c(0,1), labels = c("AT","MT")),
-                            cylsize = disp/cyl)
+mtcars <- mtcars %>%
+    mutate(
+        wt = wt * 0.45359237,
+        am = factor(am, levels = c(0, 1), labels = c("AT", "MT")),
+        cylsize = disp / cyl
+    ) # convert weight to metric t and create cylinder size variable
 ```
+## Summary
 
-```{r expl}
+According to the analysis, manual transmission vehicles have 7.245 better MPG compared to automatic transmission ones. However, adjusting the MPG by other variables, transmission type does not play a statistically significant role in MPG, having other factors constant. This suggests that not manual transmission leads to better MPG, but lighter cars with less cylinders and smaller cylinders.
+
+
+
+```{r expl, echo=FALSE, fig.height=3, fig.width= 6, message=FALSE, warning=FALSE}
 # exploratory analysis
-summary(mtcars$mpg)
-
 p1 <-
 ggplot(mtcars, aes(y = mpg, x = am, fill = am)) + geom_violin() +
-labs(title = "Violin plot of MPG \nby stransmission type")+theme_bw()
+labs(title = "Violin plot of MPG \nby transmission type")+theme_bw()
 
 p2 <-
 ggplot(mtcars, aes(x = wt, y = mpg, color = am)) +
 geom_point() + geom_smooth() +
-labs(title = "MPG distribution by weight and \nstransmission type with trend lines")+
+labs(title = "MPG distribution by wt and \ntransmission type")+
     theme_bw()
 
 grid.arrange(p1, p2, nrow = 1)
 ```
 
-“Is an automatic or manual transmission better for MPG?”
-A manual transmission is better for 
-```{r regressions}
+We can see that on average manual cars get better MPG, however if wee look at MPG vs weight for both transmission types, we see that:
+1. on general MT cars are lighter;
+2. there is a significant overlap of confidence intervals for the region of 1 to 1,6 t weights.
 
+## Regression analysis
+I performed several sets of regression.
+
+### Basis mpg vs transmission type
+
+Results are significant, residuals look normal and no outliers.
+
+```{r regressionamonly}
+mtam <- lm(mpg~am, data = mtcars)
+summary(mtam)
+```
+
+### All original factors included
+
+None of the coefficients are significant, but we find, that cyl, displ, wt are individually contributing to a good model (also, cylsize, not shown).
+
+```{r regressions}
 mt <- lm(mpg~. -cylsize, data = mtcars)
 summary(mt)
 anova(mt)
-plot(mt)
+```
 
-mt2 <- lm(mpg~disp+cyl+wt+am+cylsize, data = mtcars)
-summary(mt2)
-anova(mt, mt2)
 
+### Best model search
+
+Model mt3 is the best found one that includes and does not loose according to anova compared to a model with all factors. There are also no significant issues with residuals, however they fail the normality test. However, exluding transmission type `am` in a model mt3 is also possible, which again suggests that given other factors, transmission type does not affect MPG.
+```{r bestmodel}
 mt3 <- lm(mpg~disp+cyl+wt+cylsize+am, data = mtcars)
 summary(mt3)
-anova(mt3,mt2)
-anova(mt3)
+anova(mt3,mt)
 shapiro.test(mt3$residuals)
+par(mfrow = c(2, 2))
 plot(mt3)
 
 mt4 <- lm(mpg~disp+cyl+wt+cylsize, data = mtcars)
 anova(mt3,mt4)
-
-anova(mt3,mt)
-anova(mt)
-
-
-
-mtam <- lm(mpg~am, data = mtcars)
-summary(mtam)
-par(mfrow = c(2, 2))
-
-plot(mtam)
 ```
 
-"Quantify the MPG difference between automatic and manual transmissions"
-By itsetlf manual transmission yields`r mtam$coefficients[2]` higher MPG compared to an automatic transmission
 
-Adjusted for all factors - manual transmissions in a car gives it `r mt$coefficients[9]` higher MPG compared to an automatic transmission.
-However, this result is statistically insignificant and the best predictors of MPG are cylinder count, displacement, cylinder size and weight.
-Adjusting for the factors in the best model, manual transmission provides `r mt3$coefficients[6]` lower MPG compared to an automatic transmission.
+## Numeric results and comparisons
 
-```{r compare}
+```{r compare, echo=FALSE, fig.height=4, fig.width=7, dpi=300}
 mancoef <- c(mtam$coefficients[2],mt$coefficients[9],mt3$coefficients[6])
 confmanlower <- c(confint(mtam)[2,1],confint(mt)[9,1],confint(mt3)[6,1])
 confmanupper <- c(confint(mtam)[2,2],confint(mt)[9,2],confint(mt3)[6,2])
@@ -103,22 +106,13 @@ p <- ggplot(coefdf, aes(x=estimate, y=mancoef, fill=estimate)) +
   geom_bar(stat="identity", color="black") +
   geom_errorbar(aes(ymin=confmanlower, ymax=confmanupper), width=.3,
                  position=position_dodge(.9))
-p+labs(title="Comparison of manual transmission impact on MPG", x="Model used", y = "Change in MPG for manual compared to AT")+
+p+labs(title="Comparison of manual transmission impact on MPG \nwith confidence intervals", x="Model used", y = "Change in MPG for manual compared to AT")+
    theme_bw() 
 ```
+By itsetlf manual transmission yields ```r formatC(mtam$coefficients[2]) ``` higher MPG compared to an automatic transmission
 
+Adjusted for all factors - manual transmissions in a car gives it `r formatC(mt$coefficients[9])` better MPG compared to an automatic transmission.
+However, this result is statistically insignificant and the best predictors of MPG are cylinder count, displacement, cylinder size and weight.
+Adjusting for the factors in the best model, manual transmission provides `r formatC(mt3$coefficients[6])` lower MPG compared to an automatic transmission. 
 
-Your report must be:
-
-* Written as a PDF printout of a compiled (using knitr) R markdown document.
-*Brief. Roughly the equivalent of 2 pages or less for the main text. Supporting figures in an appendix can be included up to 5 total pages including the 2 for the main report. The appendix can only include figures.
-* Include a first paragraph executive summary.
-* Upload your PDF by clicking the Upload button below the text box.
-
-Did the student interpret the coefficients correctly?
-Did the student do some exploratory data analyses?
-Did the student fit multiple models and detail their strategy for model selection?
-Did the student answer the questions of interest or detail why the question(s) is (are) not answerable?
-Did the student do a residual plot and some diagnostics?
-Did the student quantify the uncertainty in their conclusions and/or perform an inference correctly?
-Was the report brief (about 2 pages long) for the main body of the report and no longer than 5 with supporting appendix of figures?
+In both cases effect of manual vs auto transmission, given all other factors equal is statistically indistinguishible from 0, while other factors remain significant.
