@@ -889,6 +889,7 @@ sum(coef(fit)[2:3])
 using step
 
 ```r
+data(mtcars)
 fitall <- lm(mpg~., data = mtcars)
 summary(step(fitall,direction="both",trace=FALSE))
 ```
@@ -915,3 +916,7 @@ summary(step(fitall,direction="both",trace=FALSE))
 ## Multiple R-squared:  0.8497,	Adjusted R-squared:  0.8336 
 ## F-statistic: 52.75 on 3 and 28 DF,  p-value: 1.21e-11
 ```
+
+
+
+
