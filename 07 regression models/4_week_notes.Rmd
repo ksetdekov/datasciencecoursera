@@ -524,4 +524,8 @@ fit <- lm(y ~ x + z)
 sum(coef(fit)[2:3])
 ```
 
-
+using step
+```{r}
+fitall <- lm(mpg~., data = mtcars)
+summary(step(fitall,direction="both",trace=FALSE))
+```

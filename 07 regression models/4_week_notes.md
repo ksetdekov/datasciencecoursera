@@ -562,6 +562,32 @@ plot(Re(a) ^ 2, type = "l")
 ```r
 library(MASS)
 library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following object is masked from 'package:MASS':
+## 
+##     select
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 head(shuttle)
 ```
 
@@ -816,6 +842,13 @@ plot(x,y)
 
 ```r
 library(lspline)
+```
+
+```
+## Warning: package 'lspline' was built under R version 3.5.3
+```
+
+```r
 m1 <- lm(y ~ lspline(x, c(0)))
 summary(m1)
 ```
@@ -853,4 +886,32 @@ sum(coef(fit)[2:3])
 ## [1] 1.013067
 ```
 
+using step
 
+```r
+fitall <- lm(mpg~., data = mtcars)
+summary(step(fitall,direction="both",trace=FALSE))
+```
+
+```
+## 
+## Call:
+## lm(formula = mpg ~ wt + qsec + am, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.4811 -1.5555 -0.7257  1.4110  4.6610 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   9.6178     6.9596   1.382 0.177915    
+## wt           -3.9165     0.7112  -5.507 6.95e-06 ***
+## qsec          1.2259     0.2887   4.247 0.000216 ***
+## am            2.9358     1.4109   2.081 0.046716 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.459 on 28 degrees of freedom
+## Multiple R-squared:  0.8497,	Adjusted R-squared:  0.8336 
+## F-statistic: 52.75 on 3 and 28 DF,  p-value: 1.21e-11
+```
