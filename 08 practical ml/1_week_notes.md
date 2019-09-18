@@ -7,11 +7,7 @@ output:
     keep_md: yes
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-	cache = TRUE
-)
-```
+
 
 # week 1
 
@@ -19,8 +15,21 @@ Elements of statistical learning.
 https://web.stanford.edu/~hastie/ElemStatLearn/
 
 caret package
-```{r}
+
+```r
 require(caret)
+```
+
+```
+## Loading required package: caret
+```
+
+```
+## Loading required package: lattice
+```
+
+```
+## Loading required package: ggplot2
 ```
 
 Machine learning by stanford on coursera
