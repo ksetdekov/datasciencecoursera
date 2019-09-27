@@ -224,3 +224,30 @@ caret::confusionMatrix(data = custpred,
                   reference = spam$type, positive = "spam")
 ```
 
+# cross validation
+### approach
+
+1. use training set
+2. split into train/test
+3. build model on train
+4. evaluate on test.
+5. repeat splitting and 2-4 and average estimated errors.
+
+or K-fold cross validation- get a testing in 1/3, repeat 3 times, or 1/k and k times.
+
+or. leave one out.
+leave sample - predict 
+
+## considerations
+
+* for time seris - need chunks
+* for k-fold
+    * large k = less bias, more variance
+    * small k = more bias, less variance
+* sampling must be done without replacement
+* random sampling with replacement - botstrapping.
+    * underestimates the error.
+    * can be corrected but hard.
+* if cross validate to pick the model - need to estimate errors on indipendent data.
+
+
