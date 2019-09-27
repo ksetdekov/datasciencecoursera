@@ -250,4 +250,8 @@ leave sample - predict
     * can be corrected but hard.
 * if cross validate to pick the model - need to estimate errors on indipendent data.
 
+# what data to use
 
+1. like data to predict like - https://fivethirtyeight.com/ same question as prediction
+2. looser connection = harder prediction
+3. unrelated data is the most common mistake
