@@ -14,3 +14,84 @@ knitr::opts_chunk$set(
 ```
 
 # week 2
+
+Caret package
+
+## additional materisl
+
+
+* Caret tutorials:
+    * [http://www.edii.uclm.es/~useR-2013/Tutorials/kuhn/user_caret_2up.pdf](http://www.edii.uclm.es/~useR-2013/Tutorials/kuhn/user_caret_2up.pdf)
+    * [https://cran.r-project.org/web/packages/caret/vignettes/caret.html](https://cran.r-project.org/web/packages/caret/vignettes/caret.html)
+* A paper introducing the caret package
+    * [http://www.jstatsoft.org/v28/i05/paper](http://www.jstatsoft.org/v28/i05/paper)
+
+```{r caret}
+require(caret)
+```
+
+Functionality
+
+* cleaning
+    * preProcess
+* data splitting
+    * createDataPartition
+    * createResample
+    * createTimeSlices
+* trainign/testing functionality
+    * train
+    * predict
+* model comparison
+    * confusionMatrix
+```{r spamsplit}
+require(kernlab)
+data(spam)
+intrain <- createDataPartition(y = spam$type, p = 0.75, list = FALSE)
+training <- spam[intrain, ]
+testing <- spam[-intrain, ]
+dim(training)
+
+#fit a model
+set.seed(32343)
+modelFit <- train(type ~ ., data = training, method = "glm")
+modelFit
+
+#results
+modelFit$finalModel
+
+#predict
+prediction <- predict(modelFit, newdata = testing)
+head(prediction)
+table(prediction)
+
+#confusionmatrix
+confusionMatrix(prediction, testing$type)
+```
+
+```{r dataslicing_kfold}
+require(kernlab)
+data(spam)
+intrain <- createDataPartition(y = spam$type, p = 0.75, list = FALSE)
+training <- spam[intrain, ]
+testing <- spam[-intrain, ]
+dim(training)
+
+fold <- createFolds(y=spam$type, k=10, list = TRUE, returnTrain = TRUE)
+sapply(fold, length)
+
+#return only testing
+fold <- createFolds(y=spam$type, k=10, list = TRUE, returnTrain = FALSE)
+sapply(fold, length)
+
+#doing resampling the whole set
+fold <- createResample(y=spam$type, times=10, list = TRUE)
+sapply(fold, length)
+
+
+# time clices
+tme <- 1:1000
+folds <- createTimeSlices(y=tme,initialWindow = 20, horizon = 10)
+names(folds)
+folds$train[[1]]
+```
+
