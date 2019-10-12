@@ -1,0 +1,58 @@
+---
+title: "Optimal for a runner"
+author: "Kirill Setdekov"
+date: "October 12 2019"
+output:
+  html_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	cache = TRUE
+)
+```
+
+```{r parameters}
+T <- 11
+RH <- 66
+Tskin <- 34
+FTP <- 2.249853
+M <- 89
+```
+
+```{r functions}
+twb_calc <- function(T, RH) {
+    T * atan(0.151977 * (RH + 8.313659) ^ 0.5) + atan(T + RH) - 
+        atan(RH - 1.676331) + 0.00391838 * RH ^ 1.5 * atan(0.023101 * RH) - 
+        4.686035
+}
+
+
+e_calc <- function(M, FTP, T, time, RH, Tskin) {
+    H_calc(M, FTP, time) - R_calc(Tskin, T, RH) - C_calc(FTP, Tskin , T, RH, time)
+}
+
+R_calc <- function(Tskin,
+                   tconst = T,
+                   rhconst = RH) {
+    9.1 * (Tskin - twb_calc(tconst, rhconst))
+}
+
+V_calc <- function(FTP, time = 60) {
+    # FTP <- FTP/(60/time)^-0.07
+    FTP / 0.27
+}
+
+C_calc <- function(FTP, Tskin, T, RH, time = 60) {
+    12.5 * V_calc(FTP, time) ^ 0.6 * (Tskin - twb_calc(T, RH))
+}
+H_calc <- function(M, FTP, time = 60) {
+    3 * M * FTP / (60 / time) ^ -0.07
+}
+
+0.05 * M
+e_calc(M   , FTP , T  , time , RH , Tskin)3.6 / 2249
+
+```
+Fix c
