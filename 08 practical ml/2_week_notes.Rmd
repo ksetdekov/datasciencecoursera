@@ -95,3 +95,83 @@ names(folds)
 folds$train[[1]]
 ```
 
+### Training options
+Spam example
+```{r trainingcontrolspam}
+require(caret)
+require(kernlab)
+data(spam)
+
+intrain <- createDataPartition(y=spam$type, p=0.75, list = FALSE)
+training <- spam[intrain,]
+testing <- spam[-intrain,]
+modelFit <- train(type~., data = training, method ="glm")
+
+#results
+modelFit$finalModel
+
+#predict
+prediction <- predict(modelFit, newdata = testing)
+head(prediction)
+table(prediction)
+
+#confusionmatrix
+confusionMatrix(prediction, testing$type)
+
+# accuracy to Kappa
+modelFit <- train(type~., data = training, method ="glm", metric = "Kappa")
+prediction2 <- predict(modelFit, newdata = testing)
+confusionMatrix(prediction2, testing$type)
+
+
+
+```
+
+Metric options
+* Continuous
+    * RMSE
+    * R^2
+* categorical
+    * accuracy
+    * Kappa
+    
+```{r}
+args(trainControl)
+control <- trainControl(number = 100)
+modelFit <- train(type~., data = training, method ="glm", trControl=control)
+prediction <- predict(modelFit, newdata = testing)
+confusionMatrix(prediction, testing$type)
+```
+Method
+
+* boot bootstrap
+* boot632 bootstrap  with adjustment
+* cv cross validation
+* repeatedcv = repeated cross validation
+* loocv = leave one out cross validation
+
+number - usefull for many parameters
+ 
+* for boot/cross validaiton
+* number of subsaples to take
+
+repears
+
+* number of times to repaea subsampling
+* if big this can slow things down a lot
+
+```{r}
+control <- trainControl(method = "cv")
+modelFit <- train(type~., data = training, method ="glm", trControl=control)
+prediction <- predict(modelFit, newdata = testing)
+confusionMatrix(prediction, testing$type)
+```
+Usefull to set a seed.
+
+```{r setseedresult}
+set.seed(1235)
+modelFit3 <- train(type~., data=training, method="glm")
+modelFit3
+```
+
+
