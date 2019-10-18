@@ -174,4 +174,51 @@ modelFit3 <- train(type~., data=training, method="glm")
 modelFit3
 ```
 
+# plotting predicitons
+
+Wage data
+```{r wages}
+library(ISLR)
+require(ggplot2)
+require(caret)
+require(GGally)
+require(dplyr)
+data(Wage)
+summary(Wage)
+
+pairs(Wage)
+Wage %>% select(age, race, wage, education) %>% ggpairs(., lower = list(continuous = wrap("smooth", alpha = 0.3, size=0.1)))
+
+#set adide testing set
+intrain <- createDataPartition(y=Wage$wage, p=0.7, list = FALSE)
+training <- Wage[intrain,]
+testin <- Wage[-intrain,]
+dim(training)
+dim(testin)
+```
+
+## Feature plot ::caret
+```{r plots}
+featurePlot(x = training[,c("age","race", "education")], y = training$wage, plot = "pairs")
+
+qplot(age, wage, colour = education,data = training)+geom_smooth(method = 'lm', formula = y~x)
+```
+
+```{r cut}
+require(Hmisc)
+cutwage <- cut2(training$wage, g=3)
+table(cutwage)
+
+cbind.data.frame(cutwage,training %>% select(race)) %>% ggpairs(., lower = list(continuous = wrap("smooth", alpha = 0.3, size=0.1)))
+cbind.data.frame(cutwage,training %>% select(race)) %>% table
+
+qplot(cutwage, age, data = training, fill = cutwage, geom = c("violin"))
+
+qplot(cutwage, age, data = training, fill = cutwage, geom = c("boxplot"))
+
+qplot(race, wage, data = training, fill = education, geom = c("boxplot"))
+
+
+```
+
 
