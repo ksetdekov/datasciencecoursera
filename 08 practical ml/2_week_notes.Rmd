@@ -206,19 +206,53 @@ qplot(age, wage, colour = education,data = training)+geom_smooth(method = 'lm', 
 
 ```{r cut}
 require(Hmisc)
+require(gridExtra)
 cutwage <- cut2(training$wage, g=3)
 table(cutwage)
 
 cbind.data.frame(cutwage,training %>% select(race)) %>% ggpairs(., lower = list(continuous = wrap("smooth", alpha = 0.3, size=0.1)))
-cbind.data.frame(cutwage,training %>% select(race)) %>% table
+cbind.data.frame(cutwage,training %>% select(race)) %>% table() %>% prop.table(.,2)
 
 qplot(cutwage, age, data = training, fill = cutwage, geom = c("violin"))
 
 qplot(cutwage, age, data = training, fill = cutwage, geom = c("boxplot"))
 
-qplot(race, wage, data = training, fill = education, geom = c("boxplot"))
+p1 <- qplot(race, wage, data = training, fill = education, geom = c("boxplot"))
 
 
+p1
+p2 <-
+qplot(
+race,
+wage,
+data = training,
+fill = education, color = education,
+geom = c("boxplot", "jitter")
+)
+grid.arrange(p1, p2, ncol = 2)
 ```
 
+### tables
+
+```{r tables}
+table(cutwage,training$jobclass) %>% prop.table(.,1)
+```
+
+### density plot
+
+```{r density}
+qplot(wage, colour= education, data = training, geom = "density")
+
+qplot(wage, colour= race, data = training, geom = "density")
+```
+
+#### Notes 
+
+* Make plots on the training set
+    * dont explore testing
+* look for
+    * imbalances in outcome/predictors
+    * otliers
+    * groups of points not explained by a predictor
+    * skewed variables
 

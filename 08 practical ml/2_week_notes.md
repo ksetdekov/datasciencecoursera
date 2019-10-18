@@ -1077,4 +1077,319 @@ modelFit3
 ##   0.9122941  0.8153988
 ```
 
+# plotting predicitons
+
+Wage data
+
+```r
+library(ISLR)
+require(ggplot2)
+require(caret)
+require(GGally)
+```
+
+```
+## Loading required package: GGally
+```
+
+```
+## Registered S3 method overwritten by 'GGally':
+##   method from   
+##   +.gg   ggplot2
+```
+
+```r
+require(dplyr)
+```
+
+```
+## Loading required package: dplyr
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following object is masked from 'package:GGally':
+## 
+##     nasa
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
+data(Wage)
+summary(Wage)
+```
+
+```
+##       year           age                     maritl           race     
+##  Min.   :2003   Min.   :18.00   1. Never Married: 648   1. White:2480  
+##  1st Qu.:2004   1st Qu.:33.75   2. Married      :2074   2. Black: 293  
+##  Median :2006   Median :42.00   3. Widowed      :  19   3. Asian: 190  
+##  Mean   :2006   Mean   :42.41   4. Divorced     : 204   4. Other:  37  
+##  3rd Qu.:2008   3rd Qu.:51.00   5. Separated    :  55                  
+##  Max.   :2009   Max.   :80.00                                          
+##                                                                        
+##               education                     region    
+##  1. < HS Grad      :268   2. Middle Atlantic   :3000  
+##  2. HS Grad        :971   1. New England       :   0  
+##  3. Some College   :650   3. East North Central:   0  
+##  4. College Grad   :685   4. West North Central:   0  
+##  5. Advanced Degree:426   5. South Atlantic    :   0  
+##                           6. East South Central:   0  
+##                           (Other)              :   0  
+##            jobclass               health      health_ins      logwage     
+##  1. Industrial :1544   1. <=Good     : 858   1. Yes:2083   Min.   :3.000  
+##  2. Information:1456   2. >=Very Good:2142   2. No : 917   1st Qu.:4.447  
+##                                                            Median :4.653  
+##                                                            Mean   :4.654  
+##                                                            3rd Qu.:4.857  
+##                                                            Max.   :5.763  
+##                                                                           
+##       wage       
+##  Min.   : 20.09  
+##  1st Qu.: 85.38  
+##  Median :104.92  
+##  Mean   :111.70  
+##  3rd Qu.:128.68  
+##  Max.   :318.34  
+## 
+```
+
+```r
+pairs(Wage)
+```
+
+![](2_week_notes_files/figure-html/wages-1.png)<!-- -->
+
+```r
+Wage %>% select(age, race, wage, education) %>% ggpairs(., lower = list(continuous = wrap("smooth", alpha = 0.3, size=0.1)))
+```
+
+```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+![](2_week_notes_files/figure-html/wages-2.png)<!-- -->
+
+```r
+#set adide testing set
+intrain <- createDataPartition(y=Wage$wage, p=0.7, list = FALSE)
+training <- Wage[intrain,]
+testin <- Wage[-intrain,]
+dim(training)
+```
+
+```
+## [1] 2102   11
+```
+
+```r
+dim(testin)
+```
+
+```
+## [1] 898  11
+```
+
+## Feature plot ::caret
+
+```r
+featurePlot(x = training[,c("age","race", "education")], y = training$wage, plot = "pairs")
+```
+
+![](2_week_notes_files/figure-html/plots-1.png)<!-- -->
+
+```r
+qplot(age, wage, colour = education,data = training)+geom_smooth(method = 'lm', formula = y~x)
+```
+
+![](2_week_notes_files/figure-html/plots-2.png)<!-- -->
+
+
+```r
+require(Hmisc)
+```
+
+```
+## Loading required package: Hmisc
+```
+
+```
+## Loading required package: survival
+```
+
+```
+## 
+## Attaching package: 'survival'
+```
+
+```
+## The following object is masked from 'package:caret':
+## 
+##     cluster
+```
+
+```
+## Loading required package: Formula
+```
+
+```
+## 
+## Attaching package: 'Hmisc'
+```
+
+```
+## The following objects are masked from 'package:dplyr':
+## 
+##     src, summarize
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     format.pval, units
+```
+
+```r
+require(gridExtra)
+```
+
+```
+## Loading required package: gridExtra
+```
+
+```
+## 
+## Attaching package: 'gridExtra'
+```
+
+```
+## The following object is masked from 'package:dplyr':
+## 
+##     combine
+```
+
+```r
+cutwage <- cut2(training$wage, g=3)
+table(cutwage)
+```
+
+```
+## cutwage
+## [ 20.1, 91.7) [ 91.7,118.9) [118.9,318.3] 
+##           702           722           678
+```
+
+```r
+cbind.data.frame(cutwage,training %>% select(race)) %>% ggpairs(., lower = list(continuous = wrap("smooth", alpha = 0.3, size=0.1)))
+```
+
+![](2_week_notes_files/figure-html/cut-1.png)<!-- -->
+
+```r
+cbind.data.frame(cutwage,training %>% select(race)) %>% table() %>% prop.table(.,2)
+```
+
+```
+##                race
+## cutwage          1. White  2. Black  3. Asian  4. Other
+##   [ 20.1, 91.7) 0.3259132 0.4171123 0.2773723 0.5769231
+##   [ 91.7,118.9) 0.3498858 0.3636364 0.2481752 0.2692308
+##   [118.9,318.3] 0.3242009 0.2192513 0.4744526 0.1538462
+```
+
+```r
+qplot(cutwage, age, data = training, fill = cutwage, geom = c("violin"))
+```
+
+![](2_week_notes_files/figure-html/cut-2.png)<!-- -->
+
+```r
+qplot(cutwage, age, data = training, fill = cutwage, geom = c("boxplot"))
+```
+
+![](2_week_notes_files/figure-html/cut-3.png)<!-- -->
+
+```r
+p1 <- qplot(race, wage, data = training, fill = education, geom = c("boxplot"))
+
+
+p1
+```
+
+![](2_week_notes_files/figure-html/cut-4.png)<!-- -->
+
+```r
+p2 <-
+qplot(
+race,
+wage,
+data = training,
+fill = education, color = education,
+geom = c("boxplot", "jitter")
+)
+grid.arrange(p1, p2, ncol = 2)
+```
+
+![](2_week_notes_files/figure-html/cut-5.png)<!-- -->
+
+### tables
+
+
+```r
+table(cutwage,training$jobclass) %>% prop.table(.,1)
+```
+
+```
+##                
+## cutwage         1. Industrial 2. Information
+##   [ 20.1, 91.7)     0.6538462      0.3461538
+##   [ 91.7,118.9)     0.5360111      0.4639889
+##   [118.9,318.3]     0.4070796      0.5929204
+```
+
+### density plot
+
+
+```r
+qplot(wage, colour= education, data = training, geom = "density")
+```
+
+![](2_week_notes_files/figure-html/density-1.png)<!-- -->
+
+```r
+qplot(wage, colour= race, data = training, geom = "density")
+```
+
+![](2_week_notes_files/figure-html/density-2.png)<!-- -->
+
+#### Notes 
+
+* Make plots on the training set
+    * dont explore testing
+* look for
+    * imbalances in outcome/predictors
+    * otliers
+    * groups of points not explained by a predictor
+    * skewed variables
 
