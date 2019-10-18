@@ -256,3 +256,49 @@ qplot(wage, colour= race, data = training, geom = "density")
     * groups of points not explained by a predictor
     * skewed variables
 
+# preprocessing
+
+needed for model -bases approaches.
+## why preprocess?
+
+```{r preprocess}
+require(caret)
+require(kernlab)
+data("spam")
+intrain <- createDataPartition(y=spam$type, p=0.75, list = FALSE)
+training <- spam[intrain,]
+testing <- spam[-intrain,]
+hist(training$capitalAve, main = "", xlab = "ave. capital run length")
+
+qplot(type, log10(training$capitalAve), data = training, geom = "violin")
+
+mean(training$capitalAve)
+sd(training$capitalAve)
+```
+
+## standardize
+```{r}
+traincapave <- training$capitalAve
+traincapaves <- (traincapave-mean(traincapave))/sd(traincapave)
+
+summary(traincapaves)
+sd(traincapaves)
+```
+
+standardisation will be done by the training set.
+
+```{r}
+testcapave <- testing$capitalAve
+testcapaves <- (testcapave-mean(traincapave))/sd(traincapave)
+
+summary(testcapaves)
+sd(testcapaves)
+```
+
+### caret has preporcessing
+
+```{r carepprepor}
+preObj <- preProcess(training[,-58], method = c("center","sclate"))
+```
+
+
