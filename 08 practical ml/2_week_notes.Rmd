@@ -296,9 +296,70 @@ sd(testcapaves)
 ```
 
 ### caret has preporcessing
+this is standardization - without writing formulas
 
-```{r carepprepor}
-preObj <- preProcess(training[,-58], method = c("center","sclate"))
+```{r caretpreporcess}
+preObj <- preProcess(training[,-58], method = c("center","scale"))
+trainCapAveS <- predict(preObj, training[,-58])$capitalAve
+mean(trainCapAveS)
+sd(trainCapAveS)
 ```
 
+can use this to apply to the testing
+```{r}
+testcapaves <- predict(preObj,testing[,-58])$capitalAve
+mean(testcapaves)
+sd(testcapaves)
+```
 
+can pass preProcess commands to train
+```{r}
+modelFit <- train(type~., data = training, preProcess = c("center","scale"), method = "glm")
+modelFit
+```
+
+### Other transformations
+```{r boxcox}
+preObj <- preProcess(training[-58], method = c("BoxCox"))
+trainCapAveS <- predict(preObj,training[-58])$capitalAve
+par(mfrow = c(1,2))
+hist(trainCapAveS)
+qqnorm(trainCapAveS)
+
+par(mfrow = c(1,2))
+hist(training$capitalAve)
+qqnorm(training$capitalAve)
+```
+
+### imputing data - helping with missing data
+
+find neerest k rows with missing data - and averages them 
+
+
+```{r imputingdata}
+set.seed(42)
+
+# Make some values NA
+training$capAve <- training$capitalAve
+selectNA <- rbinom(dim(training)[1],size=1,prob=0.05)==1
+training$capAve[selectNA] <- NA
+
+# Impute and standardize
+preObj <- preProcess(training[,-58],method="knnImpute")
+capAve <- predict(preObj,training[,-58])$capAve
+
+# Standardize true values
+capAveTruth <- training$capitalAve
+capAveTruth <- (capAveTruth-mean(capAveTruth))/sd(capAveTruth)
+
+
+quantile(capAve- capAveTruth)
+quantile((capAve - capAveTruth)[selectNA])
+quantile((capAve - capAveTruth)[!selectNA])
+```
+
+* Trainign and testing must be processed in the same way
+* test trainsformation will likely be imperfect
+    * Especially if data sets collected at different times
+* Be carefull with factor variables
+* [preprocessing with caret](http://caret.r-forge.r-project.org/preprocess.html)

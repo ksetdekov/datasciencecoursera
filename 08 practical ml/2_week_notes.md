@@ -1393,3 +1393,283 @@ qplot(wage, colour= race, data = training, geom = "density")
     * groups of points not explained by a predictor
     * skewed variables
 
+# preprocessing
+
+needed for model -bases approaches.
+## why preprocess?
+
+
+```r
+require(caret)
+require(kernlab)
+data("spam")
+intrain <- createDataPartition(y=spam$type, p=0.75, list = FALSE)
+training <- spam[intrain,]
+testing <- spam[-intrain,]
+hist(training$capitalAve, main = "", xlab = "ave. capital run length")
+```
+
+![](2_week_notes_files/figure-html/preprocess-1.png)<!-- -->
+
+```r
+qplot(type, log10(training$capitalAve), data = training, geom = "violin")
+```
+
+![](2_week_notes_files/figure-html/preprocess-2.png)<!-- -->
+
+```r
+mean(training$capitalAve)
+```
+
+```
+## [1] 5.207716
+```
+
+```r
+sd(training$capitalAve)
+```
+
+```
+## [1] 30.09083
+```
+
+## standardize
+
+```r
+traincapave <- training$capitalAve
+traincapaves <- (traincapave-mean(traincapave))/sd(traincapave)
+
+summary(traincapaves)
+```
+
+```
+##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## -0.13983 -0.12013 -0.09740  0.00000 -0.04898 33.77415
+```
+
+```r
+sd(traincapaves)
+```
+
+```
+## [1] 1
+```
+
+standardisation will be done by the training set.
+
+
+```r
+testcapave <- testing$capitalAve
+testcapaves <- (testcapave-mean(traincapave))/sd(traincapave)
+
+summary(testcapaves)
+```
+
+```
+##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## -0.13983 -0.12063 -0.09808 -0.00215 -0.05132 36.46601
+```
+
+```r
+sd(testcapaves)
+```
+
+```
+## [1] 1.203646
+```
+
+### caret has preporcessing
+this is standardization - without writing formulas
+
+
+```r
+preObj <- preProcess(training[,-58], method = c("center","scale"))
+trainCapAveS <- predict(preObj, training[,-58])$capitalAve
+mean(trainCapAveS)
+```
+
+```
+## [1] 5.682636e-19
+```
+
+```r
+sd(trainCapAveS)
+```
+
+```
+## [1] 1
+```
+
+can use this to apply to the testing
+
+```r
+testcapaves <- predict(preObj,testing[,-58])$capitalAve
+mean(testcapaves)
+```
+
+```
+## [1] -0.002154109
+```
+
+```r
+sd(testcapaves)
+```
+
+```
+## [1] 1.203646
+```
+
+can pass preProcess commands to train
+
+```r
+modelFit <- train(type~., data = training, preProcess = c("center","scale"), method = "glm")
+```
+
+```
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+```
+
+```r
+modelFit
+```
+
+```
+## Generalized Linear Model 
+## 
+## 3451 samples
+##   57 predictor
+##    2 classes: 'nonspam', 'spam' 
+## 
+## Pre-processing: centered (57), scaled (57) 
+## Resampling: Bootstrapped (25 reps) 
+## Summary of sample sizes: 3451, 3451, 3451, 3451, 3451, 3451, ... 
+## Resampling results:
+## 
+##   Accuracy   Kappa    
+##   0.9186593  0.8287934
+```
+
+### Other transformations
+
+```r
+preObj <- preProcess(training[-58], method = c("BoxCox"))
+trainCapAveS <- predict(preObj,training[-58])$capitalAve
+par(mfrow = c(1,2))
+hist(trainCapAveS)
+qqnorm(trainCapAveS)
+```
+
+![](2_week_notes_files/figure-html/boxcox-1.png)<!-- -->
+
+```r
+par(mfrow = c(1,2))
+hist(training$capitalAve)
+qqnorm(training$capitalAve)
+```
+
+![](2_week_notes_files/figure-html/boxcox-2.png)<!-- -->
+
+### imputing data - helping with missing data
+
+find neerest k rows with missing data - and averages them 
+
+
+
+```r
+set.seed(42)
+
+# Make some values NA
+training$capAve <- training$capitalAve
+selectNA <- rbinom(dim(training)[1],size=1,prob=0.05)==1
+training$capAve[selectNA] <- NA
+
+# Impute and standardize
+preObj <- preProcess(training[,-58],method="knnImpute")
+capAve <- predict(preObj,training[,-58])$capAve
+
+# Standardize true values
+capAveTruth <- training$capitalAve
+capAveTruth <- (capAveTruth-mean(capAveTruth))/sd(capAveTruth)
+
+
+quantile(capAve- capAveTruth)
+```
+
+```
+##            0%           25%           50%           75%          100% 
+## -2.6842090035 -0.0008353923  0.0002303987  0.0007273821  0.1810859830
+```
+
+```r
+quantile((capAve - capAveTruth)[selectNA])
+```
+
+```
+##            0%           25%           50%           75%          100% 
+## -2.6842090035 -0.0130205355  0.0009772935  0.0146881526  0.1810859830
+```
+
+```r
+quantile((capAve - capAveTruth)[!selectNA])
+```
+
+```
+##            0%           25%           50%           75%          100% 
+## -0.6936564171 -0.0007778648  0.0002297179  0.0006936825  0.0010990984
+```
+
+* Trainign and testing must be processed in the same way
+* test trainsformation will likely be imperfect
+    * Especially if data sets collected at different times
+* Be carefull with factor variables
+* [preprocessing with caret](http://caret.r-forge.r-project.org/preprocess.html)
