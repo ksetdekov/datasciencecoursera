@@ -1673,3 +1673,163 @@ quantile((capAve - capAveTruth)[!selectNA])
     * Especially if data sets collected at different times
 * Be carefull with factor variables
 * [preprocessing with caret](http://caret.r-forge.r-project.org/preprocess.html)
+
+# covariate creating
+
+1. from raw data to covariate (email to letter counts)
+    * depends heavy on application
+    * balancing act is summarization vs information loss
+    * examples
+        * text files - frequence of words, frequence of phrased, google ngrams, frequency of capitals
+        * images - edges, cornergs, blobs, ridges
+        * webpages - numbers and types of images, position of elements, colors, videos - A/B testing
+        * people - height, wight, hair color, sex, country of origin
+    * need more knowledge
+    * better err on the side of more features
+    * can be automated but use caution
+2. transforming tidy covariates
+    * features already created
+    * more necessary for metthonds (regression, svms) that others (classification trees)
+    * should be done only _on the training set_
+    * best approach is through exploratory analysis (plotting/tables)
+    * new covariates should be added to data frames
+
+```r
+require(kernlab)
+data("spam")
+spam$capitalAvesq <- spam$capitalAve^2
+par(mfrow = c(1,2))
+hist(spam$capitalAvesq)
+qqnorm(spam$capitalAvesq)
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
+
+```r
+library(ISLR)
+library(caret)
+data("Wage")
+inTrain <- createDataPartition(y=Wage$wage, p=0.7, list = F)
+training <- Wage[inTrain,]
+testing <- Wage[-inTrain,]
+```
+Commong covarites to add, dummy variables
+convert factor variables to indicator variables
+
+
+```r
+table(training$jobclass)
+```
+
+```
+## 
+##  1. Industrial 2. Information 
+##           1094           1008
+```
+
+```r
+dummies <- dummyVars(wage~jobclass, data = training)
+head(predict(dummies, newdata=training))
+```
+
+```
+##        jobclass.1. Industrial jobclass.2. Information
+## 86582                       0                       1
+## 155159                      0                       1
+## 11443                       0                       1
+## 450601                      1                       0
+## 377954                      0                       1
+## 228963                      0                       1
+```
+
+Removing zero covariates
+
+```r
+nsv <- nearZeroVar(training, saveMetrics = T)
+nsv
+```
+
+```
+##            freqRatio percentUnique zeroVar   nzv
+## year        1.102410    0.33301618   FALSE FALSE
+## age         1.138889    2.85442436   FALSE FALSE
+## maritl      3.021053    0.23786870   FALSE FALSE
+## race        9.010363    0.19029496   FALSE FALSE
+## education   1.424370    0.23786870   FALSE FALSE
+## region      0.000000    0.04757374    TRUE  TRUE
+## jobclass    1.085317    0.09514748   FALSE FALSE
+## health      2.599315    0.09514748   FALSE FALSE
+## health_ins  2.253870    0.09514748   FALSE FALSE
+## logwage     1.024096   19.50523311   FALSE FALSE
+## wage        1.024096   19.50523311   FALSE FALSE
+```
+
+spline basis
+
+```r
+require(splines)
+```
+
+```
+## Loading required package: splines
+```
+
+```r
+bsBasis <- bs(training$age, df=3)
+head(bsBasis)
+```
+
+```
+##              1          2           3
+## [1,] 0.2368501 0.02537679 0.000906314
+## [2,] 0.4308138 0.29109043 0.065560908
+## [3,] 0.3625256 0.38669397 0.137491189
+## [4,] 0.4241549 0.30633413 0.073747105
+## [5,] 0.3776308 0.09063140 0.007250512
+## [6,] 0.4403553 0.25969672 0.051051492
+```
+helps with curvy model fitting
+
+## fitting curves with splines
+fits 3 order polynomial
+
+```r
+lm1 <- lm(wage~bsBasis, data = training)
+plot(training$age, training$wage, pch=19, cex=0.5)
+points(training$age, predict(lm1, newdata=training), col="red", pch=19, cex=0.5)
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
+
+## splines on the test set
+
+```r
+head(predict(bsBasis, age = testing$age))
+```
+
+```
+##              1          2           3
+## [1,] 0.2368501 0.02537679 0.000906314
+## [2,] 0.4308138 0.29109043 0.065560908
+## [3,] 0.3625256 0.38669397 0.137491189
+## [4,] 0.4241549 0.30633413 0.073747105
+## [5,] 0.3776308 0.09063140 0.007250512
+## [6,] 0.4403553 0.25969672 0.051051492
+```
+
+## Notes and further reading
+
+* Level 1 feature creation (raw data to covariates)
+  * Science is key. Google "feature extraction for [data type]"
+  * Err on overcreation of features
+  * In some applications (images, voices) automated feature creation is possible/necessary
+    * http://www.cs.nyu.edu/~yann/talks/lecun-ranzato-icml2013.pdf
+* Level 2 feature creation (covariates to new covariates)
+  * The function _preProcess_ in _caret_ will handle some preprocessing.
+  * Create new covariates if you think they will improve fit
+  * Use exploratory analysis on the training set for creating them
+  * Be careful about overfitting!
+* [preprocessing with caret](http://caret.r-forge.r-project.org/preprocess.html)
+* If you want to fit spline models, use the _gam_ method in the _caret_ package which allows smoothing of multiple variables.
+* More on feature creation/data tidying in the Obtaining Data course from the Data Science course track. 
