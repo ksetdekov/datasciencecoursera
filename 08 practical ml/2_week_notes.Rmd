@@ -452,3 +452,17 @@ head(predict(bsBasis, age = testing$age))
 * [preprocessing with caret](http://caret.r-forge.r-project.org/preprocess.html)
 * If you want to fit spline models, use the _gam_ method in the _caret_ package which allows smoothing of multiple variables.
 * More on feature creation/data tidying in the Obtaining Data course from the Data Science course track. 
+
+# principal componen analysys
+```{r}
+require(caret)
+require(kernlab)
+data(spam)
+inTrain <- createDataPartition(y = spam$type, p = 0.75, list = FALSE)
+training <- spam[inTrain,]
+testing <- spam[-inTrain,]
+M <- abs(cor(training[,-58]))
+diag(M) <- 0
+which(M>0.8, arr.ind = T)
+```
+
