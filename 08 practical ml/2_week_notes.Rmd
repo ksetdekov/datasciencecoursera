@@ -464,5 +464,23 @@ testing <- spam[-inTrain,]
 M <- abs(cor(training[,-58]))
 diag(M) <- 0
 which(M>0.8, arr.ind = T)
+
+names(spam)[c(34,32)]
+plot(spam[,34],spam[,32])
 ```
+
+Both can be not useful
+* wee might not need every
+* a weighted combination of predictors might be better
+* pick combinations for "most information" possible
+* benefits
+  * reduce predictor number
+  * reduce noise
+
+we could rotate the plot
+
+Related problems.
+
+* find a new set of multivariate variables that are uncorrelated and explain as much variance as possible - statistical goal
+* if you put all the variables together in one matrix, find the best matrix created with fewer variables (lower rank) that explans the original data. - data compression goal
 
