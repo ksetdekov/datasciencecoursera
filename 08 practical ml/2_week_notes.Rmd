@@ -615,4 +615,50 @@ modFit <- train(eruptions~waiting, data = trainFaith, method = "lm")
 summary(modFit$finalModel)
 ```
 
+Predicting with multiple regressions
+```{r}
+library(ISLR)
+library(ggplot2)
+library(caret)
+data("Wage")
+Wage <- subset(Wage, select = -c(logwage))
+summary(Wage)
+
+inTrain <- createDataPartition(y=Wage$wage, p=0.7, list = FALSE)
+training <- Wage[inTrain,]
+testing <- Wage[-inTrain,]
+dim(training)
+dim(testing)
+featurePlot(x=training[,c("age", "education", "jobclass")], y=training$wage, plot = "pairs")
+
+qplot(age,wage,colour = jobclass,data = training)
+
+qplot(age,wage,colour = education,data = training)
+```
+FIt a linear model
+$$ ED_i = b_0 + b_1 age + b_2 I(Jobclass_i="Information") + \sum_{k=1}^4 \gamma_k I(education_i= level k) $$
+```{r}
+modFit <- train(wage~age+jobclass+education, method="lm", data=training)
+finMod <- modFit$finalModel
+print(modFit)
+summary(finMod)
+plot(finMod, 1, pch=19, cex=0.5)
+#label by factor
+qplot(finMod$fitted.values, finMod$residuals,colour = race, data=training)
+#plot by index
+plot(finMod$residuals, pch=19)
+```
+Predicted vs truth in test set post - analysis
+```{r}
+pred <- predict(modFit, testing)
+qplot(wage, pred, colour=year, data=testing)
+```
+ideally - need horizontal
+```{r}
+modFitall <- train(wage~., data=training, method="lm")
+pred <- predict(modFitall, testing)
+qplot(wage, pred, data=testing)
+```
+
+
 
