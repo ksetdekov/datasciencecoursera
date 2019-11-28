@@ -55,24 +55,6 @@ Functionality
 
 ```r
 require(kernlab)
-```
-
-```
-## Loading required package: kernlab
-```
-
-```
-## 
-## Attaching package: 'kernlab'
-```
-
-```
-## The following object is masked from 'package:ggplot2':
-## 
-##     alpha
-```
-
-```r
 data(spam)
 intrain <- createDataPartition(y = spam$type, p = 0.75, list = FALSE)
 training <- spam[intrain, ]
@@ -92,10 +74,6 @@ modelFit <- train(type ~ ., data = training, method = "glm")
 
 ```
 ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 ```
 
 ```
@@ -103,6 +81,10 @@ modelFit <- train(type ~ ., data = training, method = "glm")
 ```
 
 ```
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
 ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 
 ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
@@ -166,8 +148,8 @@ modelFit
 ## Summary of sample sizes: 3451, 3451, 3451, 3451, 3451, 3451, ... 
 ## Resampling results:
 ## 
-##   Accuracy   Kappa    
-##   0.9193252  0.8306058
+##   Accuracy   Kappa   
+##   0.9230686  0.838479
 ```
 
 ```r
@@ -180,40 +162,50 @@ modelFit$finalModel
 ## Call:  NULL
 ## 
 ## Coefficients:
-##       (Intercept)               make            address                all  
-##        -1.430e+00         -3.601e-01         -1.809e-01          1.236e-01  
-##             num3d                our               over             remove  
-##         1.739e+00          5.257e-01          7.029e-01          1.805e+00  
-##          internet              order               mail            receive  
-##         3.761e-01          5.998e-01          3.503e-01         -6.864e-02  
-##              will             people             report          addresses  
-##        -1.883e-01         -7.560e-02          6.360e-02          8.340e-01  
-##              free           business              email                you  
-##         9.505e-01          8.835e-01          1.690e-01          9.107e-02  
-##            credit               your               font             num000  
-##         1.076e+00          2.782e-01          2.593e-01          2.516e+00  
-##             money                 hp                hpl             george  
-##         4.751e-01         -2.485e+00         -6.302e-01         -1.050e+01  
-##            num650                lab               labs             telnet  
-##         5.048e-01         -1.839e+00         -7.265e-01          1.038e+00  
-##            num857               data             num415              num85  
-##         1.264e+00         -6.404e-01          1.285e+00         -1.645e+00  
-##        technology            num1999              parts                 pm  
-##         8.598e-01         -1.502e-02         -5.746e-01         -7.812e-01  
-##            direct                 cs            meeting           original  
-##        -5.989e-01         -4.219e+01         -2.432e+00         -3.086e+00  
-##           project                 re                edu              table  
-##        -1.480e+00         -9.305e-01         -1.506e+00         -2.196e+00  
-##        conference      charSemicolon   charRoundbracket  charSquarebracket  
-##        -3.578e+00         -1.527e+00         -6.058e-01         -6.070e-01  
-##   charExclamation         charDollar           charHash         capitalAve  
-##         2.731e-01          6.447e+00          2.756e+00         -2.516e-03  
-##       capitalLong       capitalTotal  
-##         1.049e-02          6.167e-04  
+##       (Intercept)               make            address  
+##        -1.415e+00         -2.048e-01         -1.562e-01  
+##               all              num3d                our  
+##         1.382e-01          2.296e+00          7.191e-01  
+##              over             remove           internet  
+##         7.525e-01          2.227e+00          5.438e-01  
+##             order               mail            receive  
+##         5.907e-01          1.051e-01         -3.786e-01  
+##              will             people             report  
+##        -1.705e-01         -1.193e-01          1.087e-01  
+##         addresses               free           business  
+##         1.884e+00          1.077e+00          9.305e-01  
+##             email                you             credit  
+##         9.044e-02          4.920e-02          7.633e-01  
+##              your               font             num000  
+##         2.579e-01          3.186e-01          1.631e+00  
+##             money                 hp                hpl  
+##         2.505e-01         -2.009e+00         -1.078e+00  
+##            george             num650                lab  
+##        -8.686e+00          4.783e-01         -2.030e+00  
+##              labs             telnet             num857  
+##        -7.727e-01         -6.201e+00          1.197e+00  
+##              data             num415              num85  
+##        -6.552e-01          1.271e+00         -1.956e+00  
+##        technology            num1999              parts  
+##         8.181e-01         -6.512e-02         -6.616e-01  
+##                pm             direct                 cs  
+##        -1.018e+00         -3.205e-01         -3.920e+01  
+##           meeting           original            project  
+##        -2.562e+00         -1.083e+00         -1.677e+00  
+##                re                edu              table  
+##        -8.066e-01         -1.618e+00         -2.166e+00  
+##        conference      charSemicolon   charRoundbracket  
+##        -2.896e+00         -1.561e+00         -1.139e-01  
+## charSquarebracket    charExclamation         charDollar  
+##        -6.272e-01          2.442e-01          5.857e+00  
+##          charHash         capitalAve        capitalLong  
+##         2.549e+00         -2.164e-02          1.261e-02  
+##      capitalTotal  
+##         5.332e-04  
 ## 
 ## Degrees of Freedom: 3450 Total (i.e. Null);  3393 Residual
 ## Null Deviance:	    4628 
-## Residual Deviance: 1359 	AIC: 1475
+## Residual Deviance: 1354 	AIC: 1470
 ```
 
 ```r
@@ -234,7 +226,7 @@ table(prediction)
 ```
 ## prediction
 ## nonspam    spam 
-##     697     453
+##     714     436
 ```
 
 ```r
@@ -247,28 +239,28 @@ confusionMatrix(prediction, testing$type)
 ## 
 ##           Reference
 ## Prediction nonspam spam
-##    nonspam     655   42
-##    spam         42  411
-##                                           
-##                Accuracy : 0.927           
-##                  95% CI : (0.9104, 0.9413)
-##     No Information Rate : 0.6061          
-##     P-Value [Acc > NIR] : <2e-16          
-##                                           
-##                   Kappa : 0.847           
-##                                           
-##  Mcnemar's Test P-Value : 1               
-##                                           
-##             Sensitivity : 0.9397          
-##             Specificity : 0.9073          
-##          Pos Pred Value : 0.9397          
-##          Neg Pred Value : 0.9073          
-##              Prevalence : 0.6061          
-##          Detection Rate : 0.5696          
-##    Detection Prevalence : 0.6061          
-##       Balanced Accuracy : 0.9235          
-##                                           
-##        'Positive' Class : nonspam         
+##    nonspam     662   52
+##    spam         35  401
+##                                          
+##                Accuracy : 0.9243         
+##                  95% CI : (0.9075, 0.939)
+##     No Information Rate : 0.6061         
+##     P-Value [Acc > NIR] : < 2e-16        
+##                                          
+##                   Kappa : 0.8405         
+##                                          
+##  Mcnemar's Test P-Value : 0.08628        
+##                                          
+##             Sensitivity : 0.9498         
+##             Specificity : 0.8852         
+##          Pos Pred Value : 0.9272         
+##          Neg Pred Value : 0.9197         
+##              Prevalence : 0.6061         
+##          Detection Rate : 0.5757         
+##    Detection Prevalence : 0.6209         
+##       Balanced Accuracy : 0.9175         
+##                                          
+##        'Positive' Class : nonspam        
 ## 
 ```
 
@@ -314,10 +306,10 @@ sapply(fold, length)
 ```
 
 ```
-## Resample01 Resample02 Resample03 Resample04 Resample05 Resample06 Resample07 
-##       4601       4601       4601       4601       4601       4601       4601 
-## Resample08 Resample09 Resample10 
-##       4601       4601       4601
+## Resample01 Resample02 Resample03 Resample04 Resample05 Resample06 
+##       4601       4601       4601       4601       4601       4601 
+## Resample07 Resample08 Resample09 Resample10 
+##       4601       4601       4601       4601
 ```
 
 ```r
@@ -417,36 +409,46 @@ modelFit$finalModel
 ## Call:  NULL
 ## 
 ## Coefficients:
-##       (Intercept)               make            address                all  
-##        -1.581e+00         -3.632e-01         -1.471e-01          1.360e-01  
-##             num3d                our               over             remove  
-##         2.286e+00          4.152e-01          9.685e-01          2.092e+00  
-##          internet              order               mail            receive  
-##         8.042e-01          7.320e-01          9.426e-02         -2.275e-01  
-##              will             people             report          addresses  
-##        -1.372e-01         -1.651e-01          1.535e-01          1.595e+00  
-##              free           business              email                you  
-##         1.011e+00          9.620e-01          9.127e-02          8.760e-02  
-##            credit               your               font             num000  
-##         1.034e+00          2.641e-01          2.894e-01          2.379e+00  
-##             money                 hp                hpl             george  
-##         3.530e-01         -1.539e+00         -1.290e+00         -1.129e+01  
-##            num650                lab               labs             telnet  
-##         3.908e-01         -2.259e+00         -3.855e-01         -1.964e-01  
-##            num857               data             num415              num85  
-##         2.610e+00         -7.208e-01          5.153e-01         -1.672e+00  
-##        technology            num1999              parts                 pm  
-##         9.057e-01          6.343e-03          1.290e+00         -1.031e+00  
-##            direct                 cs            meeting           original  
-##        -5.633e-02         -4.230e+01         -2.884e+00         -1.111e+00  
-##           project                 re                edu              table  
-##        -1.275e+00         -8.689e-01         -1.052e+00         -2.083e+00  
-##        conference      charSemicolon   charRoundbracket  charSquarebracket  
-##        -4.251e+00         -1.573e+00         -1.657e-01         -2.736e-01  
-##   charExclamation         charDollar           charHash         capitalAve  
-##         4.329e-01          3.844e+00          2.092e+00          7.396e-03  
-##       capitalLong       capitalTotal  
-##         9.254e-03          8.734e-04  
+##       (Intercept)               make            address  
+##        -1.581e+00         -3.632e-01         -1.471e-01  
+##               all              num3d                our  
+##         1.360e-01          2.286e+00          4.152e-01  
+##              over             remove           internet  
+##         9.685e-01          2.092e+00          8.042e-01  
+##             order               mail            receive  
+##         7.320e-01          9.426e-02         -2.275e-01  
+##              will             people             report  
+##        -1.372e-01         -1.651e-01          1.535e-01  
+##         addresses               free           business  
+##         1.595e+00          1.011e+00          9.620e-01  
+##             email                you             credit  
+##         9.127e-02          8.760e-02          1.034e+00  
+##              your               font             num000  
+##         2.641e-01          2.894e-01          2.379e+00  
+##             money                 hp                hpl  
+##         3.530e-01         -1.539e+00         -1.290e+00  
+##            george             num650                lab  
+##        -1.129e+01          3.908e-01         -2.259e+00  
+##              labs             telnet             num857  
+##        -3.855e-01         -1.964e-01          2.610e+00  
+##              data             num415              num85  
+##        -7.208e-01          5.153e-01         -1.672e+00  
+##        technology            num1999              parts  
+##         9.057e-01          6.343e-03          1.290e+00  
+##                pm             direct                 cs  
+##        -1.031e+00         -5.633e-02         -4.230e+01  
+##           meeting           original            project  
+##        -2.884e+00         -1.111e+00         -1.275e+00  
+##                re                edu              table  
+##        -8.689e-01         -1.052e+00         -2.083e+00  
+##        conference      charSemicolon   charRoundbracket  
+##        -4.251e+00         -1.573e+00         -1.657e-01  
+## charSquarebracket    charExclamation         charDollar  
+##        -2.736e-01          4.329e-01          3.844e+00  
+##          charHash         capitalAve        capitalLong  
+##         2.092e+00          7.396e-03          9.254e-03  
+##      capitalTotal  
+##         8.734e-04  
 ## 
 ## Degrees of Freedom: 3450 Total (i.e. Null);  3393 Residual
 ## Null Deviance:	    4628 
@@ -1141,21 +1143,29 @@ summary(Wage)
 ##  3rd Qu.:2008   3rd Qu.:51.00   5. Separated    :  55                  
 ##  Max.   :2009   Max.   :80.00                                          
 ##                                                                        
-##               education                     region               jobclass   
-##  1. < HS Grad      :268   2. Middle Atlantic   :3000   1. Industrial :1544  
-##  2. HS Grad        :971   1. New England       :   0   2. Information:1456  
-##  3. Some College   :650   3. East North Central:   0                        
-##  4. College Grad   :685   4. West North Central:   0                        
-##  5. Advanced Degree:426   5. South Atlantic    :   0                        
-##                           6. East South Central:   0                        
-##                           (Other)              :   0                        
-##             health      health_ins      logwage           wage       
-##  1. <=Good     : 858   1. Yes:2083   Min.   :3.000   Min.   : 20.09  
-##  2. >=Very Good:2142   2. No : 917   1st Qu.:4.447   1st Qu.: 85.38  
-##                                      Median :4.653   Median :104.92  
-##                                      Mean   :4.654   Mean   :111.70  
-##                                      3rd Qu.:4.857   3rd Qu.:128.68  
-##                                      Max.   :5.763   Max.   :318.34  
+##               education                     region    
+##  1. < HS Grad      :268   2. Middle Atlantic   :3000  
+##  2. HS Grad        :971   1. New England       :   0  
+##  3. Some College   :650   3. East North Central:   0  
+##  4. College Grad   :685   4. West North Central:   0  
+##  5. Advanced Degree:426   5. South Atlantic    :   0  
+##                           6. East South Central:   0  
+##                           (Other)              :   0  
+##            jobclass               health      health_ins      logwage     
+##  1. Industrial :1544   1. <=Good     : 858   1. Yes:2083   Min.   :3.000  
+##  2. Information:1456   2. >=Very Good:2142   2. No : 917   1st Qu.:4.447  
+##                                                            Median :4.653  
+##                                                            Mean   :4.654  
+##                                                            3rd Qu.:4.857  
+##                                                            Max.   :5.763  
+##                                                                           
+##       wage       
+##  Min.   : 20.09  
+##  1st Qu.: 85.38  
+##  Median :104.92  
+##  Mean   :111.70  
+##  3rd Qu.:128.68  
+##  Max.   :318.34  
 ## 
 ```
 
@@ -3014,3 +3024,637 @@ confusionMatrix(testing$type,predict(modelFit,testing))
   * Exploratory Data Analysis
   * [Elements of Statistical Learning](http://statweb.stanford.edu/~tibs/ElemStatLearn/)
   
+# predicting with regressions
+eruptions on geisers
+
+```r
+require(caret)
+data("faithful")
+set.seed(333)
+inTrain <- createDataPartition(y=faithful$waiting, p=0.7, list = FALSE)
+trainFaith <- faithful[inTrain,]
+testFaith <- faithful[-inTrain,]
+head(trainFaith)
+```
+
+```
+##   eruptions waiting
+## 1     3.600      79
+## 3     3.333      74
+## 5     4.533      85
+## 6     2.883      55
+## 7     4.700      88
+## 8     3.600      85
+```
+
+```r
+plot(trainFaith$waiting, trainFaith$eruptions)
+```
+
+![](2_week_notes_files/figure-html/geisers-1.png)<!-- -->
+
+Fit a linear model.
+$ ED_i = b_o+ b_1WT_i+e_i$
+
+```r
+lm1 <- lm(eruptions~waiting, data = trainFaith)
+summary(lm1)
+```
+
+```
+## 
+## Call:
+## lm(formula = eruptions ~ waiting, data = trainFaith)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.29688 -0.36730  0.04112  0.34874  0.94854 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) -1.810358   0.182882  -9.899   <2e-16 ***
+## waiting      0.074598   0.002536  29.413   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.4756 on 190 degrees of freedom
+## Multiple R-squared:  0.8199,	Adjusted R-squared:  0.819 
+## F-statistic: 865.1 on 1 and 190 DF,  p-value: < 2.2e-16
+```
+
+Modelfit
+
+```r
+with(trainFaith, plot(waiting,eruptions))
+lines(trainFaith$waiting, lm1$fitted.values, col="blue")
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
+
+Predict new value
+
+```r
+newdata <- data.frame(waiting=80)
+predict(lm1,newdata)
+```
+
+```
+##        1 
+## 4.157444
+```
+training and testing plots
+
+```r
+par(mfrow=c(1,2))
+with(trainFaith, plot(waiting,eruptions))
+lines(trainFaith$waiting, lm1$fitted.values, col="blue")
+with(testFaith,plot(waiting,eruptions))
+lines(testFaith$waiting, predict(lm1, newdata = testFaith), col="blue")
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-23-1.png)<!-- -->
+
+get errors RMSE
+
+
+```r
+#train 
+sqrt(sum((lm1$fitted.values- trainFaith$eruptions)^2))
+```
+
+```
+## [1] 6.555263
+```
+
+```r
+#test
+sqrt(sum((predict(lm1, newdata = testFaith)- testFaith$eruptions)^2))
+```
+
+```
+## [1] 4.864926
+```
+
+Prediction intervals
+
+```r
+pred1 <- predict(lm1, newdata = testFaith, interval = "prediction")
+ord <- order(testFaith$waiting)
+plot(testFaith$waiting, testFaith$eruptions, col="blue")
+matlines(testFaith$waiting[ord], pred1[ord,], type = "l",col = c(1,2,2), lty=c(1,1,1), lwd=3)
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-25-1.png)<!-- -->
+
+Same with caret
+
+```r
+modFit <- train(eruptions~waiting, data = trainFaith, method = "lm")
+summary(modFit$finalModel)
+```
+
+```
+## 
+## Call:
+## lm(formula = .outcome ~ ., data = dat)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.29688 -0.36730  0.04112  0.34874  0.94854 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) -1.810358   0.182882  -9.899   <2e-16 ***
+## waiting      0.074598   0.002536  29.413   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.4756 on 190 degrees of freedom
+## Multiple R-squared:  0.8199,	Adjusted R-squared:  0.819 
+## F-statistic: 865.1 on 1 and 190 DF,  p-value: < 2.2e-16
+```
+
+Predicting with multiple regressions
+
+```r
+library(ISLR)
+library(ggplot2)
+library(caret)
+data("Wage")
+Wage <- subset(Wage, select = -c(logwage))
+summary(Wage)
+```
+
+```
+##       year           age                     maritl           race     
+##  Min.   :2003   Min.   :18.00   1. Never Married: 648   1. White:2480  
+##  1st Qu.:2004   1st Qu.:33.75   2. Married      :2074   2. Black: 293  
+##  Median :2006   Median :42.00   3. Widowed      :  19   3. Asian: 190  
+##  Mean   :2006   Mean   :42.41   4. Divorced     : 204   4. Other:  37  
+##  3rd Qu.:2008   3rd Qu.:51.00   5. Separated    :  55                  
+##  Max.   :2009   Max.   :80.00                                          
+##                                                                        
+##               education                     region    
+##  1. < HS Grad      :268   2. Middle Atlantic   :3000  
+##  2. HS Grad        :971   1. New England       :   0  
+##  3. Some College   :650   3. East North Central:   0  
+##  4. College Grad   :685   4. West North Central:   0  
+##  5. Advanced Degree:426   5. South Atlantic    :   0  
+##                           6. East South Central:   0  
+##                           (Other)              :   0  
+##            jobclass               health      health_ins  
+##  1. Industrial :1544   1. <=Good     : 858   1. Yes:2083  
+##  2. Information:1456   2. >=Very Good:2142   2. No : 917  
+##                                                           
+##                                                           
+##                                                           
+##                                                           
+##                                                           
+##       wage       
+##  Min.   : 20.09  
+##  1st Qu.: 85.38  
+##  Median :104.92  
+##  Mean   :111.70  
+##  3rd Qu.:128.68  
+##  Max.   :318.34  
+## 
+```
+
+```r
+inTrain <- createDataPartition(y=Wage$wage, p=0.7, list = FALSE)
+training <- Wage[inTrain,]
+testing <- Wage[-inTrain,]
+dim(training)
+```
+
+```
+## [1] 2102   10
+```
+
+```r
+dim(testing)
+```
+
+```
+## [1] 898  10
+```
+
+```r
+featurePlot(x=training[,c("age", "education", "jobclass")], y=training$wage, plot = "pairs")
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-27-1.png)<!-- -->
+
+```r
+qplot(age,wage,colour = jobclass,data = training)
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-27-2.png)<!-- -->
+
+```r
+qplot(age,wage,colour = education,data = training)
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-27-3.png)<!-- -->
+FIt a linear model
+$$ ED_i = b_0 + b_1 age + b_2 I(Jobclass_i="Information") + \sum_{k=1}^4 \gamma_k I(education_i= level k) $$
+
+```r
+modFit <- train(wage~age+jobclass+education, method="lm", data=training)
+finMod <- modFit$finalModel
+print(modFit)
+```
+
+```
+## Linear Regression 
+## 
+## 2102 samples
+##    3 predictor
+## 
+## No pre-processing
+## Resampling: Bootstrapped (25 reps) 
+## Summary of sample sizes: 2102, 2102, 2102, 2102, 2102, 2102, ... 
+## Resampling results:
+## 
+##   RMSE      Rsquared   MAE     
+##   35.55185  0.2644719  24.42364
+## 
+## Tuning parameter 'intercept' was held constant at a value of TRUE
+```
+
+```r
+summary(finMod)
+```
+
+```
+## 
+## Call:
+## lm(formula = .outcome ~ ., data = dat)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -106.820  -19.685   -3.485   14.942  216.157 
+## 
+## Coefficients:
+##                               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)                   57.82444    3.91214  14.781  < 2e-16 ***
+## age                            0.57850    0.06863   8.429  < 2e-16 ***
+## `jobclass2. Information`       4.17123    1.63386   2.553   0.0108 *  
+## `education2. HS Grad`         11.79876    2.99011   3.946 8.21e-05 ***
+## `education3. Some College`    24.04917    3.13994   7.659 2.84e-14 ***
+## `education4. College Grad`    39.36673    3.15155  12.491  < 2e-16 ***
+## `education5. Advanced Degree` 63.88311    3.44886  18.523  < 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 35.63 on 2095 degrees of freedom
+## Multiple R-squared:  0.2655,	Adjusted R-squared:  0.2634 
+## F-statistic: 126.2 on 6 and 2095 DF,  p-value: < 2.2e-16
+```
+
+```r
+plot(finMod, 1, pch=19, cex=0.5)
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-28-1.png)<!-- -->
+
+```r
+#label by factor
+qplot(finMod$fitted.values, finMod$residuals,colour = race, data=training)
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-28-2.png)<!-- -->
+
+```r
+#plot by index
+plot(finMod$residuals, pch=19)
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-28-3.png)<!-- -->
+Predicted vs truth in test set post - analysis
+
+```r
+pred <- predict(modFit, testing)
+qplot(wage, pred, colour=year, data=testing)
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-29-1.png)<!-- -->
+ideally - need horizontal
+
+```r
+modFitall <- train(wage~., data=training, method="lm")
+```
+
+```
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+```
+
+```r
+pred <- predict(modFitall, testing)
+```
+
+```
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
+## fit may be misleading
+```
+
+```r
+qplot(wage, pred, data=testing)
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-30-1.png)<!-- -->
+
+### quiz
+
+
+```r
+#1
+library(AppliedPredictiveModeling)
+data(AlzheimerDisease)
+
+adData = data.frame(diagnosis,predictors)
+testIndex = createDataPartition(diagnosis, p = 0.50,list=FALSE)
+training = adData[-testIndex,]
+testing = adData[testIndex,]
+
+#2
+library(AppliedPredictiveModeling)
+data(concrete)
+library(caret)
+set.seed(1000)
+inTrain = createDataPartition(mixtures$CompressiveStrength, p = 3/4)[[1]]
+training = mixtures[ inTrain,]
+testing = mixtures[-inTrain,]
+library(Hmisc)
+flyash <- cut2(x = testing$FlyAsh, g = 3)
+qplot(x = 1:dim(testing)[1],testing$CompressiveStrength, colour = flyash, data=testing)
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-31-1.png)<!-- -->
+
+```r
+agecut <- cut2(x = testing$Age, g = 3)
+qplot(x = 1:dim(testing)[1],testing$CompressiveStrength, colour = agecut, data=testing)
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-31-2.png)<!-- -->
+
+```r
+#3
+library(AppliedPredictiveModeling)
+data(concrete)
+library(caret)
+set.seed(1000)
+inTrain = createDataPartition(mixtures$CompressiveStrength, p = 3/4)[[1]]
+training = mixtures[ inTrain,]
+testing = mixtures[-inTrain,]
+qplot(training$Superplasticizer)
+```
+
+```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-31-3.png)<!-- -->
+
+```r
+summary(training$Superplasticizer)
+```
+
+```
+##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## 0.000000 0.000000 0.002723 0.002602 0.004396 0.013149
+```
+
+```r
+qplot(log10(training$Superplasticizer+1))
+```
+
+```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+![](2_week_notes_files/figure-html/unnamed-chunk-31-4.png)<!-- -->
+
+```r
+#5
+
+library(caret)
+library(AppliedPredictiveModeling)
+library(dplyr)
+set.seed(3433)
+data(AlzheimerDisease)
+adData = data.frame(diagnosis,predictors)
+inTrain = createDataPartition(adData$diagnosis,p = 3/4)[[1]]
+training = adData[ inTrain,]
+testing = adData[-inTrain,]
+testingsubset <- training %>% dplyr:: select(starts_with("IL"))
+
+
+preProc <- preProcess(testingsubset,method="pca",pcaComp=12)
+PC <- predict(preProc,testingsubset)
+#7
+
+#5
+library(caret)
+library(AppliedPredictiveModeling)
+RNGversion("3.0.0")
+```
+
+```
+## Warning in RNGkind("Mersenne-Twister", "Inversion", "Rounding"): non-
+## uniform 'Rounding' sampler used
+```
+
+```r
+set.seed(3433)
+data(AlzheimerDisease)
+adData = data.frame(diagnosis,predictors)
+inTrain = createDataPartition(adData$diagnosis, p = 3/4)[[1]]
+training = adData[ inTrain,]
+testing = adData[-inTrain,]
+
+#pca 0.71 non 0.72
+
+
+il <- grep("^IL", names(training))
+
+m1 <- train(diagnosis ~ ., data=training[,c(1,il)], method="glm")
+
+ctrl <- trainControl(preProcOptions = list(thresh = 0.8))
+m2 <- train(diagnosis ~ ., data=training[,c(1,il)], preProcess = "pca", method="glm", trControl=ctrl)
+
+confusionMatrix(testing$diagnosis, predict(m1, testing))
+```
+
+```
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction Impaired Control
+##   Impaired        2      20
+##   Control         9      51
+##                                          
+##                Accuracy : 0.6463         
+##                  95% CI : (0.533, 0.7488)
+##     No Information Rate : 0.8659         
+##     P-Value [Acc > NIR] : 1.00000        
+##                                          
+##                   Kappa : -0.0702        
+##                                          
+##  Mcnemar's Test P-Value : 0.06332        
+##                                          
+##             Sensitivity : 0.18182        
+##             Specificity : 0.71831        
+##          Pos Pred Value : 0.09091        
+##          Neg Pred Value : 0.85000        
+##              Prevalence : 0.13415        
+##          Detection Rate : 0.02439        
+##    Detection Prevalence : 0.26829        
+##       Balanced Accuracy : 0.45006        
+##                                          
+##        'Positive' Class : Impaired       
+## 
+```
+
+```r
+confusionMatrix(testing$diagnosis, predict(m2, testing))
+```
+
+```
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction Impaired Control
+##   Impaired        3      19
+##   Control         4      56
+##                                           
+##                Accuracy : 0.7195          
+##                  95% CI : (0.6094, 0.8132)
+##     No Information Rate : 0.9146          
+##     P-Value [Acc > NIR] : 1.000000        
+##                                           
+##                   Kappa : 0.0889          
+##                                           
+##  Mcnemar's Test P-Value : 0.003509        
+##                                           
+##             Sensitivity : 0.42857         
+##             Specificity : 0.74667         
+##          Pos Pred Value : 0.13636         
+##          Neg Pred Value : 0.93333         
+##              Prevalence : 0.08537         
+##          Detection Rate : 0.03659         
+##    Detection Prevalence : 0.26829         
+##       Balanced Accuracy : 0.58762         
+##                                           
+##        'Positive' Class : Impaired        
+## 
+```
+
+```r
+m2$preProcess
+```
+
+```
+## Created from 251 samples and 12 variables
+## 
+## Pre-processing:
+##   - centered (12)
+##   - ignored (0)
+##   - principal component signal extraction (12)
+##   - scaled (12)
+## 
+## PCA needed 7 components to capture 80 percent of the variance
+```
+
+```r
+defaultm3 <-  train(diagnosis ~ ., data=training[,c(1,il)], preProcess = "pca", method="glm")
+defaultm3$preProcess
+```
+
+```
+## Created from 251 samples and 12 variables
+## 
+## Pre-processing:
+##   - centered (12)
+##   - ignored (0)
+##   - principal component signal extraction (12)
+##   - scaled (12)
+## 
+## PCA needed 10 components to capture 95 percent of the variance
+```
+
+
