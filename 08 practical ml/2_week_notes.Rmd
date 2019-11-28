@@ -452,3 +452,103 @@ head(predict(bsBasis, age = testing$age))
 * [preprocessing with caret](http://caret.r-forge.r-project.org/preprocess.html)
 * If you want to fit spline models, use the _gam_ method in the _caret_ package which allows smoothing of multiple variables.
 * More on feature creation/data tidying in the Obtaining Data course from the Data Science course track. 
+
+# principal componen analysys
+```{r}
+require(caret)
+require(kernlab)
+data(spam)
+inTrain <- createDataPartition(y = spam$type, p = 0.75, list = FALSE)
+training <- spam[inTrain,]
+testing <- spam[-inTrain,]
+M <- abs(cor(training[,-58]))
+diag(M) <- 0
+which(M>0.8, arr.ind = T)
+
+names(spam)[c(34,32)]
+plot(spam[,34],spam[,32])
+```
+
+Both can be not useful
+* wee might not need every
+* a weighted combination of predictors might be better
+* pick combinations for "most information" possible
+* benefits
+  * reduce predictor number
+  * reduce noise
+
+we could rotate the plot
+```{r rotate}
+X <- 0.71 * training$num415 + 0.71 * training$num857
+Y <- 0.71 * training$num415 - 0.71 * training$num857
+plot(X,Y)
+```
+
+Related problems.
+
+* find a new set of multivariate variables that are uncorrelated and explain as much variance as possible - statistical goal
+* if you put all the variables together in one matrix, find the best matrix created with fewer variables (lower rank) that explans the original data. - data compression goal
+
+* Related solutions - PCA/SVD
+_SVD_
+Variables in V - are constructed to explain the maximum amount of variation in the data.
+
+If X is a matrix with each variable in  clumn and each observation in a row then SVD is a "matrix decomposition".
+
+$$ X=UDV^T $$
+whre the columns of $U$ are orthogonal (left singular vectors), the columns of V are orthogonal (right singular vectors) and D is a diagonal matrix (singular values)
+
+_PCA_
+THe pricnipal components are equal to the right singular values if you first standardize the variables.
+
+```{r prcompex}
+smallSpam <- spam[,c(34,32)]
+prComp <- prcomp(smallSpam)
+plot(prComp$x[,1],prComp$x[,2])
+```
+PCA on 2 varables - look like adding and substracting X and Y combinations from above.
+
+```{r}
+prComp$rotation
+require(dplyr)
+prcompTr <- training[,-58] %>% prcomp()
+prcompTr$rotation
+```
+PCA on SPAM
+```{r}
+typeColor <- ((training$type=="spam")*1+1)
+prComp <- prcomp(log10(training[,-58]+1))
+plot(prComp$x[,1],prComp$x[,2], col=typeColor, xlab="PC1", ylab = "PC2")
+```
+
+## PCA with caret
+```{r}
+preProc <- preProcess(log10(spam[,-58]+1),method="pca",pcaComp=2)
+spamPC <- predict(preProc,log10(spam[,-58]+1))
+plot(spamPC[,1],spamPC[,2],col=typeColor)
+```
+
+```{r}
+preProc <- preProcess(log10(training[,-58]+1),method="pca",pcaComp=2)
+trainPC <- predict(preProc,log10(training[,-58]+1))
+modelFit <- train(x = trainPC, y = training$type,method="glm")
+
+testPC <- predict(preProc, log10(testing[,-58]+1))
+confusionMatrix(testing$type, predict(modelFit, testPC))
+```
+## alternative (sets # of PCs)
+```{r}
+
+modelFit <- train(type ~.,method="glm", preProcess="pca", data = training)
+confusionMatrix(testing$type,predict(modelFit,testing))
+```
+
+* Most useful for linear-type models
+* Can make it harder to interpret predictors
+* Watch out for outliers! 
+  * Transform first (with logs/Box Cox)
+  * Plot predictors to identify problems
+* For more info see 
+  * Exploratory Data Analysis
+  * [Elements of Statistical Learning](http://statweb.stanford.edu/~tibs/ElemStatLearn/)
+  
