@@ -114,4 +114,90 @@ in R both in the caret package - [party](http://cran.r-project.org/web/packages/
 * [Elements of Statistical Learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/)
 * [Classification and regression trees](http://www.amazon.com/Classification-Regression-Trees-Leo-Breiman/dp/0412048418)
 
+## bootstrap aggregating (bagging)
+
+1. reasmple causes and make predictions
+2. average or majority vote for model
+
+```{r}
+library(ElemStatLearn)
+data(ozone, package = "ElemStatLearn")
+ozone <- ozone[order(ozone$ozone),]
+head(ozone)
+```
+
+bagging example
+```{r}
+ll <- matrix(NA, nrow = 10, ncol = 155)
+for (i in 1:10) {
+    ss <- sample(1:dim(ozone)[1], replace = T)
+    ozone0 <- ozone[ss, ]
+    ozone0 <- ozone0[order(ozone0$ozone), ]
+    loess0 <- loess(temperature ~ ozone, data = ozone0, span = 0.2)
+    ll[i, ] <- predict(loess0, newdata = data.frame(ozone = 1:155))
+}
+#average
+with(ozone, plot(ozone, temperature, pch = 19, cex = 0.5))
+for (i in 1:10) {
+    lines(1:155, ll[i,], col="grey", lwd=1)
+}
+lines(1:155, apply(ll,2,mean), col="red", lwd=2)
+```
+
+
+bagging - lower variability with same bias
+
+
+## baggin in caret
+
+Some models perform bagging in train with $method$ options
+
+* bagEarth
+* treebag
+* bagFDA
+
+## custom bagging
+
+```{r}
+predictors = data.frame(ozone = ozone$ozone)
+temperature = ozone$temperature
+library(caret)
+treebag <-
+    bag(
+        predictors,
+        temperature,
+        B = 10,
+        bagControl = bagControl(
+            fit = ctreeBag$fit,
+            predict = ctreeBag$pred,
+            aggregate = ctreeBag$aggregate
+        )
+    )
+```
+### custom bagging examples
+greqy - actual
+red - one tree
+blue - fit from bagged regression
+```{r}
+with(ozone, plot(ozone, temperature, col = "lightgrey", pch = 19, cex = 0.5))
+points(ozone$ozone, predict(treebag$fits[[1]]$fit, predictors), pch=19, col="red")
+points(ozone$ozone, predict(treebag, predictors), pch=19, col="blue")
+```
+exploration
+```{r}
+ctreeBag$fit
+ctreeBag$pred
+ctreeBag$aggregate
+```
+__Notes__:
+
+* Good for nonlinear model
+* often used with trees - an extension is random forstrs
+* some models use bagging in caret's train function
+
+__Further resources__:
+
+* [Bagging](http://en.wikipedia.org/wiki/Bootstrap_aggregating)
+* [Bagging and boosting](http://stat.ethz.ch/education/semesters/FS_2008/CompStat/sk-ch8.pdf)
+* [Elements of Statistical Learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/)
 
