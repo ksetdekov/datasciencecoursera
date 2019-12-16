@@ -513,3 +513,3359 @@ __Further resources__:
 * [Random forests](http://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm)
 * [Random forest Wikipedia](http://en.wikipedia.org/wiki/Random_forest)
 * [Elements of Statistical Learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/)
+
+## Boosting
+
+1. take many weak predictors
+2. wight them and add them up
+3. get a stronger predictor
+
+#### basic idea
+
+1. start with classifiers
+    * all possible trees, all regressions, all cutoffs.
+
+2. Create a classififer that combines classification funcitons
+    * goal to minimize error on the training set
+    * iterative, select one h at each step
+    * calculate weights based on errors
+    * upweight missed classifications and select next h
+    
+[Adaboost on Wikipedia](http://en.wikipedia.org/wiki/AdaBoost)
+
+[http://webee.technion.ac.il/people/rmeir/BoostingTutorial.pdf](http://webee.technion.ac.il/people/rmeir/BoostingTutorial.pdf)
+
+
+### boosting can be with different models
+
+
+* Boosting can be used with any subset of classifiers
+* One large subclass is [gradient boosting](http://en.wikipedia.org/wiki/Gradient_boosting)
+* R has multiple boosting libraries. Differences include the choice of basic classification functions and combination rules.
+  * [gbm](http://cran.r-project.org/web/packages/gbm/index.html) - boosting with trees.
+  * [mboost](http://cran.r-project.org/web/packages/mboost/index.html) - model based boosting
+  * [ada](http://cran.r-project.org/web/packages/ada/index.html) - statistical boosting based on [additive logistic regression](http://projecteuclid.org/DPubS?service=UI&version=1.0&verb=Display&handle=euclid.aos/1016218223)
+  * [gamBoost](http://cran.r-project.org/web/packages/GAMBoost/index.html) for boosting generalized additive models
+* Most of these are available in the caret package 
+
+
+```r
+require(ISLR)
+```
+
+```
+## Loading required package: ISLR
+```
+
+```r
+data(Wage)
+require(ggplot2)
+require(caret)
+Wage <- subset(Wage, select = -c(logwage))
+inTrain <- createDataPartition(y=Wage$wage, p=0.7, list = FALSE)
+training <- Wage[inTrain,]
+testing <- Wage[-inTrain,]
+```
+
+#### boosting with trees
+
+```r
+modFit <- train(wage~., method = "gbm", data = training, verbose = FALSE)
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 14: region2. Middle Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 15: region3. East North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 16: region4. West North Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 17: region5. South Atlantic has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 18: region6. East South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 19: region7. West South Central has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 20: region8. Mountain has no variation.
+```
+
+```
+## Warning in (function (x, y, offset = NULL, misc = NULL, distribution =
+## "bernoulli", : variable 21: region9. Pacific has no variation.
+```
+
+```r
+print(modFit)
+```
+
+```
+## Stochastic Gradient Boosting 
+## 
+## 2102 samples
+##    9 predictor
+## 
+## No pre-processing
+## Resampling: Bootstrapped (25 reps) 
+## Summary of sample sizes: 2102, 2102, 2102, 2102, 2102, 2102, ... 
+## Resampling results across tuning parameters:
+## 
+##   interaction.depth  n.trees  RMSE      Rsquared   MAE     
+##   1                   50      35.62296  0.3116470  23.99700
+##   1                  100      35.03916  0.3203808  23.56071
+##   1                  150      35.00222  0.3197653  23.55619
+##   2                   50      35.08379  0.3198643  23.60730
+##   2                  100      34.98274  0.3204040  23.60280
+##   2                  150      35.09491  0.3165925  23.73683
+##   3                   50      35.01484  0.3203285  23.59735
+##   3                  100      35.17380  0.3134511  23.79020
+##   3                  150      35.35589  0.3081356  23.97381
+## 
+## Tuning parameter 'shrinkage' was held constant at a value of 0.1
+## 
+## Tuning parameter 'n.minobsinnode' was held constant at a value of 10
+## RMSE was used to select the optimal model using the smallest value.
+## The final values used for the model were n.trees = 100,
+##  interaction.depth = 2, shrinkage = 0.1 and n.minobsinnode = 10.
+```
+
+```r
+plot(modFit)
+```
+
+![](3_week_notes_files/figure-html/boostingwithrees-1.png)<!-- -->
+
+
+```r
+require(ggplot2)
+qplot(predict(modFit,testing), wage, data = testing)
+```
+
+![](3_week_notes_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
+
+```r
+mad(predict(modFit,testing)- testing$wage)
+```
+
+```
+## [1] 23.50662
+```
+
+```r
+MLmetrics::RMSE(y_pred = predict(modFit,testing),y_true = testing$wage)
+```
+
+```
+## [1] 32.23754
+```
+
+```r
+#randomForest compare
+modFitrf <- train(wage~., method = "rf", data = training, prox = TRUE)
+mad(predict(modFitrf,testing)- testing$wage)
+```
+
+```
+## [1] 25.16234
+```
+
+```r
+MLmetrics::RMSE(y_pred = predict(modFitrf,testing),y_true = testing$wage)
+```
+
+```
+## [1] 34.10887
+```
+
+```r
+qplot(predict(modFitrf,testing), wage, data = testing)
+```
+
+![](3_week_notes_files/figure-html/unnamed-chunk-12-2.png)<!-- -->
+### Boosting notes and further reading
+
+* A couple of nice tutorials for boosting
+  * Freund and Shapire - [http://www.cc.gatech.edu/~thad/6601-gradAI-fall2013/boosting.pdf](http://www.cc.gatech.edu/~thad/6601-gradAI-fall2013/boosting.pdf)
+  * Ron Meir- [http://webee.technion.ac.il/people/rmeir/BoostingTutorial.pdf](http://webee.technion.ac.il/people/rmeir/BoostingTutorial.pdf)
+* Boosting, random forests, and model ensembling are the most common tools that win Kaggle and other prediction contests. 
+  * [http://www.netflixprize.com/assets/GrandPrize2009_BPC_BigChaos.pdf](http://www.netflixprize.com/assets/GrandPrize2009_BPC_BigChaos.pdf)
+  * [https://kaggle2.blob.core.windows.net/wiki-files/327/09ccf652-8c1c-4a3d-b979-ce2369c985e4/Willem%20Mestrom%20-%20Milestone%201%20Description%20V2%202.pdf](https://kaggle2.blob.core.windows.net/wiki-files/327/09ccf652-8c1c-4a3d-b979-ce2369c985e4/Willem%20Mestrom%20-%20Milestone%201%20Description%20V2%202.pdf)
+  
+## model based predictions
+### Basic idea
+
+1. Assume the data follow a probabilistic model
+2. Use Bayes' theorem to identify optimal classifiers
+
+__Pros:__
+
+* Can take advantage of structure of the data
+* May be computationally convenient
+* Are reasonably accurate on real problems
+
+__Cons:__
+
+* Make additional assumptions about the data
+* When the model is incorrect you may get reduced accuracy
+
+---
+
+### Model based approach
+
+
+1. Our goal is to build parametric model for conditional distribution $P(Y = k | X = x)$
+
+2. A typical approach is to apply [Bayes theorem](http://en.wikipedia.org/wiki/Bayes'_theorem):
+$$ Pr(Y = k | X=x) = \frac{Pr(X=x|Y=k)Pr(Y=k)}{\sum_{\ell=1}^K Pr(X=x |Y = \ell) Pr(Y=\ell)}$$
+$$Pr(Y = k | X=x) = \frac{f_k(x) \pi_k}{\sum_{\ell = 1}^K f_{\ell}(x) \pi_{\ell}}$$
+$f_k(x)$ - features distribution given class
+
+$Pr(Y=k)$ -  assume a prior that each specific element comes from a class
+3. Typically prior probabilities $\pi_k$ are set in advance.
+
+4. A common choice for $f_k(x) = \frac{1}{\sigma_k \sqrt{2 \pi}}e^{-\frac{(x-\mu_k)^2}{\sigma_k^2}}$, a Gaussian distribution
+
+5. Estimate the parameters ($\mu_k$,$\sigma_k^2$) from the data.
+
+6. Classify to the class with the highest value of $P(Y = k | X = x)$
+
+## Classifying using the model
+
+A range of models use this approach
+
+* Linear discriminant analysis assumes $f_k(x)$ is multivariate Gaussian with same covariances (http://statweb.stanford.edu/~tibs/ElemStatLearn/)
+    * basically lines through data
+* Quadratic discrimant analysis assumes $f_k(x)$ is multivariate Gaussian with different covariances
+    * different covariance matrices through different classes
+* [Model based prediction](http://www.stat.washington.edu/mclust/) assumes more complicated versions for the covariance matrix 
+* Naive Bayes assumes independence between features for model building
+
+http://statweb.stanford.edu/~tibs/ElemStatLearn/
+
+
+## Naive Bayes.
+
+Suppose we have many predictors, we would want to model: $P(Y = k | X_1,\ldots,X_m)$
+
+We could use Bayes Theorem to get:
+
+$$P(Y = k | X_1,\ldots,X_m) = \frac{\pi_k P(X_1,\ldots,X_m| Y=k)}{\sum_{\ell = 1}^K P(X_1,\ldots,X_m | Y=k) \pi_{\ell}}$$
+$$ \propto \pi_k P(X_1,\ldots,X_m| Y=k)$$
+
+This can be written:
+
+$$P(X_1,\ldots,X_m, Y=k) = \pi_k P(X_1 | Y = k)P(X_2,\ldots,X_m | X_1,Y=k)$$
+$$ = \pi_k P(X_1 | Y = k) P(X_2 | X_1, Y=k) P(X_3,\ldots,X_m | X_1,X_2, Y=k)$$
+$$ = \pi_k P(X_1 | Y = k) P(X_2 | X_1, Y=k)\ldots P(X_m|X_1\ldots,X_{m-1},Y=k)$$
+
+
+assume that all of the predictor variables are independent of each other.
+
+In which case they drop out of this conditioning argument.
+
+prior probability X the probability of each feature by itself X conditional on being in each class.
+
+
+$$ \approx \pi_k P(X_1 | Y = k) P(X_2 | Y = k)\ldots P(X_m |,Y=k)$$
+
+Great when a lot of features - like documents.
+
+```r
+data(iris)
+library(ggplot2)
+names(iris)
+```
+
+```
+## [1] "Sepal.Length" "Sepal.Width"  "Petal.Length" "Petal.Width" 
+## [5] "Species"
+```
+
+```r
+inTrain <- createDataPartition(y = iris$Species, p =0.7, list = FALSE)
+training <- iris[inTrain,]
+testing <- iris[-inTrain,]
+
+
+modlda=train(Species~., data=training, method = "lda")
+modnb=train(Species~., data=training, method = "nb")
+
+plda=predict(modlda, testing)
+pnb=predict(modnb, testing)
+table(plda, testing$Species)
+```
+
+```
+##             
+## plda         setosa versicolor virginica
+##   setosa         15          0         0
+##   versicolor      0         15         0
+##   virginica       0          0        15
+```
+
+```r
+table(pnb, testing$Species)
+```
+
+```
+##             
+## pnb          setosa versicolor virginica
+##   setosa         15          0         0
+##   versicolor      0         14         0
+##   virginica       0          1        15
+```
+
+#### almost identical
+
+```r
+table(pnb, plda)
+```
+
+```
+##             plda
+## pnb          setosa versicolor virginica
+##   setosa         15          0         0
+##   versicolor      0         14         0
+##   virginica       0          1        15
+```
+
+```r
+equalpredictions = (plda== pnb)
+qplot(Petal.Width, Sepal.Width, colour=equalpredictions, data = testing)
+```
+
+![](3_week_notes_files/figure-html/bayescomp-1.png)<!-- -->
+
+```r
+correctPredition = (pnb == testing$Species)
+qplot(Petal.Width, Sepal.Width, colour=correctPredition, data = testing)
+```
+
+![](3_week_notes_files/figure-html/bayescomp-2.png)<!-- -->
+
+## Notes and further reading
+
+* [Introduction to statistical learning](http://www-bcf.usc.edu/~gareth/ISL/)
+* [Elements of Statistical Learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/)
+* [Model based clustering](http://www.stat.washington.edu/raftery/Research/PDF/fraley2002.pdf)
+* [Linear Discriminant Analysis](http://en.wikipedia.org/wiki/Linear_discriminant_analysis)
+* [Quadratic Discriminant Analysis](http://en.wikipedia.org/wiki/Quadratic_classifier)
+
