@@ -201,3 +201,70 @@ __Further resources__:
 * [Bagging and boosting](http://stat.ethz.ch/education/semesters/FS_2008/CompStat/sk-ch8.pdf)
 * [Elements of Statistical Learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/)
 
+## random forest
+
+1. bootstrap samples
+2. each split, bootstrap variables
+3. grow multiple trees and vote or average
+
+pros:
+
+1. accuracy
+
+cons:
+
+1. speed
+2. interpretability
+3. overfitting
+
+```{r randomforest}
+data("iris")
+library(ggplot2)
+library(caret)
+library(randomForest)
+inTrain <- createDataPartition(y = iris$Species, p =0.7, list = FALSE)
+training <- iris[inTrain,]
+testing <- iris[-inTrain,]
+
+modFit <- train(Species~., data = training, method = "rf", prox = TRUE) #prox - extra info
+modFit
+```
+```{r}
+getTree(modFit$finalModel,k=2)
+```
+Class "centers" to show some of the model specifics - ceters for the predicted variables
+```{r}
+irisP <- classCenter(training[,c(3,4)] , training$Species, modFit$finalModel$prox)
+irisP <- as.data.frame(irisP)
+irisP$Species <- rownames(irisP)
+p <- qplot(Petal.Width, Petal.Length, col = Species, data = training)
+p+ geom_point(aes(x=Petal.Width, y= Petal.Length, col = Species), size = 5, shape = 4, data = irisP)
+```
+
+```{r rf_predict}
+
+```
+
+```{r}
+pred <- predict(modFit, testing)
+testing$predRight <- pred ==testing$Species
+table(pred, testing$Species)
+
+qplot(Petal.Width, Petal.Length, colour =predRight, data = testing, main = "newdata Predictions")
+```
+
+### Notes and further resources
+
+__Notes__:
+
+* Random forests are usually one of the two top
+performing algorithms along with boosting in prediction contests.
+* Random forests are difficult to interpret but often very accurate. 
+* Care should be taken to avoid overfitting (see [rfcv](http://cran.r-project.org/web/packages/randomForest/randomForest.pdf) funtion)
+
+
+__Further resources__:
+
+* [Random forests](http://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm)
+* [Random forest Wikipedia](http://en.wikipedia.org/wiki/Random_forest)
+* [Elements of Statistical Learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/)

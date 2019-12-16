@@ -368,3 +368,148 @@ __Further resources__:
 * [Bagging and boosting](http://stat.ethz.ch/education/semesters/FS_2008/CompStat/sk-ch8.pdf)
 * [Elements of Statistical Learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/)
 
+## random forest
+
+1. bootstrap samples
+2. each split, bootstrap variables
+3. grow multiple trees and vote or average
+
+pros:
+
+1. accuracy
+
+cons:
+
+1. speed
+2. interpretability
+3. overfitting
+
+
+```r
+data("iris")
+library(ggplot2)
+library(caret)
+library(randomForest)
+```
+
+```
+## randomForest 4.6-14
+```
+
+```
+## Type rfNews() to see new features/changes/bug fixes.
+```
+
+```
+## 
+## Attaching package: 'randomForest'
+```
+
+```
+## The following object is masked from 'package:rattle':
+## 
+##     importance
+```
+
+```
+## The following object is masked from 'package:ggplot2':
+## 
+##     margin
+```
+
+```r
+inTrain <- createDataPartition(y = iris$Species, p =0.7, list = FALSE)
+training <- iris[inTrain,]
+testing <- iris[-inTrain,]
+
+modFit <- train(Species~., data = training, method = "rf", prox = TRUE) #prox - extra info
+modFit
+```
+
+```
+## Random Forest 
+## 
+## 105 samples
+##   4 predictor
+##   3 classes: 'setosa', 'versicolor', 'virginica' 
+## 
+## No pre-processing
+## Resampling: Bootstrapped (25 reps) 
+## Summary of sample sizes: 105, 105, 105, 105, 105, 105, ... 
+## Resampling results across tuning parameters:
+## 
+##   mtry  Accuracy   Kappa    
+##   2     0.9514588  0.9265219
+##   3     0.9524134  0.9279188
+##   4     0.9535399  0.9297308
+## 
+## Accuracy was used to select the optimal model using the largest value.
+## The final value used for the model was mtry = 4.
+```
+
+```r
+getTree(modFit$finalModel,k=2)
+```
+
+```
+##   left daughter right daughter split var split point status prediction
+## 1             2              3         4        1.65      1          0
+## 2             4              5         3        2.45      1          0
+## 3             6              7         3        4.85      1          0
+## 4             0              0         0        0.00     -1          1
+## 5             0              0         0        0.00     -1          2
+## 6             8              9         2        2.85      1          0
+## 7             0              0         0        0.00     -1          3
+## 8             0              0         0        0.00     -1          3
+## 9             0              0         0        0.00     -1          2
+```
+Class "centers" to show some of the model specifics - ceters for the predicted variables
+
+```r
+irisP <- classCenter(training[,c(3,4)] , training$Species, modFit$finalModel$prox)
+irisP <- as.data.frame(irisP)
+irisP$Species <- rownames(irisP)
+p <- qplot(Petal.Width, Petal.Length, col = Species, data = training)
+p+ geom_point(aes(x=Petal.Width, y= Petal.Length, col = Species), size = 5, shape = 4, data = irisP)
+```
+
+![](3_week_notes_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+
+
+
+
+```r
+pred <- predict(modFit, testing)
+testing$predRight <- pred ==testing$Species
+table(pred, testing$Species)
+```
+
+```
+##             
+## pred         setosa versicolor virginica
+##   setosa         15          0         0
+##   versicolor      0         14         2
+##   virginica       0          1        13
+```
+
+```r
+qplot(Petal.Width, Petal.Length, colour =predRight, data = testing, main = "newdata Predictions")
+```
+
+![](3_week_notes_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+
+### Notes and further resources
+
+__Notes__:
+
+* Random forests are usually one of the two top
+performing algorithms along with boosting in prediction contests.
+* Random forests are difficult to interpret but often very accurate. 
+* Care should be taken to avoid overfitting (see [rfcv](http://cran.r-project.org/web/packages/randomForest/randomForest.pdf) funtion)
+
+
+__Further resources__:
+
+* [Random forests](http://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm)
+* [Random forest Wikipedia](http://en.wikipedia.org/wiki/Random_forest)
+* [Elements of Statistical Learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/)
