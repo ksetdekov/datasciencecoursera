@@ -322,11 +322,13 @@ print(modFit)
 plot(modFit)
 ```
 
-```{r, cache=FALSE}
+```{r}
 require(ggplot2)
 qplot(predict(modFit,testing), wage, data = testing)
 
 mad(predict(modFit,testing)- testing$wage)
+library(MLmetrics)
+library(caret)
 MLmetrics::RMSE(y_pred = predict(modFit,testing),y_true = testing$wage)
 
 #randomForest compare
@@ -458,4 +460,94 @@ qplot(Petal.Width, Sepal.Width, colour=correctPredition, data = testing)
 * [Model based clustering](http://www.stat.washington.edu/raftery/Research/PDF/fraley2002.pdf)
 * [Linear Discriminant Analysis](http://en.wikipedia.org/wiki/Linear_discriminant_analysis)
 * [Quadratic Discriminant Analysis](http://en.wikipedia.org/wiki/Quadratic_classifier)
+
+# quiz week 3
+
+## 1
+```{r}
+library(ElemStatLearn)
+library(pgmm)
+library(rpart)
+library(AppliedPredictiveModeling)
+data(segmentationOriginal)
+library(caret)
+
+testing <- segmentationOriginal[segmentationOriginal$Case=="Test",]
+training <- segmentationOriginal[segmentationOriginal$Case=="Train",]
+set.seed(125)
+modFit <- train(Class ~ .,method="rpart",data=training)
+
+library(rattle)
+library(dplyr)
+fancyRpartPlot(modFit$finalModel)
+test1 <- testing %>% select(TotalIntenCh2, FiberWidthCh1,PerimStatusCh1, VarIntenCh4) %>% head( n=0) 
+test1[1,] <- c(23000, 10,2, 10)
+test2 <- testing[1:10,]
+arow <- data.frame(TotalIntenCh2=23000, FiberWidthCh1=10, PerimStatusCh1=2)
+library(plyr)
+test2 <- rbind.fill(test2, arow)
+length(predict(modFit, test2))
+dim(test2)
+```
+
+a PS. TotalIntench2 = 23,000; FiberWidthCh1 = 10; PerimStatusCh1=2
+
+b WS. TotalIntench2 = 50,000; FiberWidthCh1 = 10;VarIntenCh4 = 100
+
+c PS. TotalIntench2 = 57,000; FiberWidthCh1 = 8;VarIntenCh4 = 100
+
+d not possible. FiberWidthCh1 = 8;VarIntenCh4 = 100; PerimStatusCh1=2
+
+## 2
+small k - large bias, small variance.
+leave one out k = samples size
+
+## 3
+not strange
+```{r}
+library(pgmm)
+data(olive)
+olive = olive[,-1]
+newdata = as.data.frame(t(colMeans(olive)))
+
+olivearea <- train(Area ~ .,method="rpart",data=olive)
+fancyRpartPlot(olivearea$finalModel)
+predict(olivearea, newdata)
+```
+
+## 4
+```{r}
+library(ElemStatLearn)
+data(SAheart)
+set.seed(8484)
+train = sample(1:dim(SAheart)[1],size=dim(SAheart)[1]/2,replace=F)
+trainSA = SAheart[train,]
+testSA = SAheart[-train,]
+set.seed(13234)
+
+logfitter <- train(factor(chd)~age+alcohol+obesity+tobacco+typea+ldl, method="glm", family = binomial, data =trainSA)
+
+missClass = function(values,prediction){sum(((prediction > 0.5)*1) != values)/length(values)}
+
+predtst <- predict(logfitter,testSA)
+predtrain <- predict(logfitter, trainSA)
+missClass(testSA$chd,as.numeric(levels(predtst))[predtst])
+missClass(trainSA$chd,as.numeric(levels(predtrain))[predtrain])
+```
+
+## 5
+```{r}
+library(ElemStatLearn)
+data(vowel.train)
+data(vowel.test)
+vowel.test <- vowel.test %>% mutate(y = factor(y))
+vowel.train <- vowel.train %>% mutate(y = factor(y))
+library(randomForest)
+
+set.seed(33833)
+forestrun <- randomForest::randomForest(y~., data= vowel.train)
+plot(forestrun)
+varImp(forestrun) %>% View()
+```
+21568493
 

@@ -123,11 +123,11 @@ print(modFit$finalModel)
 ## node), split, n, loss, yval, (yprob)
 ##       * denotes terminal node
 ## 
-## 1) root 105 70 setosa (0.3333333 0.3333333 0.3333333)  
-##   2) Petal.Length< 2.45 35  0 setosa (1.0000000 0.0000000 0.0000000) *
-##   3) Petal.Length>=2.45 70 35 versicolor (0.0000000 0.5000000 0.5000000)  
-##     6) Petal.Width< 1.75 38  4 versicolor (0.0000000 0.8947368 0.1052632) *
-##     7) Petal.Width>=1.75 32  1 virginica (0.0000000 0.0312500 0.9687500) *
+## 1) root 105 70 setosa (0.33333333 0.33333333 0.33333333)  
+##   2) Petal.Length< 2.6 35  0 setosa (1.00000000 0.00000000 0.00000000) *
+##   3) Petal.Length>=2.6 70 35 versicolor (0.00000000 0.50000000 0.50000000)  
+##     6) Petal.Width< 1.75 37  3 versicolor (0.00000000 0.91891892 0.08108108) *
+##     7) Petal.Width>=1.75 33  1 virginica (0.00000000 0.03030303 0.96969697) *
 ```
 
 
@@ -173,8 +173,8 @@ predict(modFit,newdata=testing)
 ## [13] setosa     setosa     setosa     versicolor versicolor versicolor
 ## [19] versicolor versicolor versicolor versicolor versicolor versicolor
 ## [25] versicolor versicolor versicolor versicolor versicolor versicolor
-## [31] virginica  virginica  virginica  virginica  virginica  virginica 
-## [37] virginica  virginica  virginica  versicolor virginica  virginica 
+## [31] virginica  virginica  virginica  virginica  versicolor virginica 
+## [37] virginica  virginica  virginica  virginica  versicolor virginica 
 ## [43] virginica  virginica  virginica 
 ## Levels: setosa versicolor virginica
 ```
@@ -297,7 +297,7 @@ ctreeBag$fit
 ##     data$y <- y
 ##     party::ctree(y ~ ., data = data)
 ## }
-## <bytecode: 0x000000002496ba10>
+## <bytecode: 0x0000000021c05280>
 ## <environment: namespace:caret>
 ```
 
@@ -322,7 +322,7 @@ ctreeBag$pred
 ##     else out <- unlist(party::treeresponse(object, x))
 ##     out
 ## }
-## <bytecode: 0x000000002496b000>
+## <bytecode: 0x0000000021c04870>
 ## <environment: namespace:caret>
 ```
 
@@ -353,7 +353,7 @@ ctreeBag$aggregate
 ##     }
 ##     out
 ## }
-## <bytecode: 0x0000000024976858>
+## <bytecode: 0x00000000211d7270>
 ## <environment: namespace:caret>
 ```
 __Notes__:
@@ -439,12 +439,12 @@ modFit
 ## Resampling results across tuning parameters:
 ## 
 ##   mtry  Accuracy   Kappa    
-##   2     0.9514588  0.9265219
-##   3     0.9524134  0.9279188
-##   4     0.9535399  0.9297308
+##   2     0.9598670  0.9387252
+##   3     0.9609781  0.9404182
+##   4     0.9579170  0.9357968
 ## 
 ## Accuracy was used to select the optimal model using the largest value.
-## The final value used for the model was mtry = 4.
+## The final value used for the model was mtry = 3.
 ```
 
 ```r
@@ -453,13 +453,13 @@ getTree(modFit$finalModel,k=2)
 
 ```
 ##   left daughter right daughter split var split point status prediction
-## 1             2              3         4        1.65      1          0
-## 2             4              5         3        2.45      1          0
-## 3             6              7         3        4.85      1          0
-## 4             0              0         0        0.00     -1          1
-## 5             0              0         0        0.00     -1          2
-## 6             8              9         2        2.85      1          0
-## 7             0              0         0        0.00     -1          3
+## 1             2              3         3        2.45      1          0
+## 2             0              0         0        0.00     -1          1
+## 3             4              5         4        1.70      1          0
+## 4             6              7         3        4.85      1          0
+## 5             0              0         0        0.00     -1          3
+## 6             0              0         0        0.00     -1          2
+## 7             8              9         4        1.55      1          0
 ## 8             0              0         0        0.00     -1          3
 ## 9             0              0         0        0.00     -1          2
 ```
@@ -488,8 +488,8 @@ table(pred, testing$Species)
 ##             
 ## pred         setosa versicolor virginica
 ##   setosa         15          0         0
-##   versicolor      0         14         2
-##   virginica       0          1        13
+##   versicolor      0         11         0
+##   virginica       0          4        15
 ```
 
 ```r
@@ -3629,15 +3629,15 @@ print(modFit)
 ## Resampling results across tuning parameters:
 ## 
 ##   interaction.depth  n.trees  RMSE      Rsquared   MAE     
-##   1                   50      35.62296  0.3116470  23.99700
-##   1                  100      35.03916  0.3203808  23.56071
-##   1                  150      35.00222  0.3197653  23.55619
-##   2                   50      35.08379  0.3198643  23.60730
-##   2                  100      34.98274  0.3204040  23.60280
-##   2                  150      35.09491  0.3165925  23.73683
-##   3                   50      35.01484  0.3203285  23.59735
-##   3                  100      35.17380  0.3134511  23.79020
-##   3                  150      35.35589  0.3081356  23.97381
+##   1                   50      35.24390  0.3079131  23.76718
+##   1                  100      34.67299  0.3191239  23.43423
+##   1                  150      34.58897  0.3216379  23.48093
+##   2                   50      34.60116  0.3230310  23.35791
+##   2                  100      34.40764  0.3289264  23.35610
+##   2                  150      34.47043  0.3272978  23.44321
+##   3                   50      34.45742  0.3270214  23.29333
+##   3                  100      34.55792  0.3243574  23.46448
+##   3                  150      34.74396  0.3191798  23.65206
 ## 
 ## Tuning parameter 'shrinkage' was held constant at a value of 0.1
 ## 
@@ -3666,15 +3666,37 @@ mad(predict(modFit,testing)- testing$wage)
 ```
 
 ```
-## [1] 23.50662
+## [1] 24.58212
 ```
 
 ```r
+library(MLmetrics)
+```
+
+```
+## 
+## Attaching package: 'MLmetrics'
+```
+
+```
+## The following objects are masked from 'package:caret':
+## 
+##     MAE, RMSE
+```
+
+```
+## The following object is masked from 'package:base':
+## 
+##     Recall
+```
+
+```r
+library(caret)
 MLmetrics::RMSE(y_pred = predict(modFit,testing),y_true = testing$wage)
 ```
 
 ```
-## [1] 32.23754
+## [1] 33.0175
 ```
 
 ```r
@@ -3684,7 +3706,7 @@ mad(predict(modFitrf,testing)- testing$wage)
 ```
 
 ```
-## [1] 25.16234
+## [1] 24.27907
 ```
 
 ```r
@@ -3692,7 +3714,7 @@ MLmetrics::RMSE(y_pred = predict(modFitrf,testing),y_true = testing$wage)
 ```
 
 ```
-## [1] 34.10887
+## [1] 34.43816
 ```
 
 ```r
@@ -3829,8 +3851,8 @@ table(pnb, testing$Species)
 ##             
 ## pnb          setosa versicolor virginica
 ##   setosa         15          0         0
-##   versicolor      0         14         0
-##   virginica       0          1        15
+##   versicolor      0         15         1
+##   virginica       0          0        14
 ```
 
 #### almost identical
@@ -3843,8 +3865,8 @@ table(pnb, plda)
 ##             plda
 ## pnb          setosa versicolor virginica
 ##   setosa         15          0         0
-##   versicolor      0         14         0
-##   virginica       0          1        15
+##   versicolor      0         15         1
+##   virginica       0          0        14
 ```
 
 ```r
@@ -3868,4 +3890,215 @@ qplot(Petal.Width, Sepal.Width, colour=correctPredition, data = testing)
 * [Model based clustering](http://www.stat.washington.edu/raftery/Research/PDF/fraley2002.pdf)
 * [Linear Discriminant Analysis](http://en.wikipedia.org/wiki/Linear_discriminant_analysis)
 * [Quadratic Discriminant Analysis](http://en.wikipedia.org/wiki/Quadratic_classifier)
+
+# quiz week 3
+
+## 1
+
+```r
+library(ElemStatLearn)
+library(pgmm)
+library(rpart)
+library(AppliedPredictiveModeling)
+data(segmentationOriginal)
+library(caret)
+
+testing <- segmentationOriginal[segmentationOriginal$Case=="Test",]
+training <- segmentationOriginal[segmentationOriginal$Case=="Train",]
+set.seed(125)
+modFit <- train(Class ~ .,method="rpart",data=training)
+
+library(rattle)
+library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following object is masked from 'package:randomForest':
+## 
+##     combine
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
+fancyRpartPlot(modFit$finalModel)
+```
+
+![](3_week_notes_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+
+```r
+test1 <- testing %>% select(TotalIntenCh2, FiberWidthCh1,PerimStatusCh1, VarIntenCh4) %>% head( n=0) 
+test1[1,] <- c(23000, 10,2, 10)
+test2 <- testing[1:10,]
+arow <- data.frame(TotalIntenCh2=23000, FiberWidthCh1=10, PerimStatusCh1=2)
+library(plyr)
+```
+
+```
+## -------------------------------------------------------------------------
+```
+
+```
+## You have loaded plyr after dplyr - this is likely to cause problems.
+## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+## library(plyr); library(dplyr)
+```
+
+```
+## -------------------------------------------------------------------------
+```
+
+```
+## 
+## Attaching package: 'plyr'
+```
+
+```
+## The following object is masked _by_ '.GlobalEnv':
+## 
+##     ozone
+```
+
+```
+## The following objects are masked from 'package:dplyr':
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize
+```
+
+```
+## The following object is masked from 'package:ElemStatLearn':
+## 
+##     ozone
+```
+
+```r
+test2 <- rbind.fill(test2, arow)
+length(predict(modFit, test2))
+```
+
+```
+## [1] 10
+```
+
+```r
+dim(test2)
+```
+
+```
+## [1]  11 119
+```
+
+a PS. TotalIntench2 = 23,000; FiberWidthCh1 = 10; PerimStatusCh1=2
+
+b WS. TotalIntench2 = 50,000; FiberWidthCh1 = 10;VarIntenCh4 = 100
+
+c PS. TotalIntench2 = 57,000; FiberWidthCh1 = 8;VarIntenCh4 = 100
+
+d not possible. FiberWidthCh1 = 8;VarIntenCh4 = 100; PerimStatusCh1=2
+
+## 2
+small k - large bias, small variance.
+leave one out k = samples size
+
+## 3
+not strange
+
+```r
+library(pgmm)
+data(olive)
+olive = olive[,-1]
+newdata = as.data.frame(t(colMeans(olive)))
+
+olivearea <- train(Area ~ .,method="rpart",data=olive)
+```
+
+```
+## Warning in nominalTrainWorkflow(x = x, y = y, wts = weights, info =
+## trainInfo, : There were missing values in resampled performance measures.
+```
+
+```r
+fancyRpartPlot(olivearea$finalModel)
+```
+
+![](3_week_notes_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+
+```r
+predict(olivearea, newdata)
+```
+
+```
+##        1 
+## 2.783282
+```
+
+## 4
+
+```r
+library(ElemStatLearn)
+data(SAheart)
+set.seed(8484)
+train = sample(1:dim(SAheart)[1],size=dim(SAheart)[1]/2,replace=F)
+trainSA = SAheart[train,]
+testSA = SAheart[-train,]
+set.seed(13234)
+
+logfitter <- train(factor(chd)~age+alcohol+obesity+tobacco+typea+ldl, method="glm", family = binomial, data =trainSA)
+
+missClass = function(values,prediction){sum(((prediction > 0.5)*1) != values)/length(values)}
+
+predtst <- predict(logfitter,testSA)
+predtrain <- predict(logfitter, trainSA)
+missClass(testSA$chd,as.numeric(levels(predtst))[predtst])
+```
+
+```
+## [1] 0.2813853
+```
+
+```r
+missClass(trainSA$chd,as.numeric(levels(predtrain))[predtrain])
+```
+
+```
+## [1] 0.3116883
+```
+
+## 5
+
+```r
+library(ElemStatLearn)
+data(vowel.train)
+data(vowel.test)
+vowel.test <- vowel.test %>% mutate(y = factor(y))
+vowel.train <- vowel.train %>% mutate(y = factor(y))
+library(randomForest)
+
+set.seed(33833)
+forestrun <- randomForest::randomForest(y~., data= vowel.train)
+plot(forestrun)
+```
+
+![](3_week_notes_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
+
+```r
+varImp(forestrun) %>% View()
+```
+21568493
 
