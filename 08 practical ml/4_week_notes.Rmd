@@ -1,0 +1,33 @@
+---
+title: "Practical machine learning  lectures 4"
+author: "Kirill Setdekov"
+date: "December 20 2019"
+output:
+  html_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	cache = TRUE
+)
+```
+
+# week 4
+
+## reguralized regressions
+
+_idea_
+
+1. fit regression
+2. shrink large coefficients.
+
+*good*
+
+* can help with bias
+* can help with model selection
+
+*bad*
+
+* may be computationally hard on big data
+* worse than random forest and boosting
