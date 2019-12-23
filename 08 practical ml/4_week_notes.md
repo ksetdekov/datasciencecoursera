@@ -7,11 +7,7 @@ output:
     keep_md: yes
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-	cache = TRUE
-)
-```
+
 
 # week 4
 
@@ -32,10 +28,25 @@ _idea_
 * may be computationally hard on big data
 * worse than random forest and boosting
 
-```{r}
+
+```r
 library(ElemStatLearn)
 data("prostate")
 str(prostate)
+```
+
+```
+## 'data.frame':	97 obs. of  10 variables:
+##  $ lcavol : num  -0.58 -0.994 -0.511 -1.204 0.751 ...
+##  $ lweight: num  2.77 3.32 2.69 3.28 3.43 ...
+##  $ age    : int  50 58 74 58 62 50 64 58 47 63 ...
+##  $ lbph   : num  -1.39 -1.39 -1.39 -1.39 -1.39 ...
+##  $ svi    : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ lcp    : num  -1.39 -1.39 -1.39 -1.39 -1.39 ...
+##  $ gleason: int  6 6 7 6 6 6 6 6 6 6 ...
+##  $ pgg45  : int  0 0 20 0 0 0 0 0 0 0 ...
+##  $ lpsa   : num  -0.431 -0.163 -0.163 -0.163 0.372 ...
+##  $ train  : logi  TRUE TRUE TRUE TRUE TRUE TRUE ...
 ```
 
 <img class="center" src="prostate.png" height="450">
@@ -81,9 +92,22 @@ $$E\left[\{Y - \hat{f}_{\lambda}(x^*)\}^2\right] = \sigma^2 + \{E[\hat{f}_{\lamb
 
 More predictors than samples
 
-```{r small}
+
+```r
 small = prostate[1:5, ]
 lm(lpsa~., data = small)
+```
+
+```
+## 
+## Call:
+## lm(formula = lpsa ~ ., data = small)
+## 
+## Coefficients:
+## (Intercept)       lcavol      lweight          age         lbph  
+##     9.60615      0.13901     -0.79142      0.09516           NA  
+##         svi          lcp      gleason        pgg45    trainTRUE  
+##          NA           NA     -2.08710           NA           NA
 ```
 ## Hard thresholding
 
@@ -169,8 +193,8 @@ Good model as it
   * `lasso`
   * `relaxo`
   
-```{r warning=FALSE}
 
+```r
 library(dplyr)
 
 library(caret)
@@ -187,19 +211,77 @@ modFit <- train(wage~., method = "lm", data = training, verbose = FALSE)
 print(modFit)
 ```
 
+```
+## Linear Regression 
+## 
+## 2102 samples
+##    9 predictor
+## 
+## No pre-processing
+## Resampling: Bootstrapped (25 reps) 
+## Summary of sample sizes: 2102, 2102, 2102, 2102, 2102, 2102, ... 
+## Resampling results:
+## 
+##   RMSE      Rsquared   MAE     
+##   34.53186  0.3289216  23.25285
+## 
+## Tuning parameter 'intercept' was held constant at a value of TRUE
+```
+
 Это результат для простой модели
 
-```{r warning=FALSE}
-qplot(predict(modFit,testing), wage, data = testing)
-MLmetrics::RMSE(y_pred = predict(modFit,testing),y_true = testing$wage)
 
+```r
+qplot(predict(modFit,testing), wage, data = testing)
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
+```r
+MLmetrics::RMSE(y_pred = predict(modFit,testing),y_true = testing$wage)
+```
+
+```
+## [1] 34.18433
+```
+
+```r
 lasso_caret<- train(wage~., data = training, method = "glmnet", lambda= 0,
                     tuneGrid = expand.grid(alpha = 1,  lambda = 0))
 print(lasso_caret)
+```
+
+```
+## glmnet 
+## 
+## 2102 samples
+##    9 predictor
+## 
+## No pre-processing
+## Resampling: Bootstrapped (25 reps) 
+## Summary of sample sizes: 2102, 2102, 2102, 2102, 2102, 2102, ... 
+## Resampling results:
+## 
+##   RMSE      Rsquared   MAE     
+##   34.08297  0.3155644  23.04166
+## 
+## Tuning parameter 'alpha' was held constant at a value of 1
+## 
+## Tuning parameter 'lambda' was held constant at a value of 0
+```
+
+```r
 qplot(predict(lasso_caret,testing), wage, data = testing)
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-3-2.png)<!-- -->
+
+```r
 MLmetrics::RMSE(y_pred = predict(lasso_caret,testing),y_true = testing$wage)
+```
 
-
+```
+## [1] 34.18404
 ```
 Это результат для модели с Lasso
 
