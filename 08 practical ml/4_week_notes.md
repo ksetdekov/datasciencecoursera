@@ -638,3 +638,278 @@ MLmetrics::RMSE(y_pred = combPredV5,y_true = validation$wage)
 [http://www.techdirt.com/blog/innovation/articles/20120409/03412518422/](http://www.techdirt.com/blog/innovation/articles/20120409/03412518422/)
 
 [http://techblog.netflix.com/2012/04/netflix-recommendations-beyond-5-stars.html](http://techblog.netflix.com/2012/04/netflix-recommendations-beyond-5-stars.html)
+
+# Forecasting
+
+* Data dependent over time
+* Harder to subsempling for training/testing
+* mind what you predict
+
+## quantmod and google data
+
+```r
+library(quantmod)
+```
+
+```
+## Loading required package: xts
+```
+
+```
+## Registered S3 method overwritten by 'xts':
+##   method     from
+##   as.zoo.xts zoo
+```
+
+```
+## 
+## Attaching package: 'xts'
+```
+
+```
+## The following objects are masked from 'package:dplyr':
+## 
+##     first, last
+```
+
+```
+## Loading required package: TTR
+```
+
+```
+## Registered S3 method overwritten by 'quantmod':
+##   method            from
+##   as.zoo.data.frame zoo
+```
+
+```
+## Version 0.4-0 included new data defaults. See ?getSymbols.
+```
+
+```r
+from.dat <- as.Date("01/01/08", format = "%m/%d/%y")
+to.dat <- as.Date("12/24/19", format = "%m/%d/%y")
+getSymbols("RUB=X", src = "yahoo", from = from.dat, to = to.dat)
+```
+
+```
+## 'getSymbols' currently uses auto.assign=TRUE by default, but will
+## use auto.assign=FALSE in 0.5-0. You will still be able to use
+## 'loadSymbols' to automatically load data. getOption("getSymbols.env")
+## and getOption("getSymbols.auto.assign") will still be checked for
+## alternate defaults.
+## 
+## This message is shown once per session and may be disabled by setting 
+## options("getSymbols.warning4.0"=FALSE). See ?getSymbols for details.
+```
+
+```
+## Warning: RUB=X contains missing values. Some functions will not work if
+## objects contain missing values in the middle of the series. Consider using
+## na.omit(), na.approx(), na.fill(), etc to remove or replace them.
+```
+
+```
+## [1] "RUB=X"
+```
+
+```r
+tail(`RUB=X`)
+```
+
+```
+##            RUB=X.Open RUB=X.High RUB=X.Low RUB=X.Close RUB=X.Volume
+## 2019-12-17    62.4400    62.6950   62.3272     62.4400            0
+## 2019-12-18    62.4174    62.6797   62.3900     62.4088            0
+## 2019-12-19    62.6128    62.6687   62.2701     62.6128            0
+## 2019-12-20    62.3219    62.4530   61.9832     62.3219            0
+## 2019-12-23    62.4467    62.4469   62.1431     62.2226            0
+## 2019-12-24    62.3260    62.4250   61.8673     61.9635            0
+##            RUB=X.Adjusted
+## 2019-12-17        62.4400
+## 2019-12-18        62.4088
+## 2019-12-19        62.6128
+## 2019-12-20        62.3219
+## 2019-12-23        62.2226
+## 2019-12-24        61.9635
+```
+## summarize
+
+```r
+rub <- to.daily(`RUB=X`)
+```
+
+```
+## Warning in to.period(x, "days", name = name, ...): missing values removed
+## from data
+```
+
+```r
+rubM <- to.monthly(`RUB=X`)
+```
+
+```
+## Warning in to.period(x, "months", indexAt = indexAt, name = name, ...):
+## missing values removed from data
+```
+
+```r
+rubclose <- Op(rub)
+rubclosem <- Op(rubM)
+ts1 <- ts(rubclose, frequency = 259)
+tsm <- ts(rubclosem, frequency = 12)
+
+plot(ts1, xlab = "Days+1", ylab = "USD/RUB")
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+
+```r
+plot(tsm, xlab = "Years+1", ylab = "USD/RUB")
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-10-2.png)<!-- -->
+
+```r
+to.dat-from.dat
+```
+
+```
+## Time difference of 4375 days
+```
+
+```r
+3097*365/4375
+```
+
+```
+## [1] 258.3783
+```
+## decompose
+
+```r
+plot(decompose(tsm), xlab = "Years+1")
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+
+```r
+plot(decompose(ts1), xlab = "Years+1")
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-11-2.png)<!-- -->
+
+## train and test sets
+
+```r
+tsmTrain <- window(tsm, start =1, end = 11)
+tsmTest <- window(tsm, start = 11, end = (12-0.01))
+tsmTrain
+```
+
+```
+##        Jan     Feb     Mar     Apr     May     Jun     Jul     Aug     Sep
+## 1  24.4500 24.4290 24.0010 23.6310 23.7570 23.6820 23.4120 24.6550 24.6290
+## 2  30.5200 35.8820 35.8720 33.5200 32.5450 30.8160 31.1610 31.4690 32.4043
+## 3  30.2750 30.1952 29.9489 29.4285 29.3060 30.8855 31.3770 30.2250 30.7580
+## 4  30.4252 29.7550 28.8096 28.4000 27.3431 27.9737 27.8927 27.6163 28.7931
+## 5  31.9887 30.3500 29.1892 29.3362 29.3230 33.3853 32.2792 32.2002 32.2380
+## 6  30.5020 29.9816 30.6066 31.0093 31.0009 31.9012 32.8105 32.9228 33.2639
+## 7  32.7162 35.1212 36.6093 35.1027 35.6012 34.9025 33.8572 35.6412 36.4762
+## 8  58.3250 69.5100 61.5100 57.8535 51.4600 52.2250 55.5812 61.5125 62.6487
+## 9  73.8150 75.7920 74.2380 66.8450 64.3720 66.7210 64.0040 65.7530 65.2807
+## 10 61.2313 60.1468 58.3508 56.2286 56.9124 56.7104 58.8806 59.7300 57.9767
+## 11 57.6270                                                                
+##        Oct     Nov     Dec
+## 1  25.6310 27.0570 27.9530
+## 2  30.0222 29.1260 29.2052
+## 3  30.5440 30.7890 31.5165
+## 4  32.1991 30.3040 30.6675
+## 5  31.2222 31.2800 30.8450
+## 6  32.4028 32.0407 33.1125
+## 7  39.5942 43.1650 50.6975
+## 8  65.2100 64.1150 66.2550
+## 9  62.8719 63.2682 64.0713
+## 10 57.3253 58.2295 58.4459
+## 11
+```
+## simple fx MA
+
+```r
+plot(tsmTrain)
+library(forecast)
+```
+
+```
+## Registered S3 methods overwritten by 'forecast':
+##   method             from    
+##   fitted.fracdiff    fracdiff
+##   residuals.fracdiff fracdiff
+```
+
+```
+## 
+## Attaching package: 'forecast'
+```
+
+```
+## The following object is masked from 'package:nlme':
+## 
+##     getResponse
+```
+
+```r
+lines(ma(tsmTrain, order = 4), col = "red")
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+
+
+__Example - simple exponential smoothing__
+$$\hat{y}_{t+1} = \alpha y_t + (1-\alpha)\hat{y}_{t-1}$$
+
+[https://www.otexts.org/fpp/7/6](https://www.otexts.org/fpp/7/6)
+
+## exponential smoothing
+
+```r
+etsm <- ets(tsmTrain, model = "MMM")
+fcast <- forecast(etsm)
+plot(fcast)
+lines(tsmTest, col = "red")
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+
+```r
+fit <- hw(tsmTrain)
+plot(forecast(fit))
+lines(tsmTest, col = "red")
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-14-2.png)<!-- -->
+
+
+```r
+accuracy(fcast, tsmTest)
+```
+
+```
+##                       ME      RMSE      MAE        MPE      MAPE      MASE
+## Training set -0.08035276  2.161984 1.491407 -0.1540837  3.548998 0.2265745
+## Test set      8.41613682 10.215504 9.075733 12.9588099 14.132303 1.3787848
+##                   ACF1 Theil's U
+## Training set 0.1954354        NA
+## Test set     0.6494138  3.881399
+```
+## Notes and further resources
+
+* [Forecasting and timeseries prediction](http://en.wikipedia.org/wiki/Forecasting) is an entire field
+* Rob Hyndman's [Forecasting: principles and practice](https://www.otexts.org/fpp/) is a good place to start
+* Cautions
+  * Be wary of spurious correlations
+  * Be careful how far you predict (extrapolation)
+  * Be wary of dependencies over time
+* See [quantmod](http://cran.r-project.org/web/packages/quantmod/quantmod.pdf) or [quandl](http://www.quandl.com/help/packages/r) packages for finance-related problems.
+
+
