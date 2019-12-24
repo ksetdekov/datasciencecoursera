@@ -913,3 +913,113 @@ accuracy(fcast, tsmTest)
 * See [quantmod](http://cran.r-project.org/web/packages/quantmod/quantmod.pdf) or [quandl](http://www.quandl.com/help/packages/r) packages for finance-related problems.
 
 
+# Unsupervised predictions
+## Key ideas
+
+* Sometimes you don't know the labels for prediction
+* To build a predictor
+  * Create clusters - somehow
+  * Name clusters - hard (not known)
+  * Build predictor for clusters
+* In a new data set
+  * Predict clusters
+
+
+```r
+data(iris); library(ggplot2)
+inTrain <- createDataPartition(y=iris$Species,
+                              p=0.7, list=FALSE)
+training <- iris[inTrain,]
+testing <- iris[-inTrain,]
+dim(training); dim(testing)
+```
+
+```
+## [1] 105   5
+```
+
+```
+## [1] 45  5
+```
+
+
+---
+
+## Cluster with k-means
+
+
+```r
+kMeans1 <- kmeans(subset(training,select=-c(Species)),centers=5)
+training$clusters <- as.factor(kMeans1$cluster)
+qplot(Petal.Width,Petal.Length,colour=clusters,data=training)
+```
+
+![](4_week_notes_files/figure-html/kmeans-1.png)<!-- -->
+
+## Compare to real labels
+
+
+```r
+table(kMeans1$cluster,training$Species)
+```
+
+```
+##    
+##     setosa versicolor virginica
+##   1      0          2        19
+##   2      0         18         1
+##   3     35          0         0
+##   4      0          0        15
+##   5      0         15         0
+```
+## Build predictor
+
+
+```r
+modFit <- train(clusters ~.,data=subset(training,select=-c(Species)),method="ctree")
+table(predict(modFit,training),training$Species)
+```
+
+```
+##    
+##     setosa versicolor virginica
+##   1      0          3        18
+##   2      0         16         0
+##   3     35          0         0
+##   4      0          3        16
+##   5      0         13         1
+```
+
+---
+
+## Apply on test
+
+
+```r
+testClusterPred <- predict(modFit,testing) 
+table(testClusterPred ,testing$Species)
+```
+
+```
+##                
+## testClusterPred setosa versicolor virginica
+##               1      0          0         4
+##               2      0          7         0
+##               3     15          0         0
+##               4      0          0        11
+##               5      0          8         0
+```
+
+
+---
+
+## Notes and further reading
+
+* _The cl_predict function in the clue package_ provides similar functionality
+* Beware over-interpretation of clusters!
+* This is one basic approach to [recommendation engines](http://en.wikipedia.org/wiki/Recommender_system)
+* [Elements of statistical learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/)
+* [Introduction to statistical learning](http://www-bcf.usc.edu/~gareth/ISL/)
+
+
+
