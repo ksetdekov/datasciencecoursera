@@ -287,4 +287,354 @@ MLmetrics::RMSE(y_pred = predict(lasso_caret,testing),y_true = testing$wage)
 
 
 
+# ensembling methods
 
+* combine classifiers by averaging, Voting
+* combininig -> greater accuracy
+* reduce interpretability
+* boosting, bagging and RF does this with one type of predictions
+
+## approaches
+
+1. boosting, bagging and RF 
+    * similar classifier
+2. combine different classifiers
+    * model stacking 
+    * model ensembling
+
+
+```r
+#separate in 3 sets
+library(ISLR)
+data("Wage")
+library(ggplot2)
+library(caret)
+Wage <- subset(Wage, select = -c(logwage))
+inBuild <- createDataPartition(y=Wage$wage, p=0.7, list = FALSE)
+validation <- Wage[-inBuild,]
+buildData <- Wage[inBuild,]
+inTrain <- createDataPartition(y=buildData$wage, p=0.7, list = FALSE)
+training <- buildData[inTrain,]
+testing <- buildData[-inTrain,]
+```
+
+### build 2 models
+
+
+```r
+library(party)
+```
+
+```
+## Loading required package: grid
+```
+
+```
+## Loading required package: mvtnorm
+```
+
+```
+## Loading required package: modeltools
+```
+
+```
+## Loading required package: stats4
+```
+
+```
+## Loading required package: strucchange
+```
+
+```
+## Loading required package: zoo
+```
+
+```
+## 
+## Attaching package: 'zoo'
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     as.Date, as.Date.numeric
+```
+
+```
+## Loading required package: sandwich
+```
+
+```r
+mod1 <- train(wage~., method ="glm", data = training)
+mod2 <- train(wage~., method ="rf", data = training, trControl = trainControl(method = "cv"),number = 3)
+mod3 <- train(wage~., method ="rpart", data = training)
+mod4 <- train(wage~., method ="ctree", data = training)
+mod5 <- mob(wage~age+education|year+maritl+race+region+jobclass+health+health_ins,data = training)
+```
+### compare them
+
+```r
+pred1 <- predict(mod1, testing)
+```
+
+```
+## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type
+## == : prediction from a rank-deficient fit may be misleading
+```
+
+```r
+pred2 <- predict(mod2, testing)
+pred3 <- predict(mod3, testing)
+pred4 <- predict(mod4, testing)
+pred5 <- predict(mod5, testing)
+                 
+qplot(pred1,pred2, colour = wage, data = testing)
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
+```r
+qplot(pred3,pred4, colour = wage, data = testing)
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-5-2.png)<!-- -->
+
+```r
+library(rattle)
+```
+
+```
+## Rattle: A free graphical interface for data science with R.
+## Version 5.2.0 Copyright (c) 2006-2018 Togaware Pty Ltd.
+## Type 'rattle()' to shake, rattle, and roll your data.
+```
+
+```r
+fancyRpartPlot(mod3$finalModel)
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-5-3.png)<!-- -->
+
+```r
+plot(mod4$finalModel)
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-5-4.png)<!-- -->
+
+```r
+plot(mod5)
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-5-5.png)<!-- -->
+
+```r
+qplot(wage,pred5, colour = wage, data = testing)
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-5-6.png)<!-- -->
+
+### make a model that combines predictors
+
+
+```r
+predDF2 <- data.frame(pred1, pred2, wage = testing$wage)
+#variant with 5
+predDF5 <- data.frame(pred1, pred2, pred3, pred4, pred5, wage = testing$wage)
+
+combModFit2 <- train(wage~., method = "gam", data = predDF2)
+```
+
+```
+## Loading required package: mgcv
+```
+
+```
+## Loading required package: nlme
+```
+
+```
+## 
+## Attaching package: 'nlme'
+```
+
+```
+## The following object is masked from 'package:dplyr':
+## 
+##     collapse
+```
+
+```
+## This is mgcv 1.8-28. For overview type 'help("mgcv-package")'.
+```
+
+```r
+combModFit5 <- train(wage~., method = "gam", data = predDF5)
+combPred2 <- predict(combModFit2,predDF2)
+combPred5 <- predict(combModFit5,predDF2)
+```
+
+#### testing errors
+
+```r
+MLmetrics::RMSE(y_pred = pred1,y_true = testing$wage)
+```
+
+```
+## [1] 38.44443
+```
+
+```r
+MLmetrics::RMSE(y_pred = pred2,y_true = testing$wage)
+```
+
+```
+## [1] 39.17575
+```
+
+```r
+MLmetrics::RMSE(y_pred = combPred2,y_true = testing$wage)
+```
+
+```
+## [1] 38.14702
+```
+
+```r
+MLmetrics::RMSE(y_pred = pred3,y_true = testing$wage)
+```
+
+```
+## [1] 41.56397
+```
+
+```r
+MLmetrics::RMSE(y_pred = pred4,y_true = testing$wage)
+```
+
+```
+## [1] 40.02504
+```
+
+```r
+MLmetrics::RMSE(y_pred = pred5,y_true = testing$wage)
+```
+
+```
+## [1] 38.57218
+```
+
+```r
+MLmetrics::RMSE(y_pred = combPred5,y_true = testing$wage)
+```
+
+```
+## [1] 37.84403
+```
+
+```r
+plot(combModFit5$finalModel)
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-7-1.png)<!-- -->![](4_week_notes_files/figure-html/unnamed-chunk-7-2.png)<!-- -->![](4_week_notes_files/figure-html/unnamed-chunk-7-3.png)<!-- -->
+### on a validation
+
+```r
+pred1V <- predict(mod1, validation)
+```
+
+```
+## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type
+## == : prediction from a rank-deficient fit may be misleading
+```
+
+```r
+pred2V <- predict(mod2, validation)
+predVDF2 <- data.frame(pred1 = pred1V, pred2 = pred2V)
+combPredV2 <- predict(combModFit2, predVDF2)
+
+pred3V <- predict(mod3, validation)
+pred4V <- predict(mod4, validation)
+pred5V <- predict(mod5, validation)
+predVDF5 <-
+    data.frame(
+        pred1 = pred1V,
+        pred2 = pred2V,
+        pred3 = pred3V,
+        pred4 = pred4V,
+        pred5 = pred5V
+    )
+combPredV5 <- predict(combModFit5,predVDF5)
+MLmetrics::RMSE(y_pred = pred1V,y_true = validation$wage)
+```
+
+```
+## [1] 32.12092
+```
+
+```r
+MLmetrics::RMSE(y_pred = pred2V,y_true = validation$wage)
+```
+
+```
+## [1] 32.61731
+```
+
+```r
+MLmetrics::RMSE(y_pred = combPredV2,y_true = validation$wage)
+```
+
+```
+## [1] 31.80675
+```
+
+```r
+## 5 part model
+MLmetrics::RMSE(y_pred = pred3V,y_true = validation$wage)
+```
+
+```
+## [1] 34.92727
+```
+
+```r
+MLmetrics::RMSE(y_pred = pred4V,y_true = validation$wage)
+```
+
+```
+## [1] 33.49814
+```
+
+```r
+MLmetrics::RMSE(y_pred = pred5V,y_true = validation$wage)
+```
+
+```
+## [1] 32.17834
+```
+
+```r
+MLmetrics::RMSE(y_pred = combPredV5,y_true = validation$wage)
+```
+
+```
+## [1] 31.70679
+```
+
+## Notes and further resources
+
+* Even simple blending can be useful
+* Typical model for binary/multiclass data
+  * Build an odd number of models
+  * Predict with each model
+  * Predict the class by majority vote
+* This can get dramatically more complicated
+  * Simple blending in caret: [caretEnsemble](https://github.com/zachmayer/caretEnsemble) (use at your own risk!)
+  * Wikipedia [ensemlbe learning](http://en.wikipedia.org/wiki/Ensemble_learning)
+
+---
+
+## Recall - scalability matters
+
+[http://www.techdirt.com/blog/innovation/articles/20120409/03412518422/](http://www.techdirt.com/blog/innovation/articles/20120409/03412518422/)
+
+[http://techblog.netflix.com/2012/04/netflix-recommendations-beyond-5-stars.html](http://techblog.netflix.com/2012/04/netflix-recommendations-beyond-5-stars.html)
