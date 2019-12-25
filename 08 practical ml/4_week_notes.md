@@ -1021,5 +1021,398 @@ table(testClusterPred ,testing$Species)
 * [Elements of statistical learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/)
 * [Introduction to statistical learning](http://www-bcf.usc.edu/~gareth/ISL/)
 
+# Quiz
+### 1 (0.6 0.51 0.636)
+
+```r
+library(ElemStatLearn)
+library(caret)
+data(vowel.train)
+
+data(vowel.test)
+library(dplyr)
+vowel.train <- vowel.train %>% mutate(y = factor(y))
+vowel.test <- vowel.test %>% mutate(y = factor(y))
+
+set.seed(33833)
+
+mod1 <- train(y~., method ="rf", data = vowel.train, verbose = FALSE)
+mod2 <- train(y~., method ="gbm", data = vowel.train, verbose = FALSE)
+
+
+prediction1 <- predict(mod1, newdata = vowel.test)
+confusionMatrix(prediction1, vowel.test$y)
+```
+
+```
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction  1  2  3  4  5  6  7  8  9 10 11
+##         1  33  1  0  0  0  0  0  0  0  1  0
+##         2   9 23  3  0  0  0  0  0  0 17  1
+##         3   0 15 32  3  0  0  0  0  0  3  1
+##         4   0  0  4 30  3  0  0  0  0  0  2
+##         5   0  0  0  0 16  8  9  0  0  0  0
+##         6   0  0  3  8 20 26  5  0  0  0  6
+##         7   0  0  0  0  3  0 27  6  5  0  3
+##         8   0  0  0  0  0  0  0 29  5  0  0
+##         9   0  3  0  0  0  0  0  7 24  2 12
+##         10  0  0  0  0  0  0  1  0  2 19  0
+##         11  0  0  0  1  0  8  0  0  6  0 17
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.5974          
+##                  95% CI : (0.5511, 0.6425)
+##     No Information Rate : 0.0909          
+##     P-Value [Acc > NIR] : < 2.2e-16       
+##                                           
+##                   Kappa : 0.5571          
+##                                           
+##  Mcnemar's Test P-Value : NA              
+## 
+## Statistics by Class:
+## 
+##                      Class: 1 Class: 2 Class: 3 Class: 4 Class: 5 Class: 6
+## Sensitivity           0.78571  0.54762  0.76190  0.71429  0.38095  0.61905
+## Specificity           0.99524  0.92857  0.94762  0.97857  0.95952  0.90000
+## Pos Pred Value        0.94286  0.43396  0.59259  0.76923  0.48485  0.38235
+## Neg Pred Value        0.97892  0.95355  0.97549  0.97163  0.93939  0.95939
+## Prevalence            0.09091  0.09091  0.09091  0.09091  0.09091  0.09091
+## Detection Rate        0.07143  0.04978  0.06926  0.06494  0.03463  0.05628
+## Detection Prevalence  0.07576  0.11472  0.11688  0.08442  0.07143  0.14719
+## Balanced Accuracy     0.89048  0.73810  0.85476  0.84643  0.67024  0.75952
+##                      Class: 7 Class: 8 Class: 9 Class: 10 Class: 11
+## Sensitivity           0.64286  0.69048  0.57143   0.45238   0.40476
+## Specificity           0.95952  0.98810  0.94286   0.99286   0.96429
+## Pos Pred Value        0.61364  0.85294  0.50000   0.86364   0.53125
+## Neg Pred Value        0.96411  0.96963  0.95652   0.94773   0.94186
+## Prevalence            0.09091  0.09091  0.09091   0.09091   0.09091
+## Detection Rate        0.05844  0.06277  0.05195   0.04113   0.03680
+## Detection Prevalence  0.09524  0.07359  0.10390   0.04762   0.06926
+## Balanced Accuracy     0.80119  0.83929  0.75714   0.72262   0.68452
+```
+
+```r
+#rf 0.5974
+prediction2 <- predict(mod2, newdata = vowel.test)
+confusionMatrix(prediction2, vowel.test$y)
+```
+
+```
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction  1  2  3  4  5  6  7  8  9 10 11
+##         1  28  0  0  0  0  0  0  0  0  2  0
+##         2  10 22  1  0  0  0  1  0  0 14  0
+##         3   2 10 11  3  0  0  0  0  0  0  0
+##         4   0  0  7 23  3  0  1  0  0  0  0
+##         5   0  0  0  1 17  5  0  0  0  0  0
+##         6   0  1 18 14 10 28  0  0  2  0 10
+##         7   0  0  0  0  8  2 38  9  4  0 10
+##         8   0  0  0  0  0  0  2 28  9  0  0
+##         9   0  5  0  0  0  0  0  5 27  4 18
+##         10  2  0  0  0  0  0  0  0  0 22  0
+##         11  0  4  5  1  4  7  0  0  0  0  4
+## 
+## Overall Statistics
+##                                          
+##                Accuracy : 0.5368         
+##                  95% CI : (0.4901, 0.583)
+##     No Information Rate : 0.0909         
+##     P-Value [Acc > NIR] : < 2.2e-16      
+##                                          
+##                   Kappa : 0.4905         
+##                                          
+##  Mcnemar's Test P-Value : NA             
+## 
+## Statistics by Class:
+## 
+##                      Class: 1 Class: 2 Class: 3 Class: 4 Class: 5 Class: 6
+## Sensitivity           0.66667  0.52381  0.26190  0.54762  0.40476  0.66667
+## Specificity           0.99524  0.93810  0.96429  0.97381  0.98571  0.86905
+## Pos Pred Value        0.93333  0.45833  0.42308  0.67647  0.73913  0.33735
+## Neg Pred Value        0.96759  0.95169  0.92890  0.95561  0.94305  0.96306
+## Prevalence            0.09091  0.09091  0.09091  0.09091  0.09091  0.09091
+## Detection Rate        0.06061  0.04762  0.02381  0.04978  0.03680  0.06061
+## Detection Prevalence  0.06494  0.10390  0.05628  0.07359  0.04978  0.17965
+## Balanced Accuracy     0.83095  0.73095  0.61310  0.76071  0.69524  0.76786
+##                      Class: 7 Class: 8 Class: 9 Class: 10 Class: 11
+## Sensitivity           0.90476  0.66667  0.64286   0.52381  0.095238
+## Specificity           0.92143  0.97381  0.92381   0.99524  0.950000
+## Pos Pred Value        0.53521  0.71795  0.45763   0.91667  0.160000
+## Neg Pred Value        0.98977  0.96690  0.96278   0.95434  0.913043
+## Prevalence            0.09091  0.09091  0.09091   0.09091  0.090909
+## Detection Rate        0.08225  0.06061  0.05844   0.04762  0.008658
+## Detection Prevalence  0.15368  0.08442  0.12771   0.05195  0.054113
+## Balanced Accuracy     0.91310  0.82024  0.78333   0.75952  0.522619
+```
+
+```r
+#rf 0.5368
+confusionMatrix(prediction1, prediction2)
+```
+
+```
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction  1  2  3  4  5  6  7  8  9 10 11
+##         1  28  2  1  0  0  0  0  0  0  3  1
+##         2   1 41  4  0  0  0  0  0  3  2  2
+##         3   1  3 21  5  0 15  1  0  0  2  6
+##         4   0  0  0 28  0  8  0  0  2  0  1
+##         5   0  0  0  0 16  2 12  2  0  0  1
+##         6   0  0  0  1  6 49  9  0  0  0  3
+##         7   0  1  0  0  1  0 40  1  1  0  0
+##         8   0  0  0  0  0  0  3 31  0  0  0
+##         9   0  0  0  0  0  0  1  5 41  1  0
+##         10  0  1  0  0  0  0  1  0  4 16  0
+##         11  0  0  0  0  0  9  4  0  8  0 11
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.697           
+##                  95% CI : (0.6528, 0.7386)
+##     No Information Rate : 0.1797          
+##     P-Value [Acc > NIR] : < 2.2e-16       
+##                                           
+##                   Kappa : 0.6633          
+##                                           
+##  Mcnemar's Test P-Value : NA              
+## 
+## Statistics by Class:
+## 
+##                      Class: 1 Class: 2 Class: 3 Class: 4 Class: 5 Class: 6
+## Sensitivity           0.93333  0.85417  0.80769  0.82353  0.69565   0.5904
+## Specificity           0.98380  0.97101  0.92431  0.97430  0.96128   0.9499
+## Pos Pred Value        0.80000  0.77358  0.38889  0.71795  0.48485   0.7206
+## Neg Pred Value        0.99532  0.98289  0.98775  0.98582  0.98368   0.9137
+## Prevalence            0.06494  0.10390  0.05628  0.07359  0.04978   0.1797
+## Detection Rate        0.06061  0.08874  0.04545  0.06061  0.03463   0.1061
+## Detection Prevalence  0.07576  0.11472  0.11688  0.08442  0.07143   0.1472
+## Balanced Accuracy     0.95856  0.91259  0.86600  0.89891  0.82846   0.7701
+##                      Class: 7 Class: 8 Class: 9 Class: 10 Class: 11
+## Sensitivity           0.56338  0.79487  0.69492   0.66667   0.44000
+## Specificity           0.98977  0.99291  0.98263   0.98630   0.95195
+## Pos Pred Value        0.90909  0.91176  0.85417   0.72727   0.34375
+## Neg Pred Value        0.92584  0.98131  0.95652   0.98182   0.96744
+## Prevalence            0.15368  0.08442  0.12771   0.05195   0.05411
+## Detection Rate        0.08658  0.06710  0.08874   0.03463   0.02381
+## Detection Prevalence  0.09524  0.07359  0.10390   0.04762   0.06926
+## Balanced Accuracy     0.77658  0.89389  0.83877   0.82648   0.69597
+```
+
+```r
+# agreement 0.697
+```
+### 2 0.76 worse than lda
+
+
+```r
+library(caret)
+
+library(gbm)
+
+set.seed(3433)
+
+library(AppliedPredictiveModeling)
+
+data(AlzheimerDisease)
+
+adData = data.frame(diagnosis,predictors)
+
+inTrain = createDataPartition(adData$diagnosis, p = 3/4)[[1]]
+
+training = adData[ inTrain,]
+
+testing = adData[-inTrain,]
+
+set.seed(62433)
+mod1 <- train(diagnosis~., method ="rf", data = training, verbose = FALSE)
+mod2 <- train(diagnosis~., method ="gbm", data = training, verbose = FALSE)
+mod3 <- train(diagnosis~., method ="lda", data = training, verbose = FALSE)
+```
+
+```
+## Warning in lda.default(x, grouping, ...): variables are collinear
+
+## Warning in lda.default(x, grouping, ...): variables are collinear
+
+## Warning in lda.default(x, grouping, ...): variables are collinear
+```
+
+```r
+pred1 <- predict(mod1, training)
+pred2 <- predict(mod2, training)
+pred3 <- predict(mod3, training)
+predDF3 <- data.frame(pred1, pred2, pred3, diagnosis = training$diagnosis)
+
+
+
+combModFit <- train(diagnosis~., method = "rf", data = predDF3, verbose = FALSE)
+```
+
+```
+## note: only 2 unique complexity parameters in default grid. Truncating the grid to 2 .
+```
+
+```r
+pred1 <- predict(mod1, testing)
+pred2 <- predict(mod2, testing)
+pred3 <- predict(mod3, testing)
+predDF3 <- data.frame(pred1, pred2, pred3, diagnosis = testing$diagnosis)
+combPred <- predict(combModFit,predDF3)
+
+MLmetrics::Accuracy(combPred, testing$diagnosis)
+```
+
+```
+## [1] 0.902439
+```
+
+```r
+MLmetrics::Accuracy(pred1, testing$diagnosis)
+```
+
+```
+## [1] 0.902439
+```
+
+```r
+MLmetrics::Accuracy(pred2, testing$diagnosis)
+```
+
+```
+## [1] 0.8902439
+```
+
+```r
+MLmetrics::Accuracy(pred3, testing$diagnosis)
+```
+
+```
+## [1] 0.9146341
+```
+
+### 3 cement
+
+
+```r
+set.seed(3523)
+
+library(AppliedPredictiveModeling)
+
+data(concrete)
+
+inTrain = createDataPartition(concrete$CompressiveStrength, p = 3/4)[[1]]
+
+training = concrete[ inTrain,]
+
+testing = concrete[-inTrain,]
+
+set.seed(233)
+
+
+library(elasticnet)
+```
+
+```
+## Loading required package: lars
+```
+
+```
+## Loaded lars 1.2
+```
+
+```r
+object <- enet(x = as.matrix(training[,1:8]),training[,9],lambda=0)
+
+plot(object,xvar="step", use.color = TRUE)
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
+
+### 4 0.9617  
+
+```r
+library(lubridate) # For year() function below
+```
+
+```
+## 
+## Attaching package: 'lubridate'
+```
+
+```
+## The following object is masked from 'package:base':
+## 
+##     date
+```
+
+```r
+dat = read.csv("gaData.csv")
+
+training = dat[year(dat$date) < 2012,]
+
+testing = dat[(year(dat$date)) > 2011,]
+
+tstrain = ts(training$visitsTumblr)
+library(forecast)
+
+tspredict <- bats(training$visitsTumblr)
+testfx <- forecast(tspredict,h = 235)
+testfx %>% plot()
+```
+
+![](4_week_notes_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
+
+```r
+upper <- testfx$upper[,2]
+lower <- testfx$lower[,2]
+
+testpref <- data.frame(upper, lower, visitors=testing$visitsTumblr)
+testpref %>% mutate(within = ifelse((visitors>lower)&(visitors<upper),1,0)) %>% select(within) %>% summary()
+```
+
+```
+##      within      
+##  Min.   :0.0000  
+##  1st Qu.:1.0000  
+##  Median :1.0000  
+##  Mean   :0.9617  
+##  3rd Qu.:1.0000  
+##  Max.   :1.0000
+```
+
+
+### 5 7.962075 (6.93)
+Set the seed to 325 and fit a support vector machine using the e1071 package to predict Compressive Strength using the default settings. Predict on the testing set. What is the RMSE?
+
+```r
+set.seed(3523)
+
+library(AppliedPredictiveModeling)
+
+data(concrete)
+
+inTrain = createDataPartition(concrete$CompressiveStrength, p = 3/4)[[1]]
+
+training = concrete[ inTrain,]
+
+testing = concrete[-inTrain,]
+set.seed(325)
+library(e1071)
+
+svmresult <- e1071::svm(CompressiveStrength~., data = training)
+
+MLmetrics::RMSE(y_pred = predict(svmresult,testing),y_true = testing$CompressiveStrength)
+```
+
+```
+## [1] 7.962075
+```
 
 

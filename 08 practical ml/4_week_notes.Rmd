@@ -488,5 +488,153 @@ table(testClusterPred ,testing$Species)
 * [Elements of statistical learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/)
 * [Introduction to statistical learning](http://www-bcf.usc.edu/~gareth/ISL/)
 
+# Quiz
+### 1 (0.6 0.51 0.636)
+```{r}
+library(ElemStatLearn)
+library(caret)
+data(vowel.train)
+
+data(vowel.test)
+library(dplyr)
+vowel.train <- vowel.train %>% mutate(y = factor(y))
+vowel.test <- vowel.test %>% mutate(y = factor(y))
+
+set.seed(33833)
+
+mod1 <- train(y~., method ="rf", data = vowel.train, verbose = FALSE)
+mod2 <- train(y~., method ="gbm", data = vowel.train, verbose = FALSE)
+
+
+prediction1 <- predict(mod1, newdata = vowel.test)
+confusionMatrix(prediction1, vowel.test$y)
+#rf 0.5974
+prediction2 <- predict(mod2, newdata = vowel.test)
+confusionMatrix(prediction2, vowel.test$y)
+#rf 0.5368
+confusionMatrix(prediction1, prediction2)
+# agreement 0.697
+```
+### 2 0.76 worse than lda
+
+```{r}
+library(caret)
+
+library(gbm)
+
+set.seed(3433)
+
+library(AppliedPredictiveModeling)
+
+data(AlzheimerDisease)
+
+adData = data.frame(diagnosis,predictors)
+
+inTrain = createDataPartition(adData$diagnosis, p = 3/4)[[1]]
+
+training = adData[ inTrain,]
+
+testing = adData[-inTrain,]
+
+set.seed(62433)
+mod1 <- train(diagnosis~., method ="rf", data = training, verbose = FALSE)
+mod2 <- train(diagnosis~., method ="gbm", data = training, verbose = FALSE)
+mod3 <- train(diagnosis~., method ="lda", data = training, verbose = FALSE)
+
+pred1 <- predict(mod1, training)
+pred2 <- predict(mod2, training)
+pred3 <- predict(mod3, training)
+predDF3 <- data.frame(pred1, pred2, pred3, diagnosis = training$diagnosis)
+
+
+
+combModFit <- train(diagnosis~., method = "rf", data = predDF3, verbose = FALSE)
+
+pred1 <- predict(mod1, testing)
+pred2 <- predict(mod2, testing)
+pred3 <- predict(mod3, testing)
+predDF3 <- data.frame(pred1, pred2, pred3, diagnosis = testing$diagnosis)
+combPred <- predict(combModFit,predDF3)
+
+MLmetrics::Accuracy(combPred, testing$diagnosis)
+
+
+MLmetrics::Accuracy(pred1, testing$diagnosis)
+MLmetrics::Accuracy(pred2, testing$diagnosis)
+MLmetrics::Accuracy(pred3, testing$diagnosis)
+
+```
+
+### 3 cement
+
+```{r}
+set.seed(3523)
+
+library(AppliedPredictiveModeling)
+
+data(concrete)
+
+inTrain = createDataPartition(concrete$CompressiveStrength, p = 3/4)[[1]]
+
+training = concrete[ inTrain,]
+
+testing = concrete[-inTrain,]
+
+set.seed(233)
+
+
+library(elasticnet)
+object <- enet(x = as.matrix(training[,1:8]),training[,9],lambda=0)
+
+plot(object,xvar="step", use.color = TRUE)
+
+```
+
+### 4 0.9617  
+```{r}
+library(lubridate) # For year() function below
+
+dat = read.csv("gaData.csv")
+
+training = dat[year(dat$date) < 2012,]
+
+testing = dat[(year(dat$date)) > 2011,]
+
+tstrain = ts(training$visitsTumblr)
+library(forecast)
+
+tspredict <- bats(training$visitsTumblr)
+testfx <- forecast(tspredict,h = 235)
+testfx %>% plot()
+
+upper <- testfx$upper[,2]
+lower <- testfx$lower[,2]
+
+testpref <- data.frame(upper, lower, visitors=testing$visitsTumblr)
+testpref %>% mutate(within = ifelse((visitors>lower)&(visitors<upper),1,0)) %>% select(within) %>% summary()
+```
+
+
+### 5 7.962075 (6.93)
+Set the seed to 325 and fit a support vector machine using the e1071 package to predict Compressive Strength using the default settings. Predict on the testing set. What is the RMSE?
+```{r}
+set.seed(3523)
+
+library(AppliedPredictiveModeling)
+
+data(concrete)
+
+inTrain = createDataPartition(concrete$CompressiveStrength, p = 3/4)[[1]]
+
+training = concrete[ inTrain,]
+
+testing = concrete[-inTrain,]
+set.seed(325)
+library(e1071)
+
+svmresult <- e1071::svm(CompressiveStrength~., data = training)
+
+MLmetrics::RMSE(y_pred = predict(svmresult,testing),y_true = testing$CompressiveStrength)
+```
 
 
