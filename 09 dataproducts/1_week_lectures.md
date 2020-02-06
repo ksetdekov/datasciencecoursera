@@ -10,3 +10,9 @@ output:
 
 
 # week 1
+Shiny - web application framework
+
+* web bases interactive data products
+* need backend hosting
+* shiny is free
+

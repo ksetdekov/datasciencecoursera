@@ -14,3 +14,21 @@ knitr::opts_chunk$set(
 ```
 
 # week 1
+Shiny - web application framework
+
+* web bases interactive data products
+* need backend hosting
+* shiny is free
+
+## prerequisites
+
+* html gives structure and sectioning - needed
+* css - style
+* Javascript - for interactivity
+* uses _Bootstrap_ package for rendering on small devices and look
+
+Tutorials [https://shiny.rstudio.com/tutorial/][https://shiny.rstudio.com/tutorial/]
+
+* mozilla develper network tutorials
+* khan academy htmsl and css
+* tutorials from free code camp
