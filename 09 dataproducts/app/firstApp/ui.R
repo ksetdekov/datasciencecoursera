@@ -1,5 +1,5 @@
 library(shiny)
-shinyUI(pageWithSidebar(
+shinyUI(fluidPage(
     headerPanel("Data science FTW!"),
     sidebarPanel(
         h3('Sidebar text')
