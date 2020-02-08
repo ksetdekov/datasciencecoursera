@@ -5,3 +5,4 @@
 .httr-oauth
 *_cache*
 packrat/lib*/
+*__packages*
