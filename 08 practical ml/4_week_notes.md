@@ -7,11 +7,7 @@ output:
     keep_md: yes
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-	cache = TRUE
-)
-```
+
 
 # week 4
 
@@ -31,10 +27,3 @@ _idea_
 
 * may be computationally hard on big data
 * worse than random forest and boosting
-
-```{r}
-library(ElemStatLearn)
-data(prostate)
-str(prostate)
-```
-
