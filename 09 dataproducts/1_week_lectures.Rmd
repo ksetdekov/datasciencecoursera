@@ -36,3 +36,7 @@ Tutorials [https://shiny.rstudio.com/tutorial/][https://shiny.rstudio.com/tutori
 ### HTML tags in shiny
 
 *?builder
+
+### how it works?
+
+back end works all the time, postition of elements in ui is not relevant to the code.
