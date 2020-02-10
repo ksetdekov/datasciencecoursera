@@ -32,3 +32,7 @@ Tutorials [https://shiny.rstudio.com/tutorial/][https://shiny.rstudio.com/tutori
 * mozilla develper network tutorials
 * khan academy htmsl and css
 * tutorials from free code camp
+
+### HTML tags in shiny
+
+*?builder
