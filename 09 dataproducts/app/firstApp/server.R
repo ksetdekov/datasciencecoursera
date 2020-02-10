@@ -1,4 +1,6 @@
 library(shiny)
+library(ggplot2)
+library(hexbin)
 shinyServer(function(input, output) {
     output$plot1 <- renderPlot({
                 number_of_points <- input$numeric
@@ -13,8 +15,9 @@ shinyServer(function(input, output) {
         xlab <- ifelse(input$show_xlab, "X Axis", "")
         ylab <- ifelse(input$show_ylab, "Y Axis", "")
         main <- ifelse(input$show_title, "Title", "")
-        plot(dataX, dataY, xlab = xlab, ylab = ylab, main = main,
-             xlim = c(-100, 100), ylim = c(-100, 100))
+        # plot(dataX, dataY, xlab = xlab, ylab = ylab, main = main,
+        # xlim = c(-100, 100), ylim = c(-100, 100))
+        ggplot(data.frame(dataX, dataY),aes(x=dataX,y=dataY))+ xlim(-100, 100) +
+            ylim(-100, 100)+labs(x = xlab, y = ylab, title = main)+stat_binhex()
             })
-    output$meanX <-  renderText(paste0(input$sliderX[2],input$sliderX[1]))
 })
