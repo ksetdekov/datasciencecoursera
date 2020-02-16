@@ -70,3 +70,15 @@ plotOutput("plot1", brush = brushOpts(
             ))
 ```
 Brush is a selector of points
+
+##Sharing Shiny Apps
+
+Once you've created a Shiny app, there are several ways to share your app. Using shinyapps.io allows users to interact with your app through a web browser without needing to have R or Shiny installed. Shinyapps.io has a free tier, but if you want to use a Shiny app in your business you may be interested in paying for the service. If you're sharing your app with an R user you can post your app to GitHub and instruct the user to use the runGist() or runGitHub() function to launch your app.
+
+## More Shiny Resources
+
+* [The Official Shiny Tutorial](http://shiny.rstudio.com/tutorial/)
+* [Gallery of Shiny Apps](http://shiny.rstudio.com/gallery/)
+* [Show Me Shiny: Gallery of R Web Apps](http://www.showmeshiny.com/)
+* [Integrating Shiny and Plotly](https://plot.ly/r/shiny-tutorial/)
+* [Shiny on Stack Overflow](http://stackoverflow.com/questions/tagged/shiny)
