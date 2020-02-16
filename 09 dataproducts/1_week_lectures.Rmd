@@ -55,3 +55,7 @@ calc_sum()
 
 ## Delayed Reactivity
 In order to prevent reactive expressions from reacting you can use a submit button in your app.
+
+## advanced ui
+
+There are several other kinds of UI components that you can mix into your app including tabs, navbars, and sidebars. We'll show you an example of how to use tabs to give your app multiple views. The tabsetPanel() function specifies a group of tabs, and then the tabPanel() function specifies the contents of an individual tab.
