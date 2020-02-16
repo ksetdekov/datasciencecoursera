@@ -40,3 +40,18 @@ Tutorials [https://shiny.rstudio.com/tutorial/][https://shiny.rstudio.com/tutori
 ### how it works?
 
 back end works all the time, postition of elements in ui is not relevant to the code.
+
+## reactivity
+
+A reactive expression is like a recipe that manipulates inputs from Shiny and then returns a value. Reactivity provides a way for your app to respond since inputs will change depending on how users interact with your user interface. Expressions wrapped by reactive() should be expressions that are subject to change.
+
+Creating a reactive expression is just like creating a function:
+
+calc_sum <- reactive({
+  input$box1 + input$box2
+})
+
+calc_sum()
+
+## Delayed Reactivity
+In order to prevent reactive expressions from reacting you can use a submit button in your app.
