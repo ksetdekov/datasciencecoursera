@@ -5,7 +5,8 @@ shinyUI(fluidPage(
         sidebarPanel(
             sliderInput("sliderMPG", "What is the MPG of the car?", 10, 35, value = 20),
             checkboxInput("showModel1", "Show/Hide Model 1", value = TRUE),
-            checkboxInput("showModel2", "Show/Hide Model 2", value = TRUE)
+            checkboxInput("showModel2", "Show/Hide Model 2", value = TRUE),
+            submitButton("Submit") # New!
         ),
         mainPanel(
             plotOutput("plot1"),
