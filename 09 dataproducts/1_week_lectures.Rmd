@@ -84,3 +84,27 @@ Once you've created a Shiny app, there are several ways to share your app. Using
 * [Show Me Shiny: Gallery of R Web Apps](http://www.showmeshiny.com/)
 * [Integrating Shiny and Plotly](https://plot.ly/r/shiny-tutorial/)
 * [Shiny on Stack Overflow](http://stackoverflow.com/questions/tagged/shiny)
+
+# shiny gadgets
+
+Alternative to manipulate (it is outdated)
+
+Provides a way to use Shiny interactivity and interface tools as a part of data analysis.
+Function that opens a mall Shiny app. It is smaller - use miniUI.
+
+```{r}
+library(shiny)
+library(miniUI)
+
+smallgadget <- function() {
+    ui <- miniPage(gadgetTitleBar("First gadget"))
+    server <- function(input, output, session) {
+        observeEvent(input$done, {
+            stopApp()
+        })
+    }
+    runGadget(ui, server)
+}
+smallgadget()
+```
+
