@@ -133,3 +133,42 @@ multiplyNumbers <- function(numbers1, numbers2) {
 }
 multiplyNumbers(1:5, 6:10)
 ```
+
+## interactive graphics 
+
+```{r}
+require(shiny)
+require(miniUI)
+
+picktrees <- function() {
+    ui <- miniPage(
+        gadgetTitleBar("Select points by dragging on the plot"),
+        miniContentPanel(plotOutput(
+            "plot", height = "100%", brush = "brush"
+        ))
+    )
+    server <- function(input, output, session) {
+        output$plot <- renderPlot({
+            plot(
+                trees$Girth,
+                trees$Volume,
+                main = "trees",
+                xlab = "girth",
+                ylab = "vol"
+            )
+        })
+        observeEvent(input$done, {
+            stopApp(brushedPoints(
+                trees,
+                input$brush,
+                xvar = "Girth",
+                yvar = "Volume"
+            ))
+        })
+    }
+    runGadget(ui, server)
+}
+pichedtrees <- picktrees()
+summary(pichedtrees)
+```
+

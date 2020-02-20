@@ -82,3 +82,126 @@ Once you've created a Shiny app, there are several ways to share your app. Using
 * [Show Me Shiny: Gallery of R Web Apps](http://www.showmeshiny.com/)
 * [Integrating Shiny and Plotly](https://plot.ly/r/shiny-tutorial/)
 * [Shiny on Stack Overflow](http://stackoverflow.com/questions/tagged/shiny)
+
+# shiny gadgets
+
+Alternative to manipulate (it is outdated)
+
+Provides a way to use Shiny interactivity and interface tools as a part of data analysis.
+Function that opens a mall Shiny app. It is smaller - use miniUI.
+
+
+```r
+library(shiny)
+library(miniUI)
+
+smallgadget <- function() {
+    ui <- miniPage(gadgetTitleBar("First gadget"))
+    server <- function(input, output, session) {
+        observeEvent(input$done, {
+            stopApp()
+        })
+    }
+    runGadget(ui, server)
+}
+smallgadget()
+```
+
+```
+## 
+## Listening on http://127.0.0.1:4740
+```
+
+## Gadgets with Arguments: Code Part 1
+
+
+```r
+library(shiny)
+library(miniUI)
+multiplyNumbers <- function(numbers1, numbers2) {
+    ui <- miniPage(
+        gadgetTitleBar("Multiply Two Numbers"),
+        miniContentPanel(
+            selectInput("num1", "First Number", choices = numbers1),
+            selectInput("num2", "Second Number", choices = numbers2)
+        )
+    )
+    
+    server <- function(input, output, session) {
+        observeEvent(input$done, {
+            num1 <- as.numeric(input$num1)
+            num2 <- as.numeric(input$num2)
+            stopApp(num1 * num2)
+        })
+    }
+    runGadget(ui, server)
+}
+multiplyNumbers(1:5, 6:10)
+```
+
+```
+## 
+## Listening on http://127.0.0.1:4740
+```
+
+```
+## [1] 18
+```
+
+## interactive graphics 
+
+
+```r
+require(shiny)
+require(miniUI)
+
+picktrees <- function() {
+    ui <- miniPage(
+        gadgetTitleBar("Select points by dragging on the plot"),
+        miniContentPanel(plotOutput(
+            "plot", height = "100%", brush = "brush"
+        ))
+    )
+    server <- function(input, output, session) {
+        output$plot <- renderPlot({
+            plot(
+                trees$Girth,
+                trees$Volume,
+                main = "trees",
+                xlab = "girth",
+                ylab = "vol"
+            )
+        })
+        observeEvent(input$done, {
+            stopApp(brushedPoints(
+                trees,
+                input$brush,
+                xvar = "Girth",
+                yvar = "Volume"
+            ))
+        })
+    }
+    runGadget(ui, server)
+}
+pichedtrees <- picktrees()
+```
+
+```
+## 
+## Listening on http://127.0.0.1:4740
+```
+
+```r
+summary(pichedtrees)
+```
+
+```
+##      Girth           Height          Volume     
+##  Min.   :11.40   Min.   :64.00   Min.   :19.10  
+##  1st Qu.:12.68   1st Qu.:73.50   1st Qu.:22.00  
+##  Median :13.75   Median :76.00   Median :29.55  
+##  Mean   :14.01   Mean   :76.06   Mean   :31.42  
+##  3rd Qu.:14.88   3rd Qu.:80.00   3rd Qu.:36.80  
+##  Max.   :18.00   Max.   :86.00   Max.   :51.50
+```
+
