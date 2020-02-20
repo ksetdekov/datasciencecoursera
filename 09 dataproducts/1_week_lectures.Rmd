@@ -172,3 +172,13 @@ pichedtrees <- picktrees()
 summary(pichedtrees)
 ```
 
+# google vis
+
+not working, check with flash? and at home pc
+
+```{r}
+library(googleVis)
+M <- gvisMotionChart(Fruits, "Fruit", "Year", chartid = "I_lovemy_fruit")
+plot(M)
+```
+
