@@ -93,8 +93,21 @@ Function that opens a mall Shiny app. It is smaller - use miniUI.
 
 ```r
 library(shiny)
-library(miniUI)
+```
 
+```
+## Warning: package 'shiny' was built under R version 3.6.2
+```
+
+```r
+library(miniUI)
+```
+
+```
+## Warning: package 'miniUI' was built under R version 3.6.2
+```
+
+```r
 smallgadget <- function() {
     ui <- miniPage(gadgetTitleBar("First gadget"))
     server <- function(input, output, session) {
@@ -109,7 +122,7 @@ smallgadget()
 
 ```
 ## 
-## Listening on http://127.0.0.1:4740
+## Listening on http://127.0.0.1:4135
 ```
 
 ## Gadgets with Arguments: Code Part 1
@@ -141,11 +154,11 @@ multiplyNumbers(1:5, 6:10)
 
 ```
 ## 
-## Listening on http://127.0.0.1:4740
+## Listening on http://127.0.0.1:4135
 ```
 
 ```
-## [1] 18
+## [1] 6
 ```
 
 ## interactive graphics 
@@ -188,7 +201,7 @@ pichedtrees <- picktrees()
 
 ```
 ## 
-## Listening on http://127.0.0.1:4740
+## Listening on http://127.0.0.1:4135
 ```
 
 ```r
@@ -196,12 +209,119 @@ summary(pichedtrees)
 ```
 
 ```
-##      Girth           Height          Volume     
-##  Min.   :11.40   Min.   :64.00   Min.   :19.10  
-##  1st Qu.:12.68   1st Qu.:73.50   1st Qu.:22.00  
-##  Median :13.75   Median :76.00   Median :29.55  
-##  Mean   :14.01   Mean   :76.06   Mean   :31.42  
-##  3rd Qu.:14.88   3rd Qu.:80.00   3rd Qu.:36.80  
-##  Max.   :18.00   Max.   :86.00   Max.   :51.50
+##      Girth         Height        Volume   
+##  Min.   : NA   Min.   : NA   Min.   : NA  
+##  1st Qu.: NA   1st Qu.: NA   1st Qu.: NA  
+##  Median : NA   Median : NA   Median : NA  
+##  Mean   :NaN   Mean   :NaN   Mean   :NaN  
+##  3rd Qu.: NA   3rd Qu.: NA   3rd Qu.: NA  
+##  Max.   : NA   Max.   : NA   Max.   : NA
+```
+
+# google vis
+
+not working, check with flash? and at home pc
+
+
+```r
+library(googleVis)
+```
+
+```
+## Warning: package 'googleVis' was built under R version 3.6.2
+```
+
+```
+## Creating a generic function for 'toJSON' from package 'jsonlite' in package 'googleVis'
+```
+
+```
+## 
+## Welcome to googleVis version 0.6.4
+## 
+## Please read Google's Terms of Use
+## before you start using the package:
+## https://developers.google.com/terms/
+## 
+## Note, the plot method of googleVis will by default use
+## the standard browser to display its output.
+## 
+## See the googleVis package vignettes for more details,
+## or visit https://github.com/mages/googleVis.
+## 
+## To suppress this message use:
+## suppressPackageStartupMessages(library(googleVis))
+```
+
+```r
+M <- gvisMotionChart(Fruits, "Fruit", "Year", chartid = "I_lovemy_fruit")
+plot(M)
+```
+
+```
+## starting httpd help server ...
+```
+
+```
+##  done
+```
+
+googleVis documentation
+
+```r
+Geo=gvisGeoChart(Exports, locationvar="Country", 
+                 colorvar="Profit",
+                 options=list(projection="kavrayskiy-vii"))
+plot(Geo)
+```
+
+
+```r
+require(datasets)
+states <- data.frame(state.name, state.x77)
+GeoStates <- gvisGeoChart(states, "state.name", "Illiteracy",
+                          options=list(region="US", 
+                                       displayMode="regions", 
+                                       resolution="provinces",
+                                       width=600, height=400))
+plot(GeoStates)
+```
+
+many options
+
+```r
+df=data.frame(country=c("US", "GB", "BR"), 
+              val1=c(10,13,14), 
+              val2=c(23,12,32))
+Line3 <-  gvisLineChart(df, xvar="country", yvar=c("val1","val2"),
+                        options=list(
+                          title="Hello World",
+                          titleTextStyle="{color:'red', 
+                                           fontName:'Courier', 
+                                           fontSize:16}",                         
+                          backgroundColor="#D3D3D3",                          
+                          vAxis="{gridlines:{color:'red', count:3}}",
+                          hAxis="{title:'Country', titleTextStyle:{color:'blue'}}",
+                          series="[{color:'green', targetAxisIndex: 0}, 
+                                   {color: 'orange',targetAxisIndex:1}]",
+                          vAxes="[{title:'val1'}, {title:'val2'}]",
+                          legend="bottom",
+                          curveType="function",
+                          width=500,
+                          height=300                         
+                        ))
+plot(Line3)
+```
+
+merge
+
+```r
+G <- gvisGeoChart(Exports, "Country", "Profit", 
+                  options=list(width=300, height=300))
+T <- gvisTable(Exports, 
+               options=list(width=220, height=300))
+
+GT <- gvisMerge(G,T, horizontal=TRUE) 
+plot(GT)
 ```
 
